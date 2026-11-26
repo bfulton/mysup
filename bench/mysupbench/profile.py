@@ -14,12 +14,15 @@ charged to the engine frame they return to. The owners:
     rocksdb_txn   RocksDB's transaction and write-batch-with-index
                   utilities: a layer keeps these
     myrocks       the storage engine written against RocksDB
-    innodb        InnoDB, only where its symbols resolve (see innodb_owner)
+    innodb        InnoDB, where the server's debug symbols are installed
     server        everything else: parser, optimizer, protocol, executor
 
 Frames are recognised by C++ namespace in the plugin, which exports its
 symbols. The transaction utilities share the rocksdb:: namespace with the
 core, so they are picked out by class name, listed in TXN_CLASSES.
+
+The three RocksDB owners together and `innodb` are the same quantity for
+the two engines: samples taken under the engine's entry points.
 """
 
 import collections
@@ -45,6 +48,15 @@ TXN_CLASSES = (
 )
 _TXN = re.compile(r"\brocksdb::(?:%s)\b(?:::|<)" % "|".join(TXN_CLASSES))
 _NS = re.compile(r"\b(myrocks|rocksdb)::")
+
+# InnoDB is linked into the server and shares no namespace, so it is known
+# by its doors: the handler class and the handlerton functions, every one
+# of which is named ha_innobase:: or innobase_ or innodb_. A sample with
+# one of these in its stack was taken inside InnoDB or in something InnoDB
+# called. The server binary hides these names; they resolve only with its
+# debug symbols installed (bench/README.md), and without them InnoDB's
+# share reads as zero and its samples sit under `server`.
+_INNODB_ENTRY = re.compile(r"(?:ha_innobase::|ha_innopart::|innobase_|innodb_)")
 
 _FRAME = re.compile(r"^\s*([0-9a-f]+) (.*) \(([^()]*)\)$")
 
@@ -87,7 +99,7 @@ def samples(text):
         yield frames
 
 
-def owner_of(symbol, dso, innodb_owner=None):
+def owner_of(symbol, dso):
     """The engine a frame belongs to, or None."""
     if dso.endswith("ha_rocksdb.so"):
         m = _NS.search(symbol)
@@ -96,8 +108,8 @@ def owner_of(symbol, dso, innodb_owner=None):
         if m.group(1) == "myrocks":
             return "myrocks"
         return "rocksdb_txn" if _TXN.search(symbol) else "rocksdb_core"
-    if innodb_owner is not None:
-        return innodb_owner(symbol, dso)
+    if _INNODB_ENTRY.match(symbol) and dso.endswith(("mariadbd", "mysqld")):
+        return "innodb"
     return None
 
 
@@ -105,7 +117,7 @@ def is_kernel(dso):
     return dso.startswith("[kernel")
 
 
-def attribute(text, innodb_owner=None, top=25):
+def attribute(text, top=25):
     counts = collections.Counter()
     kernel = collections.Counter()
     self_syms = collections.defaultdict(collections.Counter)
@@ -117,7 +129,7 @@ def attribute(text, innodb_owner=None, top=25):
         who = "server"
         via = None
         for sym, dso in frames:
-            o = owner_of(sym, dso, innodb_owner)
+            o = owner_of(sym, dso)
             if o:
                 who, via = o, sym
                 break
@@ -142,22 +154,3 @@ def attribute(text, innodb_owner=None, top=25):
         "top_owner_frames": {o: c.most_common(top)
                              for o, c in owner_frames.items()},
     }
-
-
-def innodb_owner_from(symfile):
-    """An owner function for the server binary from a file of
-    `address size name source-file` lines (see `debug_symbols`), or None
-    when the file is absent. With it, a frame in the server binary whose
-    function was compiled from storage/innobase/ belongs to InnoDB."""
-    if not symfile or not os.path.exists(symfile):
-        return None
-    names = set()
-    with open(symfile) as f:
-        for line in f:
-            names.add(line.rstrip("\n"))
-
-    def owner(symbol, dso):
-        if dso.endswith(("mariadbd", "mysqld")) and symbol in names:
-            return "innodb"
-        return None
-    return owner
