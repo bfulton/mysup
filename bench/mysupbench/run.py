@@ -83,6 +83,7 @@ class Run:
         os.makedirs(workdir, exist_ok=True)
         self.reps = reps
         self.seconds = seconds
+        self.profile_threads = 1
         self.flavor = Flavor(server_root)
         self.tag = self.flavor.tag()
         self.dev = probes.block_device_of(workdir)
@@ -306,9 +307,10 @@ class Run:
         return True
 
     def _profile(self, inst, arm, workload, seconds=20):
-        tag = f"{self.condition} {arm} {workload}"
+        threads = self.profile_threads
+        tag = f"{self.condition} {arm} {workload} x{threads}"
         data = os.path.join(inst.dir, f"perf-{workload}.data")
-        cmd = self._cmd(inst, arm, workload, 1, seconds + 4, 7)
+        cmd = self._cmd(inst, arm, workload, threads, seconds + 4, 7)
         sb = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT, text=True)
         try:
@@ -324,7 +326,7 @@ class Run:
         finally:
             out = sb.communicate()[0]
         res = profile.attribute(profile.script(data))
-        res.update(arm=arm, workload=workload, threads=1,
+        res.update(arm=arm, workload=workload, threads=threads,
                    **{"pass": self.pass_no},
                    window_wall_s=wall, window_server_cpu_s=cpu,
                    window_read_ms=blk["read_ms"],
@@ -412,6 +414,7 @@ def main_run(args):
         if arm not in plan.ARMS:
             sys.exit(f"unknown arm {arm}")
     run.doc["passes"] = args.passes
+    run.profile_threads = args.profile_threads
     for pass_no in range(args.passes):
         last = pass_no == args.passes - 1
         for arm in args.arms.split(","):

@@ -21,6 +21,8 @@ def main():
     r.add_argument("--threads", help="keep only these thread counts")
     r.add_argument("--profile",
                    help="workloads to profile with perf after measuring")
+    r.add_argument("--profile-threads", type=int, default=1,
+                   help="client threads while profiling")
     r.add_argument("--passes", type=int, default=2,
                    help="times to go round the arms; the host's speed "
                         "drifts, and a pass apart shows it")

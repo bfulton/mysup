@@ -157,11 +157,12 @@ def cells_of(docs):
     return out
 
 
-def profiles_of(docs):
+def profiles_of(docs, threads=1):
     out = {}
     for doc in docs:
         for p in doc.get("profiles", []):
-            out[(doc["condition"], p["arm"], p["workload"])] = p
+            if p.get("threads", 1) == threads:
+                out[(doc["condition"], p["arm"], p["workload"])] = p
     return out
 
 
@@ -270,14 +271,19 @@ def profile_table(profiles, cond, arm):
     return table(head, rows)
 
 
-def room_table(cells, profiles, cond):
-    """What is InnoDB's to lose: the part of a query's wall time that is
+def room_table(cells, profiles, cond, threads=1):
+    """What is InnoDB's to lose: the part of an event's time that is
     InnoDB's CPU or its wait on the disk, and what throughput would gain
-    if an engine did that part for nothing. A ceiling, not a forecast."""
+    if an engine did that part for nothing. A ceiling, not a forecast.
+
+    An event's time is the client threads' seconds over the events they
+    finished. At one thread that is the wall time between two events; at
+    more it is the same quantity per thread, and on a host with no idle
+    CPU it is the CPU and disk time an event costs, client included."""
     rows = []
     for w in plan.WORKLOADS:
         p = profiles.get((cond, "innodb", w))
-        c = cells.get((cond, "innodb", w, 1))
+        c = cells.get((cond, "innodb", w, threads))
         if not p or not c or not c.n or not p["owners"].get("innodb"):
             continue
         share = p["owners"]["innodb"] / p["samples"]
@@ -292,10 +298,30 @@ def room_table(cells, profiles, cond):
             f"+{c.wall_us / (c.wall_us - mine / 2) - 1:.0%}"])
     if not rows:
         return None
-    return table(["Test", "InnoDB's share of server CPU", "Wall per event",
+    return table(["Test", "InnoDB's share of server CPU", "Time per event",
                   "InnoDB CPU per event", "Waiting on disk per event",
-                  "InnoDB's part of the wall", "Gain if that part were free",
+                  "InnoDB's part of it", "Gain if that part were free",
                   "Gain if it were halved"], rows)
+
+
+def profile_table_any(profiles, cond, arm):
+    """profile_table over whichever workloads were profiled."""
+    ws = [w for w in plan.WORKLOADS if (cond, arm, w) in profiles]
+    if not ws:
+        return None
+    ps = [profiles[(cond, arm, w)] for w in ws]
+    rows = []
+    shown = [(k, t) for k, t in OWNERS
+             if any(p["owners"].get(k) for p in ps)]
+    for w, p in zip(ws, ps):
+        n = p["samples"]
+        rows.append([w] + [f"{p['owners'].get(k, 0) / n:.1%}"
+                           for k, _ in shown]
+                    + [f"{1 - p['owners'].get('server', 0) / n:.1%}",
+                       f"{p['kernel'].get('server', 0) / n:.1%}", str(n)])
+    return table(["Test"] + [t for _, t in shown]
+                 + ["Engine, all of it", "Server's kernel time", "Samples"],
+                 rows)
 
 
 def throughput_table(cells, cond):
@@ -474,12 +500,33 @@ def main_report(args):
                 out.append(f"### Share of server CPU by owner, "
                            f"{plan.ARMS[arm]['title']}\n")
                 out.append(t + "\n")
+        for arm in ("innodb", "myrocks"):
+            extra = {k: v for k, v in profiles.items()
+                     if k[2] not in dict(MICRO)}
+            pt = profile_table_any(extra, cond, arm)
+            if pt:
+                out.append(f"### Share of server CPU by owner, "
+                           f"{plan.ARMS[arm]['title']}, sysbench's tests\n")
+                out.append(pt + "\n")
         t = room_table(cells, profiles, cond)
         if t:
             out.append("### Room against InnoDB, one client thread\n")
             out.append("InnoDB's share is from the profile; the times are "
                        "whole-run means.\n")
             out.append(t + "\n")
+        for n in (4,):
+            pn = profiles_of(docs, n)
+            t = room_table(cells, pn, cond, n)
+            if t:
+                out.append(f"### Room against InnoDB, {n} client threads\n")
+                out.append(t + "\n")
+                for arm in ("innodb", "myrocks"):
+                    pt = profile_table_any(pn, cond, arm)
+                    if pt:
+                        out.append(f"### Share of server CPU by owner, "
+                                   f"{plan.ARMS[arm]['title']}, {n} client "
+                                   "threads\n")
+                        out.append(pt + "\n")
         out.append("### sysbench throughput\n")
         out.append("Transactions per second. Reads: the best tenth of "
                    "measured seconds, median in brackets. Writes: the "

@@ -14,11 +14,13 @@ conditions, the workloads. A change there is a change to the benchmark.
 ```sh
 sh bench/setup.sh                      # MariaDB, the MyRocks plugin, sysbench, perf
 cd bench
+python3 -m unittest discover tests     # the harness's own arithmetic, no server
 python3 -m mysupbench run --condition mem   --arms blackhole,innodb,myrocks,myrocks-default \
-        --suite micro --passes 3 --profile oltp_point_select,sum100
-python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite read,write
-python3 -m mysupbench run --condition limit --arms innodb,myrocks --suite micro,read
-python3 -m mysupbench report
+        --suite micro --passes 3 --profile oltp_point_select,sum100,range100
+python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite read --passes 3 --reps 2
+python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite write --passes 1 --reps 4
+python3 -m mysupbench run --condition limit --arms innodb,myrocks --suite micro,read --warmup 30
+python3 -m mysupbench report --server mariadb-10.11.14
 ```
 
 It needs root: it drops the page cache, makes a cgroup, and attaches perf
@@ -28,8 +30,42 @@ Nothing else may be running. `--condition smoke` runs the whole path on
 50,000 rows in a minute and proves only that the harness works.
 
 Data directories go under `--workdir` (default `/var/tmp/mysup-bench`), about
-15 GB for both conditions. The block device under it is the one whose reads
-are counted.
+15 GB for both conditions of one server. The block device under it is the
+one whose reads are counted.
+
+### Another server
+
+MariaDB's and MySQL's server packages cannot both be installed. A second
+server is its packages unpacked into a directory, and `--server` names it:
+
+```sh
+mkdir -p /opt/servers/percona-8.4.11
+for deb in percona-server-server percona-server-rocksdb percona-server-common percona-server-client; do
+    dpkg-deb -x ${deb}_8.4.11-12-1.noble_amd64.deb /opt/servers/percona-8.4.11
+done
+python3 -m mysupbench run --server /opt/servers/percona-8.4.11 --condition mem --arms blackhole,innodb,myrocks
+python3 -m mysupbench report --server percona-8.4.11
+```
+
+Run this way so far: Percona Server 8.4.11-12 from `repo.percona.com/ps-84-lts`
+and MariaDB 12.3.4 from `archive.mariadb.org/mariadb-12.3.4/repo/ubuntu`
+(`mariadb-server`, `mariadb-server-core`, `mariadb-client`,
+`mariadb-client-core`, `mariadb-plugin-rocksdb`). `plan.py` holds the few
+settings the MySQL family names or ships differently.
+
+### Debug symbols, for InnoDB's share
+
+A profile knows MyRocks by the namespaces its plugin exports. InnoDB is
+linked into the server, and MariaDB's server binary hides its names, so
+InnoDB's share reads as zero until the debug file for that exact build is
+where perf looks, `/usr/lib/debug/.build-id/`:
+
+- Ubuntu's MariaDB: `mariadb-server-core-dbgsym`. The `ddebs.ubuntu.com`
+  archive did not carry the 10.11.14 security build; its Launchpad build
+  page did, as a `.ddeb` to install with `dpkg -i`.
+- MariaDB's own packages: the `.ddeb` under `pool/main/debug/` of the same
+  repository, unpacked and linked by build id.
+- Percona's `mysqld` exports the names; nothing to install.
 
 ## What a run does
 
@@ -88,23 +124,51 @@ with the cgroup's counters, and the run goes on from the snapshot.
 
 The host is a virtual machine among others. A fixed loop on one idle vCPU ran
 between 7.1 and 10.8 million iterations a second over 75 seconds, changing
-from one second to the next, and it has no hardware counters to count
-instructions instead. So:
+from one second to the next; over an afternoon it also slowed for minutes at
+a time. It has no hardware counters to count instructions instead. So:
 
-- Throughput and CPU per query are the **median over every measured second**
-  of a cell, all runs and passes together, with the quartiles beside it.
-- Counts (disk reads, their duration) are totals over the cell divided by
-  its queries.
-- Rows from different run files are never pooled. Two engines are compared
-  only within one file, which is one afternoon of one host.
+- **Reads:** throughput and CPU per query are taken over every measured
+  second of a cell, all runs and passes together, and the number is the edge
+  of the best tenth, with the median beside it. A read-only workload on a
+  warm cache does the same work every second, so what varies is the host,
+  and the host only takes time away. Between passes ten minutes apart the
+  median moved by up to 12% and the best tenth by half that or less.
+- **Writes:** the cell's transactions over its seconds. An engine that
+  stalls to flush or compact has spent that time.
+- **Counts** (disk reads, their duration) are totals over the cell divided
+  by its queries.
+- Arms set side by side come from one run file. Rows from different files
+  are never pooled, and two servers, each measured in its own run, are
+  compared only to within a few percent.
 
-That last rule is why the goal is a ratio taken in one run and not a number
-to beat: see [`docs/baselines.md`](../docs/baselines.md).
+That is why the goal is a ratio taken in one run and not a number to beat:
+see [`docs/baselines.md`](../docs/baselines.md).
+
+## Pitfalls
+
+Beyond those in the brief:
+
+- sysbench's `select_random_points` and `select_random_ranges` refuse more
+  than one table, so every test here runs on one table, 16M rows under the
+  limit where the brief had four of 4M.
+- `/usr/bin/perf` on Ubuntu is a wrapper that refuses a kernel its package
+  does not match. The binary under `/usr/lib/linux-tools/` runs anyway.
+- In this VM `cpu-clock` samples taken with interrupts off land where they
+  come back on: `_raw_spin_unlock_irqrestore` and `finish_task_switch` hold
+  40% of a point select's samples. They are the socket and the scheduler.
+- Percona Server will not start without a `secure-file-priv` directory; its
+  default is one only its package creates.
+- MyRocks at a 640 MiB block cache holds 783 MiB at one client thread and
+  is killed at the 1 GiB limit at four, in every pass. The rows say so.
+- A prepared statement is optimized again at each execution, so the
+  optimizer's calls into the engine (`records_in_range`) are part of every
+  range query, not a one-time cost.
 
 ## Not done
 
-- Only MariaDB has been run, so only MariaDB is implemented. The seam for
-  another server is `server.py`.
 - cgroup v2.
-- A client on another host. With the client on the server's host, a third of
-  a point select's wall time is the client's own CPU.
+- A client on another host. With the client on the server's host, a quarter
+  of a point select's wall time is the client's own CPU.
+- MyRocks sized to survive four threads under the limit (a smaller cache,
+  or jemalloc in place of glibc's allocator).
+- Write tests under the limit.
