@@ -9,7 +9,9 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from mysupbench import plan, profile, report  # noqa: E402
+from mysupbench import plan, profile, report, sysbench  # noqa: E402
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def stack(*frames):
@@ -134,6 +136,27 @@ class Plan(unittest.TestCase):
     def test_baselines_are_arms(self):
         for arm in plan.BASELINE_ARMS:
             self.assertIn(arm, plan.ARMS)
+
+
+class Sysbench(unittest.TestCase):
+    def test_reads_what_sysbench_printed(self):
+        # The fixture is a real three-second oltp_read_only run, two
+        # threads; the numbers below were read off it by eye.
+        with open(os.path.join(HERE, "sysbench-1.0.20.out")) as f:
+            got = sysbench.parse(f.read())
+        want = {
+            "reads": 59318, "writes": 0, "other": 8474, "queries": 67792,
+            "transactions": 4237, "ignored_errors": 0, "reconnects": 0,
+            "seconds": 3.0032, "lat_min_ms": 0.44, "lat_avg_ms": 1.41,
+            "lat_max_ms": 6.41, "lat_p99_ms": 3.07,
+            "tps_by_second": [1383.68, 1298.53, 1550.98],
+            "qps_by_second": [22161.89, 20768.54, 24815.71],
+        }
+        self.assertEqual(got, want)
+
+    def test_output_without_a_summary_is_an_error(self):
+        with self.assertRaises(ValueError):
+            sysbench.parse("FATAL: unable to connect to MySQL server\n")
 
 
 class Quartiles(unittest.TestCase):
