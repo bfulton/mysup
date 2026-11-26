@@ -106,12 +106,17 @@ class Run:
             "profiles": [],
         }
 
-    def save(self):
+    def save(self, done=False):
+        """Write the rows so far. Until the run is done they live beside
+        their final name as `.partial`, which nothing reads and git
+        ignores: a file under runs/ is a run that finished."""
         tmp = self.path + ".tmp"
         with open(tmp, "w") as f:
             json.dump(self.doc, f, indent=1, sort_keys=True)
             f.write("\n")
-        os.replace(tmp, self.path)
+        os.replace(tmp, self.path if done else self.path + ".partial")
+        if done and os.path.exists(self.path + ".partial"):
+            os.unlink(self.path + ".partial")
 
     def floors(self, label):
         """How fast the host's CPU and disk are at this moment."""
@@ -407,4 +412,5 @@ def main_run(args):
         for arm in args.arms.split(","):
             run.measure(arm, cells, prof if last else (), pass_no)
     run.floors("end")
+    run.save(done=True)
     log(f"done: {run.path}")

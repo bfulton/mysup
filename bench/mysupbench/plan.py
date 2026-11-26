@@ -183,6 +183,8 @@ WORKLOADS = {
 }
 
 SUITES = {
+    # Nothing measured: for a run that only profiles.
+    "none": [],
     # The brief's per-query tables: one statement, one client thread.
     "micro": [("oltp_point_select", 1), ("sum100", 1), ("range100", 1)],
     "read": [(w, t) for w in ("oltp_point_select", "oltp_read_only",
