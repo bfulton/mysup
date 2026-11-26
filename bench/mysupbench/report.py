@@ -129,15 +129,31 @@ class Cell:
 
 
 def cells_of(docs):
-    """{(condition, arm, workload, threads): Cell}, newest file per cell."""
-    out = {}
+    """{(condition, arm, workload, threads): Cell}.
+
+    Every arm of one (condition, workload, threads) is taken from one
+    file, so that arms set side by side were measured in the same run:
+    the file holding the most arms for it, and of those the newest.
+    """
+    per_doc = []
     for doc in docs:
         groups = collections.defaultdict(list)
         for r in doc["rows"]:
             groups[(doc["condition"], r["arm"], r["workload"],
                     r["threads"])].append(r)
+        per_doc.append((doc, groups))
+    best = {}
+    for i, (doc, groups) in enumerate(per_doc):
+        arms = collections.Counter((c, w, t) for (c, _a, w, t) in groups)
+        for key, n in arms.items():
+            if key not in best or (n, i) >= best[key][:2]:
+                best[key] = (n, i)
+    out = {}
+    for i, (doc, groups) in enumerate(per_doc):
         for key, rows in groups.items():
-            out[key] = Cell(doc, rows)
+            c, _a, w, t = key
+            if best[(c, w, t)][1] == i:
+                out[key] = Cell(doc, rows)
     return out
 
 
@@ -252,6 +268,34 @@ def profile_table(profiles, cond, arm):
         f"{p['kernel'].get('server', 0) / p['samples']:.1%}" for p in ps])
     rows.append(["Samples"] + [str(p["samples"]) for p in ps])
     return table(head, rows)
+
+
+def room_table(cells, profiles, cond):
+    """What is InnoDB's to lose: the part of a query's wall time that is
+    InnoDB's CPU or its wait on the disk, and what throughput would gain
+    if an engine did that part for nothing. A ceiling, not a forecast."""
+    rows = []
+    for w in plan.WORKLOADS:
+        p = profiles.get((cond, "innodb", w))
+        c = cells.get((cond, "innodb", w, 1))
+        if not p or not c or not c.n or not p["owners"].get("innodb"):
+            continue
+        share = p["owners"]["innodb"] / p["samples"]
+        engine = share * c.cpu_us_total
+        wait = c.read_wait_us
+        mine = engine + wait
+        rows.append([
+            w, f"{share:.1%}", us(c.wall_us * c.q_per_tx),
+            us(engine * c.q_per_tx), us(wait * c.q_per_tx),
+            f"{mine / c.wall_us:.0%}",
+            f"+{c.wall_us / (c.wall_us - mine) - 1:.0%}",
+            f"+{c.wall_us / (c.wall_us - mine / 2) - 1:.0%}"])
+    if not rows:
+        return None
+    return table(["Test", "InnoDB's share of server CPU", "Wall per event",
+                  "InnoDB CPU per event", "Waiting on disk per event",
+                  "InnoDB's part of the wall", "Gain if that part were free",
+                  "Gain if it were halved"], rows)
 
 
 def throughput_table(cells, cond):
@@ -430,6 +474,12 @@ def main_report(args):
                 out.append(f"### Share of server CPU by owner, "
                            f"{plan.ARMS[arm]['title']}\n")
                 out.append(t + "\n")
+        t = room_table(cells, profiles, cond)
+        if t:
+            out.append("### Room against InnoDB, one client thread\n")
+            out.append("InnoDB's share is from the profile; the times are "
+                       "whole-run means.\n")
+            out.append(t + "\n")
         out.append("### sysbench throughput\n")
         out.append("Transactions per second. Reads: the best tenth of "
                    "measured seconds, median in brackets. Writes: the "
