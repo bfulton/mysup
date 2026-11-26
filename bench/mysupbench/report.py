@@ -360,6 +360,38 @@ def profile_table_any(profiles, cond, arm):
                  rows)
 
 
+ENTRY = [("records_in_range", "Estimating rows for the optimizer"),
+         ("index_read", "Finding the first row of a lookup or range"),
+         ("general_fetch", "Stepping to the next row"),
+         ("multi_range_read", "Ranges handed over as a batch"),
+         ("build_template", "Preparing the row template")]
+
+
+def entry_table(profiles, cond):
+    """InnoDB's share of server CPU by the handler call it was reached
+    through. InnoDB is known in a profile by its entry points, so the
+    innermost one in a sample's stack is what the server had asked for."""
+    rows = []
+    for w in plan.WORKLOADS:
+        p = profiles.get((cond, "innodb", w))
+        if not p or not p["owners"].get("innodb"):
+            continue
+        n = p["samples"]
+        frames = p["top_owner_frames"].get("innodb", [])
+        row = [w, f"{p['owners']['innodb'] / n:.1%}"]
+        seen = 0
+        for key, _ in ENTRY:
+            c = sum(k for name, k in frames if key in name.split("(")[0])
+            seen += c
+            row.append(f"{c / n:.1%}")
+        row.append(f"{(p['owners']['innodb'] - seen) / n:.1%}")
+        rows.append(row)
+    if not rows:
+        return None
+    return table(["Test", "InnoDB, all"] + [t for _, t in ENTRY]
+                 + ["Everything else"], rows)
+
+
 def throughput_table(cells, cond):
     keys = sorted({(w, t) for (c, a, w, t) in cells if c == cond
                    and a in plan.BASELINE_ARMS},
@@ -547,6 +579,13 @@ def main_report(args):
                 out.append(f"### Share of server CPU by owner, "
                            f"{plan.ARMS[arm]['title']}, sysbench's tests\n")
                 out.append(pt + "\n")
+        t = entry_table(profiles, cond)
+        if t:
+            out.append("### What the server asked InnoDB for, one client "
+                       "thread\n")
+            out.append("Share of server CPU, by the handler call InnoDB "
+                       "was entered through.\n")
+            out.append(t + "\n")
         t = room_table(cells, profiles, cond)
         if t:
             out.append("### Room against InnoDB, one client thread\n")
@@ -572,6 +611,11 @@ def main_report(args):
                                f"{plan.ARMS[arm]['title']}, {n} client "
                                "threads\n")
                     out.append(pt + "\n")
+            t = entry_table(pn, cond)
+            if t:
+                out.append(f"### What the server asked InnoDB for, {n} "
+                           "client threads\n")
+                out.append(t + "\n")
             t = room_table(cells, pn, cond, n)
             if t:
                 out.append(f"### Room against InnoDB, {n} client threads\n")
