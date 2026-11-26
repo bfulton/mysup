@@ -322,18 +322,22 @@ def room_table(cells, profiles, cond, threads=1):
         engine = share * c.cpu_us_total
         wait = c.read_wait_us
         mine = engine + wait
+        # A tenth more events in the same time is 1/11 less time each.
+        need = (c.wall_us / 11) / mine
         rows.append([
             w, f"{share:.1%}", us(c.wall_us * c.q_per_tx),
             us(engine * c.q_per_tx), us(wait * c.q_per_tx),
             f"{mine / c.wall_us:.0%}",
             f"+{c.wall_us / (c.wall_us - mine) - 1:.0%}",
-            f"+{c.wall_us / (c.wall_us - mine / 2) - 1:.0%}"])
+            f"+{c.wall_us / (c.wall_us - mine / 2) - 1:.0%}",
+            f"{need:.0%} of it" if need < 1 else "more than all of it"])
     if not rows:
         return None
     return table(["Test", "InnoDB's share of server CPU", "Time per event",
                   "InnoDB CPU per event", "Waiting on disk per event",
                   "InnoDB's part of it", "Gain if that part were free",
-                  "Gain if it were halved"], rows)
+                  "Gain if it were halved",
+                  "What +10% takes away"], rows)
 
 
 def profile_table_any(profiles, cond, arm):
@@ -428,10 +432,11 @@ def size_table(arms, cond):
         rows.append([plan.ARMS[a]["title"], f"{b / 2**20:.0f}",
                      f"{b / n:.0f}", f"{b / n / plan.ROW_BYTES:.2f}",
                      algo, f"{load['insert_wall_s']:.0f}",
-                     f"{load['settle_wall_s']:.0f}"])
+                     f"{load['settle_wall_s']:.0f}",
+                     info.get("malloc", "the C library's")])
     return table(["Arm", "Table files, MiB", "Bytes per row",
                   "Per byte stored", "SST compression",
-                  "Insert, s", "Settle, s"], rows)
+                  "Insert, s", "Settle, s", "Allocator"], rows)
 
 
 def floors_table(docs, cond):
