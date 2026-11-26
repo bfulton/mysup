@@ -1,13 +1,14 @@
 #!/bin/sh
 # What the harness needs, on Ubuntu 24.04, installed where missing.
 #
-# The server is the distribution's MariaDB with its MyRocks plugin. Its
-# service is never started: the harness runs its own instances. MySQL's
-# server packages conflict with these, so this does not install them.
+# The server is the distribution's MariaDB with its MyRocks plugin, and
+# jemalloc for the arms that run under it. The server's service is never
+# started: the harness runs its own instances. MySQL's server packages
+# conflict with these, so this does not install them.
 set -eu
 
 need=""
-for pkg in mariadb-server mariadb-plugin-rocksdb sysbench linux-tools-generic coreutils; do
+for pkg in mariadb-server mariadb-plugin-rocksdb libjemalloc2 sysbench linux-tools-generic coreutils; do
     dpkg -s "$pkg" >/dev/null 2>&1 || need="$need $pkg"
 done
 if [ -n "$need" ]; then

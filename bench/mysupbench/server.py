@@ -157,9 +157,13 @@ class ServerDied(RuntimeError):
 
 
 class Instance:
-    def __init__(self, flavor, directory, name):
+    def __init__(self, flavor, directory, name, preload=None):
+        """`preload` is a shared library the server is started under, by
+        soname: how an arm runs with an allocator other than the C
+        library's."""
         self.flavor = flavor
         self.name = name
+        self.preload = preload
         self.dir = directory
         self.datadir = os.path.join(directory, "data")
         self.snapdir = os.path.join(directory, "snapshot")
@@ -228,10 +232,13 @@ class Instance:
         if os.path.exists(self.sock):
             os.unlink(self.sock)
         log = open(os.path.join(self.dir, "stdout.log"), "ab")
+        env = self.flavor.env()
+        if self.preload:
+            env["LD_PRELOAD"] = self.preload
         self.proc = subprocess.Popen(
             [self.flavor.mysqld, "--defaults-file=" + self.cnf],
             stdout=log, stderr=log, stdin=subprocess.DEVNULL,
-            preexec_fn=self.cgroup.enter, env=self.flavor.env())
+            preexec_fn=self.cgroup.enter, env=env)
         log.close()
         deadline = time.monotonic() + 600
         while time.monotonic() < deadline:
@@ -265,6 +272,15 @@ class Instance:
     @property
     def pid(self):
         return self.proc.pid
+
+    def preloaded(self):
+        """Whether the running server has its preload mapped. The dynamic
+        loader only warns when it cannot find one."""
+        if not self.preload:
+            return True
+        with open(f"/proc/{self.pid}/maps") as f:
+            return any(os.path.basename(line.split()[-1]).startswith(
+                self.preload) for line in f if "/" in line)
 
     def stop(self, slow=False):
         """Shut down. `slow` asks InnoDB for a full purge and merge first,

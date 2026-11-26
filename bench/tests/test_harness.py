@@ -133,6 +133,12 @@ class Plan(unittest.TestCase):
         self.assertEqual(s["rocksdb_block_cache_size"], 123)
         self.assertEqual(s["innodb_buffer_pool_size"], 32 * plan.MIB)
 
+    def test_an_allocator_is_named_only_for_an_arm(self):
+        for cond in plan.CONDITIONS.values():
+            for arm, lib in cond["malloc"].items():
+                self.assertIn(arm, plan.ARMS)
+                self.assertTrue(lib.startswith("lib"))
+
     def test_baselines_are_arms(self):
         for arm in plan.BASELINE_ARMS:
             self.assertIn(arm, plan.ARMS)

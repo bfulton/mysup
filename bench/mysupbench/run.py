@@ -133,7 +133,8 @@ class Run:
     def instance(self, arm):
         d = os.path.join(self.workdir, self.tag, f"{self.condition}-{arm}")
         os.makedirs(d, exist_ok=True)
-        inst = Instance(self.flavor, d, f"{self.condition}-{arm}")
+        inst = Instance(self.flavor, d, f"{self.condition}-{arm}",
+                        preload=self.cond["malloc"].get(arm))
         inst.write_cnf(plan.arm_settings(arm, self.cond["cache"],
                                          self.flavor.kind))
         return inst
@@ -210,6 +211,10 @@ class Run:
             inst.restore()
         drop_page_cache()
         inst.start(limit=self.cond["limit"])
+        if not inst.preloaded():
+            inst.kill()
+            sys.exit(f"{arm}: the server started without {inst.preload}; "
+                     "bench/setup.sh installs it")
         if self.cond["preload"] and plan.ARMS[arm]["engine"] != "blackhole":
             inst.sql("SELECT SUM(LENGTH(c)) FROM sbtest1 "
                      "FORCE INDEX (PRIMARY)", db="sbtest")
@@ -232,7 +237,8 @@ class Run:
             cells = [c for c in cells if c[0] in plan.BLACKHOLE_WORKLOADS]
             profile_cells = [c for c in profile_cells
                              if c in plan.BLACKHOLE_WORKLOADS]
-        info = {"load": load, "cnf": inst.cnf_text()}
+        info = {"load": load, "cnf": inst.cnf_text(),
+                "malloc": inst.preload or "the C library's"}
         self.doc["arms"][arm] = info
         self.floors(f"pass {pass_no} before {arm}")
         self._start(inst, arm, restore=True)

@@ -17,15 +17,30 @@ GIB = 1 << 30
 # cache:  the engine's own cache (InnoDB buffer pool, RocksDB block cache).
 # limit:  the cgroup memory limit on the server process, or None.
 # warmup: seconds of the workload itself before the first measured run.
+# malloc: arms that run under an allocator other than the C library's,
+#         as the shared library the server is started with.
+#
+# MyRocks runs with jemalloc under the limit because with glibc's
+# allocator it is killed there. Its block cache holds 639 MiB by its own
+# count either way; the process around it holds 730 MiB after one client
+# thread has filled the cache, and 1,016 MiB five seconds after four
+# threads start, in glibc's per-thread arenas. Held to one arena it stays
+# under 830 MiB, and with jemalloc at 890 MiB at any thread count. A smaller
+# cache does not save it: at 448 MiB glibc reaches the limit all the same.
+# docs/baselines.md has the trials.
+
+JEMALLOC = "libjemalloc.so.2"
 
 CONDITIONS = {
     "mem": {"rows": 1_000_000, "cache": 2 * GIB, "limit": None,
-            "warmup": 10, "preload": True},
+            "warmup": 10, "preload": True, "malloc": {}},
     "limit": {"rows": 16_000_000, "cache": 640 * MIB, "limit": 1 * GIB,
-              "warmup": 60, "preload": False},
+              "warmup": 60, "preload": False,
+              "malloc": {"myrocks": JEMALLOC}},
     # The harness's own check: seconds to run, proves nothing about engines.
     "smoke": {"rows": 50_000, "cache": 256 * MIB, "limit": 1 * GIB,
-              "warmup": 2, "preload": True},
+              "warmup": 2, "preload": True,
+              "malloc": {"myrocks": JEMALLOC}},
 }
 
 # A sysbench row as the table declares it: id INT, k INT, c CHAR(120),
