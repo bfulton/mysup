@@ -221,12 +221,15 @@ def cpu_table(cells, cond):
     return table(head, rows)
 
 
-def split_table(cells, cond):
-    """Where a query's wall time goes at one client thread."""
+def split_table(cells, cond, threads=1, workloads=None):
+    """Where a query's time goes. The time is the client threads' seconds
+    over the queries they finished: at one thread, the wall time from one
+    query to the next."""
+    workloads = workloads or MICRO
     rows = []
-    for w, title in MICRO:
+    for w, title in workloads:
         for a in ("blackhole", "innodb", "myrocks", "myrocks-default"):
-            c = cells.get((cond, a, w, 1))
+            c = cells.get((cond, a, w, threads))
             if not c or not c.n:
                 continue
             srv = c.cpu_us_total
@@ -236,9 +239,38 @@ def split_table(cells, cond):
                 us(c.client_us), us(c.read_wait_us),
                 f"{c.reads:.2f}", f"{c.read_kb:.1f}",
                 f"{c.peak / 2**20:.0f}"])
-    return table(["Query", "Arm", "Wall", "Server user", "Server kernel",
+    if not rows:
+        return None
+    return table(["Query", "Arm", "Wall" if threads == 1 else "Thread time",
+                  "Server user", "Server kernel",
                   "Client CPU", "Waiting on disk", "Disk reads",
                   "KiB read", "Peak MiB"], rows)
+
+
+def write_table(cells, cond):
+    """A write test's event: its time, the CPU in it, and the rest, which
+    is the wait for the log to reach the device."""
+    rows = []
+    for (c, a, w, t), cell in sorted(
+            cells.items(), key=lambda kv: (
+                list(plan.WORKLOADS).index(kv[0][2]), kv[0][3],
+                list(plan.ARMS).index(kv[0][1]))):
+        if c != cond or not cell.n or not cell.writes:
+            continue
+        k = cell.q_per_tx
+        cpu = (cell.cpu_us_total + cell.client_us) * k
+        wall = cell.wall_us * k
+        rows.append([
+            w, t, plan.ARMS[a]["title"], f"{cell.tps_total:.0f}", us(wall),
+            us(cell.cpu_us_total * k), us(cell.client_us * k),
+            us(wall - cpu), f"{cell.flushes:.2f}",
+            f"{cell.write_kb * k:.1f}", cell.errors])
+    if not rows:
+        return None
+    return table(["Test", "Threads", "Arm", "tps", "Thread time per event",
+                  "Server CPU", "Client CPU", "Neither (waiting)",
+                  "Device flushes per event", "KiB written per event",
+                  "Errors sysbench retried"], rows)
 
 
 OWNERS = [("rocksdb_core", "RocksDB core"),
@@ -490,10 +522,12 @@ def main_report(args):
         out.append("Microseconds: the best tenth of measured seconds, "
                    "with the median in brackets.\n")
         out.append(cpu_table(cells, cond) + "\n")
-        out.append("### Where a query's time goes, one client thread\n")
-        out.append("Whole-run means, so the columns add up to the wall "
-                   "time less what the client waited.\n")
-        out.append(split_table(cells, cond) + "\n")
+        t = split_table(cells, cond)
+        if t:
+            out.append("### Where a query's time goes, one client thread\n")
+            out.append("Whole-run means, so the columns add up to the wall "
+                       "time less what the client waited.\n")
+            out.append(t + "\n")
         for arm in ("innodb", "myrocks", "myrocks-default"):
             t = profile_table(profiles, cond, arm)
             if t:
@@ -514,24 +548,39 @@ def main_report(args):
             out.append("InnoDB's share is from the profile; the times are "
                        "whole-run means.\n")
             out.append(t + "\n")
+        reads = [(w, w) for w, d in plan.WORKLOADS.items()
+                 if not d["writes"]]
         for n in (4,):
+            t = split_table(cells, cond, n, reads)
+            if t:
+                out.append(f"### Where a query's time goes, {n} client "
+                           "threads\n")
+                out.append("Per query, not per event. Thread time is the "
+                           "client threads' seconds over the queries they "
+                           "finished.\n")
+                out.append(t + "\n")
             pn = profiles_of(docs, n)
+            for arm in ("innodb", "myrocks"):
+                pt = profile_table_any(pn, cond, arm)
+                if pt:
+                    out.append(f"### Share of server CPU by owner, "
+                               f"{plan.ARMS[arm]['title']}, {n} client "
+                               "threads\n")
+                    out.append(pt + "\n")
             t = room_table(cells, pn, cond, n)
             if t:
                 out.append(f"### Room against InnoDB, {n} client threads\n")
                 out.append(t + "\n")
-                for arm in ("innodb", "myrocks"):
-                    pt = profile_table_any(pn, cond, arm)
-                    if pt:
-                        out.append(f"### Share of server CPU by owner, "
-                                   f"{plan.ARMS[arm]['title']}, {n} client "
-                                   "threads\n")
-                        out.append(pt + "\n")
         out.append("### sysbench throughput\n")
         out.append("Transactions per second. Reads: the best tenth of "
                    "measured seconds, median in brackets. Writes: the "
                    "whole run's mean, median second in brackets.\n")
         out.append(throughput_table(cells, cond) + "\n")
+        t = write_table(cells, cond)
+        if t:
+            out.append("### Where a write's time goes\n")
+            out.append("Whole-run means per event.\n")
+            out.append(t + "\n")
         out.append("### Every cell\n")
         out.append(detail_table(cells, cond) + "\n")
         out.append("### Bytes on disk after the load\n")

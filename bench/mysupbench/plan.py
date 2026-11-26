@@ -202,7 +202,10 @@ SUITES = {
     "none": [],
     # The brief's per-query tables: one statement, one client thread.
     "micro": [("oltp_point_select", 1), ("sum100", 1), ("range100", 1)],
-    "read": [(w, t) for w in ("oltp_point_select", "oltp_read_only",
+    # The two range statements with every vCPU busy. The point select at
+    # four threads is already in "read".
+    "micro4": [("sum100", 4), ("range100", 4)],
+    "read":[(w, t) for w in ("oltp_point_select", "oltp_read_only",
                               "select_random_points", "select_random_ranges")
              for t in (1, 4)],
     "write": [(w, t) for w in ("oltp_write_only", "oltp_read_write",
