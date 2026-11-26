@@ -6,14 +6,21 @@ are never pooled, because they were not taken under the same hour's host.
 
 How a cell's samples become one number:
 
-    throughput and CPU per query are the median over every second of every
-    measured run in the cell, with the quartiles beside it. The host's
-    speed moves from second to second, mostly downward from its best, and
-    the median of two hundred seconds does not follow a bad ten.
+    Reads. Throughput and CPU per query are taken over every measured
+    second of the cell, all runs and passes together, and the number is
+    the edge of the best tenth: the 90th percentile of throughput, the
+    10th of CPU per query. The median stands beside it. A read-only
+    workload on a warm cache does the same work every second, so what
+    varies is the host, and the host only ever takes time away. Measured
+    on the first rows: between passes ten minutes apart the median moved
+    by up to 12% and the best tenth by half that or less.
 
-    counts (disk reads, their duration, queries) are totals over the cell
-    divided by its total queries: they are sums, and a sum has no outliers
-    to resist.
+    Writes. Throughput is the cell's transactions over its seconds, the
+    plain mean. An engine that stalls to flush or compact has spent that
+    time, and trimming its slow seconds would hide it.
+
+    Counts (disk reads, their duration) are totals over the cell divided
+    by its queries: they are sums, and a sum has no outliers to resist.
 """
 
 import collections
@@ -45,6 +52,14 @@ def quartiles(xs):
     return (xs[n // 4], statistics.median(xs), xs[(3 * n) // 4])
 
 
+def percentile(xs, p):
+    """Nearest-rank percentile: the smallest value with at least p percent
+    of the samples at or below it."""
+    xs = sorted(xs)
+    k = max(0, -(-len(xs) * p // 100) - 1)
+    return xs[int(k)]
+
+
 class Cell:
     def __init__(self, doc, rows):
         self.doc = doc
@@ -71,6 +86,12 @@ class Cell:
         self.cpu_us = quartiles(cpu)
         self.tps_total = tx / secs
         self.cpu_us_total = sum(r["server"]["cpu_s"] for r in rs) / q * 1e6
+        self.writes = plan.WORKLOADS[rs[0]["workload"]]["writes"]
+        if self.writes or not cpu:
+            self.rate, self.cpu = self.tps_total, self.cpu_us_total
+        else:
+            self.rate, self.cpu = percentile(tps, 90), percentile(cpu, 10)
+        self.rate_by_pass = {}
         ut = sum(r["server"]["utime_s"] for r in rs)
         stt = sum(r["server"]["stime_s"] for r in rs)
         self.sys_share = stt / (ut + stt) if ut + stt else 0.0
@@ -88,9 +109,13 @@ class Cell:
         self.passes = sorted({r.get("pass", 0) for r in rs})
         self.by_pass = {}
         for p in self.passes:
-            xs = [x for r in rs if r.get("pass", 0) == p
-                  for x in r["tps_by_second"]]
+            mine = [r for r in rs if r.get("pass", 0) == p]
+            xs = [x for r in mine for x in r["tps_by_second"]]
             self.by_pass[p] = statistics.median(xs)
+            self.rate_by_pass[p] = (
+                sum(r["transactions"] for r in mine)
+                / sum(r["seconds"] for r in mine)
+                if self.writes else percentile(xs, 90))
 
 
 def cells_of(docs):
@@ -158,11 +183,12 @@ def cpu_table(cells, cond):
         cs = {a: cells.get((cond, a, w, 1)) for a in arms}
         if not all(c and c.n for c in cs.values()):
             continue
-        row = [title] + [med_iqr(cs[a].cpu_us) for a in arms]
+        row = [title] + [f"{cs[a].cpu:.1f} ({cs[a].cpu_us[1]:.1f})"
+                         for a in arms]
         if extra:
-            b, i = cs["blackhole"].cpu_us[1], cs["innodb"].cpu_us[1]
+            b, i = cs["blackhole"].cpu, cs["innodb"].cpu
             row.append(f"{(i - b) / i:.0%}")
-            row.append(f"{cs['myrocks'].cpu_us[1] / i:.2f}×"
+            row.append(f"{cs['myrocks'].cpu / i:.2f}×"
                        if "myrocks" in cs else "")
         rows.append(row)
     return table(head, rows)
@@ -190,24 +216,31 @@ def split_table(cells, cond):
 
 OWNERS = [("rocksdb_core", "RocksDB core"),
           ("rocksdb_txn", "RocksDB transaction utilities"),
-          ("myrocks", "MyRocks")]
+          ("myrocks", "MyRocks"),
+          ("innodb", "InnoDB")]
 
 
 def profile_table(profiles, cond, arm):
     ws = [(w, t) for w, t in MICRO if (cond, arm, w) in profiles]
     if not ws:
         return None
+    ps = [profiles[(cond, arm, w)] for w, _ in ws]
     head = [""] + [t for _, t in ws]
     rows = []
-    for key, title in OWNERS:
+    shown = [(k, t) for k, t in OWNERS
+             if any(p["owners"].get(k) for p in ps)]
+    for key, title in shown:
         rows.append([title] + [
-            f"{profiles[(cond, arm, w)]['owners'].get(key, 0) / profiles[(cond, arm, w)]['samples']:.1%}"
-            for w, _ in ws])
-    rows.append(["All three"] + [
-        f"{1 - profiles[(cond, arm, w)]['owners'].get('server', 0) / profiles[(cond, arm, w)]['samples']:.1%}"
-        for w, _ in ws])
-    rows.append(["Samples"] + [str(profiles[(cond, arm, w)]["samples"])
-                               for w, _ in ws])
+            f"{p['owners'].get(key, 0) / p['samples']:.1%}" for p in ps])
+    if len(shown) > 1:
+        rows.append(["Engine, all of it"] + [
+            f"{1 - p['owners'].get('server', 0) / p['samples']:.1%}"
+            for p in ps])
+    rows.append(["Server outside the engine"] + [
+        f"{p['owners'].get('server', 0) / p['samples']:.1%}" for p in ps])
+    rows.append(["of which in the kernel"] + [
+        f"{p['kernel'].get('server', 0) / p['samples']:.1%}" for p in ps])
+    rows.append(["Samples"] + [str(p["samples"]) for p in ps])
     return table(head, rows)
 
 
@@ -223,8 +256,8 @@ def throughput_table(cells, cond):
         for a in plan.BASELINE_ARMS:
             c = cs[a]
             if c and c.n:
-                row.append(med_iqr(c.tps, "{:.0f}"))
-                best = max(best, c.tps[1])
+                row.append(f"{c.rate:.0f} ({c.tps[1]:.0f})")
+                best = max(best, c.rate)
             elif c and c.failed:
                 row.append("server died")
             else:
@@ -252,12 +285,12 @@ def detail_table(cells, cond):
             continue
         drift = ""
         if len(cell.by_pass) > 1:
-            v = list(cell.by_pass.values())
+            v = list(cell.rate_by_pass.values())
             drift = f"{(max(v) - min(v)) / statistics.median(v):.1%}"
         rows.append([
             w, t, plan.ARMS[a]["title"],
-            f"{cell.tps[1]:.0f}", f"{cell.q_per_tx:.0f}",
-            us(cell.cpu_us[1] * cell.q_per_tx),
+            f"{cell.rate:.0f}", f"{cell.q_per_tx:.0f}",
+            us(cell.cpu * cell.q_per_tx),
             f"{cell.reads * cell.q_per_tx:.2f}",
             f"{cell.write_kb * cell.q_per_tx:.1f}",
             f"{cell.p99_ms:.2f}", drift, f"{cell.peak / 2**20:.0f}"])
@@ -324,20 +357,23 @@ def main_report(args):
         out.append(f"{cd['rows']:,} rows, engine cache "
                    f"{cd['cache'] / 2**20:.0f} MiB, memory limit {lim}.\n")
         out.append("### Server CPU per query, one client thread\n")
-        out.append("Median over every measured second, quartiles in "
-                   "brackets.\n")
+        out.append("Microseconds: the best tenth of measured seconds, "
+                   "with the median in brackets.\n")
         out.append(cpu_table(cells, cond) + "\n")
         out.append("### Where a query's time goes, one client thread\n")
+        out.append("Whole-run means, so the columns add up to the wall "
+                   "time less what the client waited.\n")
         out.append(split_table(cells, cond) + "\n")
-        for arm in ("myrocks", "myrocks-default"):
+        for arm in ("innodb", "myrocks", "myrocks-default"):
             t = profile_table(profiles, cond, arm)
             if t:
                 out.append(f"### Share of server CPU by owner, "
                            f"{plan.ARMS[arm]['title']}\n")
                 out.append(t + "\n")
         out.append("### sysbench throughput\n")
-        out.append("Transactions per second: median over every measured "
-                   "second, quartiles in brackets.\n")
+        out.append("Transactions per second. Reads: the best tenth of "
+                   "measured seconds, median in brackets. Writes: the "
+                   "whole run's mean, median second in brackets.\n")
         out.append(throughput_table(cells, cond) + "\n")
         out.append("### Every cell\n")
         out.append(detail_table(cells, cond) + "\n")

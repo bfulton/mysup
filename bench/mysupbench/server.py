@@ -3,13 +3,10 @@
 The harness never touches a system service. Each arm gets a directory of
 its own with a data directory, a config file naming every setting that is
 not the server's default, and a socket.
-
-Only MariaDB is implemented, because only MariaDB has been run. The seam
-for a second server is the four executables named in `MariaDB` and the
-`[mariadbd]` group in `Instance.write_cnf`.
 """
 
 import os
+import re
 import shutil
 import subprocess
 import time
@@ -83,26 +80,76 @@ class MemCgroup:
         }
 
 
-class MariaDB:
-    name = "mariadb"
+class Flavor:
+    """A server installation: where its executables are and which family
+    it belongs to.
 
-    def __init__(self):
-        self.mysqld = self._need("mariadbd")
-        self.install_db = self._need("mariadb-install-db")
-        self.client = self._need("mariadb")
-        self.admin = self._need("mariadb-admin")
+    `root` None is the distribution's MariaDB on PATH. Otherwise it is a
+    directory holding a server's packages unpacked (`dpkg-deb -x`), which
+    is how a second server lives beside the first: MariaDB's and MySQL's
+    packages cannot both be installed.
+    """
 
-    @staticmethod
-    def _need(exe):
-        path = shutil.which(exe)
-        if not path:
-            raise RuntimeError(f"{exe} is not installed; see bench/README.md")
-        return path
+    def __init__(self, root=None):
+        self.root = os.path.abspath(root) if root else None
+        self.mysqld = self._find("mariadbd", "mysqld")
+        self.kind = ("mariadb" if os.path.basename(self.mysqld) == "mariadbd"
+                     else "mysql")
+        self.client = self._find("mariadb", "mysql")
+        self.admin = self._find("mariadb-admin", "mysqladmin")
+        self.install_db = (self._find("mariadb-install-db")
+                           if self.kind == "mariadb" else None)
+        self.group = "mariadbd" if self.kind == "mariadb" else "mysqld"
+
+    def _find(self, *names):
+        for name in names:
+            if self.root is None:
+                path = shutil.which(name)
+                if path:
+                    return path
+                continue
+            for d in ("usr/sbin", "usr/bin", "sbin", "bin", "scripts"):
+                path = os.path.join(self.root, d, name)
+                if os.path.exists(path):
+                    return path
+        raise RuntimeError(
+            f"none of {names} found "
+            f"{'under ' + self.root if self.root else 'on PATH'}; "
+            "see bench/README.md")
+
+    def env(self):
+        """The environment for its executables: an unpacked server finds
+        its own shared libraries first."""
+        env = dict(os.environ)
+        if self.root:
+            libs = [os.path.join(self.root, d) for d in (
+                "usr/lib/x86_64-linux-gnu", "usr/lib/mysql/private",
+                "usr/lib/private", "usr/lib")]
+            env["LD_LIBRARY_PATH"] = ":".join(
+                [d for d in libs if os.path.isdir(d)]
+                + [env.get("LD_LIBRARY_PATH", "")]).strip(":")
+        return env
+
+    def settings(self):
+        """What an unpacked server must be told about where it lives."""
+        if not self.root:
+            return []
+        usr = os.path.join(self.root, "usr")
+        return [("basedir", usr),
+                ("plugin_dir", os.path.join(usr, "lib/mysql/plugin"))]
 
     def version(self):
-        out = subprocess.run([self.mysqld, "--version"], capture_output=True,
-                             text=True, check=True).stdout
+        out = subprocess.run([self.mysqld, "--no-defaults", "--version"],
+                             capture_output=True, text=True, check=True,
+                             env=self.env()).stdout
         return out.strip()
+
+    def tag(self):
+        """A short name for directories and tables: family and version."""
+        text = self.version()
+        m = re.search(r"Ver (\d+\.\d+\.\d+)", text)
+        family = ("percona" if "Percona" in text else self.kind)
+        return f"{family}-{m.group(1)}" if m else family
 
 
 class ServerDied(RuntimeError):
@@ -136,10 +183,14 @@ class Instance:
         ]
         if os.geteuid() == 0:
             fixed.append(("user", "root"))
+        if self.flavor.kind == "mysql":
+            # Its compiled-in default is a directory under /var/lib that
+            # only its package creates, and it will not start without one.
+            fixed.append(("secure-file-priv", self.tmpdir))
         os.makedirs(self.tmpdir, exist_ok=True)
         with open(self.cnf, "w") as f:
-            f.write("[mariadbd]\n")
-            for k, v in fixed + list(settings):
+            f.write(f"[{self.flavor.group}]\n")
+            for k, v in fixed + self.flavor.settings() + list(settings):
                 f.write(k + "\n" if v is None else f"{k}={v}\n")
 
     def cnf_text(self):
@@ -151,14 +202,25 @@ class Instance:
     def init(self):
         if os.path.exists(self.datadir):
             shutil.rmtree(self.datadir)
-        cmd = [self.flavor.install_db, "--no-defaults",
-               "--datadir=" + self.datadir,
-               "--auth-root-authentication-method=normal"]
+        fl = self.flavor
+        if fl.kind == "mariadb":
+            cmd = [fl.install_db, "--no-defaults",
+                   "--datadir=" + self.datadir,
+                   "--auth-root-authentication-method=normal"]
+            if fl.root:
+                cmd.append("--basedir=" + os.path.join(fl.root, "usr"))
+        else:
+            # root@localhost with an empty password, as MariaDB's
+            # `normal` method leaves it.
+            cmd = [fl.mysqld, "--no-defaults", "--initialize-insecure",
+                   "--datadir=" + self.datadir] + [
+                       f"--{k}={v}" for k, v in fl.settings()]
         if os.geteuid() == 0:
             cmd.append("--user=root")
-        r = subprocess.run(cmd, capture_output=True, text=True)
+        r = subprocess.run(cmd, capture_output=True, text=True, env=fl.env())
         if r.returncode != 0:
-            raise RuntimeError("install-db failed:\n" + r.stdout + r.stderr)
+            raise RuntimeError("initialising the data directory failed:\n"
+                               + r.stdout + r.stderr)
 
     def start(self, limit=None):
         assert self.proc is None
@@ -169,7 +231,7 @@ class Instance:
         self.proc = subprocess.Popen(
             [self.flavor.mysqld, "--defaults-file=" + self.cnf],
             stdout=log, stderr=log, stdin=subprocess.DEVNULL,
-            preexec_fn=self.cgroup.enter)
+            preexec_fn=self.cgroup.enter, env=self.flavor.env())
         log.close()
         deadline = time.monotonic() + 600
         while time.monotonic() < deadline:
@@ -177,7 +239,8 @@ class Instance:
                 self._died("exited during startup")
             if os.path.exists(self.sock):
                 r = subprocess.run(self._client() + ["-e", "select 1"],
-                                   capture_output=True, text=True)
+                                   capture_output=True, text=True,
+                                   env=self.flavor.env())
                 if r.returncode == 0:
                     return
             time.sleep(0.2)
@@ -213,7 +276,8 @@ class Instance:
                 self.sql("SET GLOBAL innodb_fast_shutdown=0")
             subprocess.run(
                 [self.flavor.admin, "--no-defaults", "-S", self.sock,
-                 "-uroot", "shutdown"], capture_output=True, text=True)
+                 "-uroot", "shutdown"], capture_output=True, text=True,
+                env=self.flavor.env())
             self.proc.wait(timeout=1800)
         self.proc = None
 
@@ -234,7 +298,8 @@ class Instance:
 
     def sql(self, query, db=None):
         r = subprocess.run(self._client(db) + ["-e", query],
-                           capture_output=True, text=True)
+                           capture_output=True, text=True,
+                           env=self.flavor.env())
         if r.returncode != 0:
             self.check()
             raise RuntimeError(f"{self.name}: {query!r} failed: {r.stderr}")
@@ -243,7 +308,8 @@ class Instance:
     def sql_text(self, query, db=None):
         cmd = self._client(db)
         cmd.remove("-N")
-        r = subprocess.run(cmd + ["-e", query], capture_output=True, text=True)
+        r = subprocess.run(cmd + ["-e", query], capture_output=True,
+                           text=True, env=self.flavor.env())
         if r.returncode != 0:
             self.check()
             raise RuntimeError(f"{self.name}: {query!r} failed: {r.stderr}")

@@ -24,7 +24,7 @@ import sys
 import time
 
 from . import plan, probes, profile, sysbench
-from .server import (Instance, MariaDB, ServerDied, drop_page_cache,
+from .server import (Flavor, Instance, ServerDied, drop_page_cache,
                      tree_bytes)
 
 LOAD_SEED = 20261126
@@ -74,7 +74,7 @@ class Run:
     """One invocation: one condition, some arms, one file of rows."""
 
     def __init__(self, condition, workdir, outdir, reps, seconds,
-                 warmup=None):
+                 warmup=None, server_root=None):
         self.condition = condition
         self.cond = dict(plan.CONDITIONS[condition])
         if warmup is not None:
@@ -83,7 +83,8 @@ class Run:
         os.makedirs(workdir, exist_ok=True)
         self.reps = reps
         self.seconds = seconds
-        self.flavor = MariaDB()
+        self.flavor = Flavor(server_root)
+        self.tag = self.flavor.tag()
         self.dev = probes.block_device_of(workdir)
         stamp = datetime.datetime.now(datetime.timezone.utc).strftime(
             "%Y%m%dT%H%M%SZ")
@@ -99,6 +100,7 @@ class Run:
             "seconds": seconds,
             "host": host_meta(workdir),
             "server": self.flavor.version(),
+            "server_tag": self.tag,
             "sysbench": sysbench.version(),
             "floors": {},
             "arms": {},
@@ -128,10 +130,11 @@ class Run:
         self.save()
 
     def instance(self, arm):
-        d = os.path.join(self.workdir, f"{self.condition}-{arm}")
+        d = os.path.join(self.workdir, self.tag, f"{self.condition}-{arm}")
         os.makedirs(d, exist_ok=True)
         inst = Instance(self.flavor, d, f"{self.condition}-{arm}")
-        inst.write_cnf(plan.arm_settings(arm, self.cond["cache"]))
+        inst.write_cnf(plan.arm_settings(arm, self.cond["cache"],
+                                         self.flavor.kind))
         return inst
 
     # -- load -----------------------------------------------------------
@@ -342,7 +345,8 @@ def _variables(inst):
     names = {"version", "version_comment", "character_set_server",
              "collation_server", "query_cache_type", "query_cache_size",
              "performance_schema", "thread_handling", "log_bin",
-             "sync_binlog", "tx_isolation", "max_connections",
+             "sync_binlog", "tx_isolation", "transaction_isolation",
+             "max_connections",
              "table_open_cache", "optimizer_switch", "join_cache_level"}
     return {r[0]: (r[1] if len(r) > 1 else "")
             for r in inst.sql("SHOW GLOBAL VARIABLES")
@@ -374,7 +378,8 @@ def _rocksdb_levels(inst):
 
 def _sizes(datadir, engine):
     if engine == "rocksdb":
-        table = tree_bytes(datadir, lambda p: p.startswith("#rocksdb")
+        # MariaDB keeps them in #rocksdb/, Percona in .rocksdb/.
+        table = tree_bytes(datadir, lambda p: "rocksdb" in p.split("/")[0]
                            and p.endswith(".sst"))
     elif engine == "innodb":
         table = tree_bytes(datadir, lambda p: p.startswith("sbtest")
@@ -401,7 +406,7 @@ def main_run(args):
         if w not in plan.WORKLOADS:
             sys.exit(f"unknown workload {w}")
     run = Run(args.condition, args.workdir, args.out, args.reps, args.time,
-              args.warmup)
+              args.warmup, args.server)
     log(f"writing {run.path}")
     for arm in args.arms.split(","):
         if arm not in plan.ARMS:

@@ -116,9 +116,24 @@ ARMS = {
 BASELINE_ARMS = ("innodb", "myrocks")
 
 
-def arm_settings(arm, cache):
+# Where MySQL names a thing differently, or ships it differently. MariaDB
+# has no binary log unless asked; MySQL has one unless told not to, and
+# every arm here runs without. MySQL builds BLACKHOLE in. Percona's MyRocks
+# registers its plugins under names, MariaDB's by library.
+MYSQL_COMMON = [("skip-log-bin", None), ("loose-mysqlx", "OFF")]
+MYSQL_RENAMES = {"innodb_log_file_size": "innodb_redo_log_capacity"}
+MYSQL_DROPS = {("plugin-load-add", "ha_blackhole.so")}
+
+
+def arm_settings(arm, cache, kind="mariadb"):
     out = list(COMMON)
+    if kind == "mysql":
+        out += MYSQL_COMMON
     for k, v in ARMS[arm]["settings"]:
+        if kind == "mysql":
+            if (k, v) in MYSQL_DROPS:
+                continue
+            k = MYSQL_RENAMES.get(k, k)
         out.append((k, cache if v == "{cache}" else v))
     return out
 

@@ -144,5 +144,19 @@ class Quartiles(unittest.TestCase):
         self.assertEqual((lo, mid, hi), (100.0, 100.0, 100.0))
 
 
+    def test_nearest_rank_percentile(self):
+        xs = list(range(1, 101))
+        self.assertEqual(report.percentile(xs, 10), 10)
+        self.assertEqual(report.percentile(xs, 90), 90)
+        self.assertEqual(report.percentile([5.0], 10), 5.0)
+        self.assertEqual(report.percentile([1, 2, 3], 90), 3)
+
+    def test_best_tenth_ignores_a_slow_pass(self):
+        quiet = [100.0 + i * 0.01 for i in range(120)]
+        slow = [112.0 + i * 0.01 for i in range(60)]
+        self.assertLess(report.percentile(quiet + slow, 10), 100.2)
+        self.assertGreater(report.quartiles(quiet + slow)[1], 100.8)
+
+
 if __name__ == "__main__":
     unittest.main()

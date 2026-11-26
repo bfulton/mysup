@@ -31,6 +31,9 @@ def main():
     r.add_argument("--warmup", type=int,
                    help="seconds of warm-up per workload "
                         "(default: the condition's)")
+    r.add_argument("--server",
+                   help="a directory holding another server's packages "
+                        "unpacked; default is the MariaDB on PATH")
     r.add_argument("--workdir", default="/var/tmp/mysup-bench",
                    help="where data directories live; its block device is "
                         "the one whose reads are counted")
