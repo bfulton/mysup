@@ -42,6 +42,8 @@ def main():
     t = sub.add_parser("report", help="tables from the committed rows")
     t.add_argument("--runs", default=os.path.join(here, "runs"))
     t.add_argument("--conditions", default="mem,limit")
+    t.add_argument("--server", default="mariadb-10.11.14",
+                   help="the server whose tables to draw, as rows name it")
 
     args = p.parse_args()
     if args.cmd == "run":

@@ -27,6 +27,7 @@ import collections
 import glob
 import json
 import os
+import re
 import statistics
 
 from . import plan
@@ -39,9 +40,18 @@ def load(runs, conditions):
             with open(path) as f:
                 doc = json.load(f)
             doc["_file"] = os.path.relpath(path, runs)
+            doc["_tag"] = doc.get("server_tag") or _tag(doc["server"])
             docs.append(doc)
     docs.sort(key=lambda d: d["started"])
     return docs
+
+
+def _tag(version_text):
+    """The server tag of a row file written before rows carried one."""
+    m = re.search(r"Ver (\d+\.\d+\.\d+)", version_text)
+    family = ("percona" if "Percona" in version_text
+              else "mariadb" if "MariaDB" in version_text else "mysql")
+    return f"{family}-{m.group(1)}"
 
 
 def quartiles(xs):
@@ -338,16 +348,66 @@ def floors_table(docs, cond):
                   "16 KiB direct read, µs"], rows)
 
 
+def servers_table(docs, cond):
+    """The one-statement workloads on every server measured, side by side.
+    Each server's rows come from its own run, so two servers were not
+    measured in the same hour; read differences of a few percent as
+    nothing."""
+    tags = []
+    for d in docs:
+        if d["condition"] == cond and d["_tag"] not in tags:
+            tags.append(d["_tag"])
+    if len(tags) < 2:
+        return None
+    rows = []
+    for w, title in MICRO:
+        for tag in tags:
+            mine = [d for d in docs if d["_tag"] == tag]
+            cells, profs = cells_of(mine), profiles_of(mine)
+            cs = {a: cells.get((cond, a, w, 1))
+                  for a in ("blackhole", "innodb", "myrocks")}
+            if not all(c and c.n for c in cs.values()):
+                continue
+
+            def share(arm):
+                p = profs.get((cond, arm, w))
+                if not p or len(p["owners"]) < 2:
+                    return ""
+                return f"{1 - p['owners'].get('server', 0) / p['samples']:.1%}"
+            rows.append([
+                title, tag,
+                f"{cs['blackhole'].cpu:.1f}", f"{cs['innodb'].cpu:.1f}",
+                f"{cs['myrocks'].cpu:.1f}",
+                f"{cs['myrocks'].cpu / cs['innodb'].cpu:.2f}×",
+                f"{cs['innodb'].rate:.0f}", f"{cs['myrocks'].rate:.0f}",
+                share("innodb"), share("myrocks")])
+    return table(["Query", "Server", "BLACKHOLE µs", "InnoDB µs",
+                  "MyRocks µs", "MyRocks ÷ InnoDB", "InnoDB qps",
+                  "MyRocks qps", "InnoDB's share of its server's CPU",
+                  "MyRocks' share"], rows)
+
+
 TITLES = {"mem": "In memory", "limit": "Under the memory limit"}
 
 
 def main_report(args):
     conds = args.conditions.split(",")
-    docs = load(args.runs, conds)
+    every = load(args.runs, conds)
+    docs = [d for d in every if d["_tag"] == args.server]
     cells = cells_of(docs)
     profiles = profiles_of(docs)
     arms = arms_of(docs)
-    out = []
+    out = [f"Server: {args.server}.\n"]
+    for cond in conds:
+        t = servers_table(every, cond)
+        if t:
+            out.append(f"## {TITLES.get(cond, cond)}, every server "
+                       "measured\n")
+            out.append("Server CPU per query in microseconds and queries "
+                       "per second at one client thread, the best tenth "
+                       "of seconds. Each server's rows are from its own "
+                       "run.\n")
+            out.append(t + "\n")
     for cond in conds:
         if not any(d["condition"] == cond for d in docs):
             continue
