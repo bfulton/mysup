@@ -1,9 +1,10 @@
 # The baseline harness
 
-Loads sysbench's table into each engine on one MariaDB server, measures the
-engines under the same conditions, and writes one file of raw rows per run
-under `runs/`. `python3 -m mysupbench report` draws every table in
-[`docs/baselines.md`](../docs/baselines.md) from those files.
+Loads sysbench's table into each engine on one server, measures the engines
+under the same conditions, and writes one file of raw rows per run under
+`runs/`. `python3 -m mysupbench report` draws the tables under
+[`docs/tables/`](../docs/tables/) from those files, and
+[`docs/baselines.md`](../docs/baselines.md) says what they show.
 
 The definition of what is measured is [`mysupbench/plan.py`](mysupbench/plan.py):
 the arms and every setting they change from the server's default, the two
@@ -12,16 +13,20 @@ conditions, the workloads. A change there is a change to the benchmark.
 ## Running it
 
 ```sh
-sh bench/setup.sh                      # MariaDB, the MyRocks plugin, sysbench, perf
+sh bench/setup.sh                      # MariaDB, the MyRocks plugin, jemalloc, sysbench, perf
 cd bench
 python3 -m unittest discover tests     # the harness's own arithmetic, no server
 python3 -m mysupbench run --condition mem   --arms blackhole,innodb,myrocks,myrocks-default \
         --suite micro --passes 3 --profile oltp_point_select,sum100,range100
 python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite read --passes 3 --reps 2
-python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite write --passes 1 --reps 4
-python3 -m mysupbench run --condition limit --arms innodb,myrocks --suite micro,read --warmup 30
-python3 -m mysupbench report --server mariadb-10.11.14
+python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite micro4 --reps 2
+python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite write --reps 2
+python3 -m mysupbench run --condition limit --arms innodb,myrocks --suite micro,read --reps 2 --warmup 30
+python3 -m mysupbench report --server mariadb-10.11.14 > ../docs/tables/mariadb-10.11.14.md
 ```
+
+`--suite none --profile <workloads> --profile-threads 4` profiles without
+measuring, at a thread count of its own.
 
 It needs root: it drops the page cache, makes a cgroup, and attaches perf
 to the server. It needs the cgroup v1 memory controller, which is where the
@@ -92,7 +97,14 @@ a time. The host's speed drifts, and a pass apart is how the rows show it.
 
 **Profile.** After the last pass, `perf record -e cpu-clock -g` on the server
 for 20 seconds of the workload, and every sample given to one owner by the
-rule at the top of [`mysupbench/profile.py`](mysupbench/profile.py).
+rule at the top of [`mysupbench/profile.py`](mysupbench/profile.py). The
+rule finds an engine by the calls that enter it from a query's thread, and
+by the names of the threads it runs for itself.
+
+**Allocator.** An arm runs under the C library's allocator unless the
+condition names another for it in `plan.py`. Under the memory limit MyRocks
+runs with jemalloc; `docs/baselines.md` has why. The run checks the library
+is mapped in the server it started and records it with the arm.
 
 ## What a row holds
 
@@ -158,17 +170,37 @@ Beyond those in the brief:
   40% of a point select's samples. They are the socket and the scheduler.
 - Percona Server will not start without a `secure-file-priv` directory; its
   default is one only its package creates.
-- MyRocks at a 640 MiB block cache holds 783 MiB at one client thread and
-  is killed at the 1 GiB limit at four, in every pass. The rows say so.
+- MyRocks under glibc's allocator is killed at the 1 GiB limit when four
+  client threads follow one, whatever its cache size down to 448 MiB. The
+  memory is in glibc's per-thread arenas, not in RocksDB's cache.
+  `tools/rocksmem.py` shows it.
+- A cgroup's peak includes page cache, so a peak at the limit is not a
+  server in trouble. A kill is, and so is throughput falling to tens of
+  transactions a second.
+- The filesystem here is ext4 without a journal. An `fdatasync` after an
+  append that grew the file still costs one more device write than one
+  after an overwrite. `tools/logsync.py` measures it.
+- `strace -p` stops the server at every system call, traced or not. Times
+  it reports are longer than the same calls untraced.
 - A prepared statement is optimized again at each execution, so the
   optimizer's calls into the engine (`records_in_range`) are part of every
   range query, not a one-time cost.
+
+## Tools
+
+Small programs behind single claims in `docs/baselines.md`, kept so the
+claims can be checked:
+
+| | |
+|---|---|
+| `tools/rowcompress.py` | how sysbench's rows compress under LZ4, Snappy and ZSTD |
+| `tools/logsync.py` | what a durable log write costs by how the log file is laid out |
+| `tools/tracesync.py` | each engine's write and sync calls per commit, under `strace` |
+| `tools/rocksmem.py` | MyRocks' memory under the limit, by allocator and cache size |
 
 ## Not done
 
 - cgroup v2.
 - A client on another host. With the client on the server's host, a quarter
   of a point select's wall time is the client's own CPU.
-- MyRocks sized to survive four threads under the limit (a smaller cache,
-  or jemalloc in place of glibc's allocator).
-- Write tests under the limit.
+- A MyRocks configuration that survives the write tests under the limit.
