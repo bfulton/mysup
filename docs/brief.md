@@ -3,7 +3,9 @@
 Date: 2026-11-26. Status: proposal, nothing built.
 
 > **Amended 2026-11-27 (Bright):** the goal is against InnoDB alone. MyRocks
-> is no longer a rival. This supersedes the goal line below, the two
+> is no longer a rival. The target is double-digit gains where an engine
+> can make them, more or less than 10% on any one test, not a threshold
+> every test must pass. This supersedes the goal line below, the two
 > MyRocks bullets under "Decided", the engines in the benchmark plan, and
 > "both rivals" in M1. The rest stands as written. M0's results are in
 > [`baselines.md`](baselines.md).

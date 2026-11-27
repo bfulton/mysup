@@ -416,26 +416,17 @@ def throughput_table(cells, cond):
                   key=lambda k: (list(plan.WORKLOADS).index(k[0]), k[1]))
     rows = []
     for w, t in keys:
-        cs = {a: cells.get((cond, a, w, t)) for a in plan.BASELINE_ARMS}
         row = [w, t]
-        best = 0.0
-        both = True
         for a in plan.BASELINE_ARMS:
-            c = cs[a]
+            c = cells.get((cond, a, w, t))
             if c and c.n:
                 row.append(f"{c.rate:.0f} ({c.tps[1]:.0f})")
-                best = max(best, c.rate)
-                continue
-            both = False
-            row.append("server died" if c and c.failed else "")
-        # A mark needs every rival: it is a tenth over the best of them.
-        row.append(f"{best * 1.10:.0f}" if both else "")
+            else:
+                row.append("server died" if c and c.failed else "")
         rows.append(row)
-    rival = (plan.ARMS[plan.BASELINE_ARMS[0]]["title"]
-             if len(plan.BASELINE_ARMS) == 1 else "the best rival")
     return table(["Test", "Threads"] +
-                 [plan.ARMS[a]["title"] + " tps" for a in plan.BASELINE_ARMS]
-                 + [f"MySup's mark (1.10× {rival})"], rows)
+                 [plan.ARMS[a]["title"] + " tps" for a in plan.BASELINE_ARMS],
+                 rows)
 
 
 def detail_table(cells, cond):

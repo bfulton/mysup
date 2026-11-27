@@ -3,8 +3,8 @@
 A MySQL storage engine built on [supdb](https://github.com/bfulton/supdb), in
 the way MyRocks is built on RocksDB.
 
-**Goal:** a double-digit throughput improvement on sysbench against InnoDB,
-on the same server and host.
+**Goal:** double-digit throughput gains over InnoDB on sysbench, where an
+engine can make them, on the same server and host.
 
 ## Status
 

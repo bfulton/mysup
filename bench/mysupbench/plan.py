@@ -130,9 +130,9 @@ ARMS = {
     },
 }
 
-# The arms the goal is measured against: MySup's throughput is to be at
-# least 1.10 times the best of these in the same run. InnoDB alone since
-# 2026-11-27; MyRocks was a second rival before that.
+# The arms the goal is measured against: MySup's throughput is reported
+# test by test as a ratio to theirs, taken in the same run. InnoDB alone
+# since 2026-11-27; MyRocks was a second rival before that.
 BASELINE_ARMS = ("innodb",)
 
 

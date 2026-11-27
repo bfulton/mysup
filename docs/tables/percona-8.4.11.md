@@ -93,11 +93,11 @@ InnoDB's share is from the profile; the times are whole-run means. Waiting on di
 
 Transactions per second. Reads: the best tenth of measured seconds, median in brackets. Writes: the whole run's mean, median second in brackets.
 
-| Test | Threads | InnoDB tps | MySup's mark (1.10× InnoDB) |
-|---|---|---|---|
-| oltp_point_select | 1 | 16323 (15456) | 17955 |
-| sum100 | 1 | 10938 (10043) | 12032 |
-| range100 | 1 | 9424 (8656) | 10367 |
+| Test | Threads | InnoDB tps |
+|---|---|---|
+| oltp_point_select | 1 | 16323 (15456) |
+| sum100 | 1 | 10938 (10043) |
+| range100 | 1 | 9424 (8656) |
 
 ### Every cell
 

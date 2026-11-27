@@ -221,30 +221,30 @@ Per query, not per event. Thread time is the client threads' seconds over the qu
 
 Transactions per second. Reads: the best tenth of measured seconds, median in brackets. Writes: the whole run's mean, median second in brackets.
 
-| Test | Threads | InnoDB tps | MySup's mark (1.10× InnoDB) |
-|---|---|---|---|
-| oltp_point_select | 1 | 16948 (16056) | 18643 |
-| oltp_point_select | 4 | 202553 (197096) | 222808 |
-| sum100 | 1 | 11018 (10338) | 12120 |
-| sum100 | 4 | 95082 (92581) | 104590 |
-| range100 | 1 | 9713 (8835) | 10684 |
-| range100 | 4 | 79941 (77914) | 87936 |
-| oltp_read_only | 1 | 877 (832) | 965 |
-| oltp_read_only | 4 | 7848 (7585) | 8632 |
-| select_random_points | 1 | 6785 (6443) | 7463 |
-| select_random_points | 4 | 35484 (33868) | 39033 |
-| select_random_ranges | 1 | 7206 (6902) | 7927 |
-| select_random_ranges | 4 | 36917 (35346) | 40609 |
-| oltp_write_only | 1 | 1537 (1518) | 1690 |
-| oltp_write_only | 4 | 4874 (4906) | 5362 |
-| oltp_read_write | 1 | 513 (515) | 565 |
-| oltp_read_write | 4 | 1650 (1615) | 1815 |
-| oltp_update_index | 1 | 4336 (4352) | 4770 |
-| oltp_update_index | 4 | 11258 (11308) | 12384 |
-| oltp_update_non_index | 1 | 5158 (5156) | 5674 |
-| oltp_update_non_index | 4 | 12720 (12741) | 13992 |
-| oltp_insert | 1 | 4956 (4947) | 5451 |
-| oltp_insert | 4 | 12513 (12503) | 13764 |
+| Test | Threads | InnoDB tps |
+|---|---|---|
+| oltp_point_select | 1 | 16948 (16056) |
+| oltp_point_select | 4 | 202553 (197096) |
+| sum100 | 1 | 11018 (10338) |
+| sum100 | 4 | 95082 (92581) |
+| range100 | 1 | 9713 (8835) |
+| range100 | 4 | 79941 (77914) |
+| oltp_read_only | 1 | 877 (832) |
+| oltp_read_only | 4 | 7848 (7585) |
+| select_random_points | 1 | 6785 (6443) |
+| select_random_points | 4 | 35484 (33868) |
+| select_random_ranges | 1 | 7206 (6902) |
+| select_random_ranges | 4 | 36917 (35346) |
+| oltp_write_only | 1 | 1537 (1518) |
+| oltp_write_only | 4 | 4874 (4906) |
+| oltp_read_write | 1 | 513 (515) |
+| oltp_read_write | 4 | 1650 (1615) |
+| oltp_update_index | 1 | 4336 (4352) |
+| oltp_update_index | 4 | 11258 (11308) |
+| oltp_update_non_index | 1 | 5158 (5156) |
+| oltp_update_non_index | 4 | 12720 (12741) |
+| oltp_insert | 1 | 4956 (4947) |
+| oltp_insert | 4 | 12513 (12503) |
 
 ### Where a write's time goes
 
@@ -494,28 +494,28 @@ Per query, not per event. Thread time is the client threads' seconds over the qu
 
 Transactions per second. Reads: the best tenth of measured seconds, median in brackets. Writes: the whole run's mean, median second in brackets.
 
-| Test | Threads | InnoDB tps | MySup's mark (1.10× InnoDB) |
-|---|---|---|---|
-| oltp_point_select | 1 | 10579 (10070) | 11637 |
-| oltp_point_select | 4 | 32323 (30187) | 35555 |
-| sum100 | 1 | 5641 (5264) | 6206 |
-| range100 | 1 | 5295 (4849) | 5824 |
-| oltp_read_only | 1 | 503 (474) | 553 |
-| oltp_read_only | 4 | 1378 (1313) | 1516 |
-| select_random_points | 1 | 1174 (1075) | 1292 |
-| select_random_points | 4 | 3197 (3074) | 3516 |
-| select_random_ranges | 1 | 6358 (6186) | 6994 |
-| select_random_ranges | 4 | 30929 (29926) | 34022 |
-| oltp_write_only | 1 | 1020 (1020) | 1122 |
-| oltp_write_only | 4 | 2266 (2290) | 2493 |
-| oltp_read_write | 1 | 279 (280) | 307 |
-| oltp_read_write | 4 | 754 (753) | 829 |
-| oltp_update_index | 1 | 2118 (2134) | 2330 |
-| oltp_update_index | 4 | 4642 (4678) | 5106 |
-| oltp_update_non_index | 1 | 3088 (3077) | 3397 |
-| oltp_update_non_index | 4 | 6992 (7002) | 7691 |
-| oltp_insert | 1 | 5290 (5269) | 5819 |
-| oltp_insert | 4 | 12677 (12691) | 13944 |
+| Test | Threads | InnoDB tps |
+|---|---|---|
+| oltp_point_select | 1 | 10579 (10070) |
+| oltp_point_select | 4 | 32323 (30187) |
+| sum100 | 1 | 5641 (5264) |
+| range100 | 1 | 5295 (4849) |
+| oltp_read_only | 1 | 503 (474) |
+| oltp_read_only | 4 | 1378 (1313) |
+| select_random_points | 1 | 1174 (1075) |
+| select_random_points | 4 | 3197 (3074) |
+| select_random_ranges | 1 | 6358 (6186) |
+| select_random_ranges | 4 | 30929 (29926) |
+| oltp_write_only | 1 | 1020 (1020) |
+| oltp_write_only | 4 | 2266 (2290) |
+| oltp_read_write | 1 | 279 (280) |
+| oltp_read_write | 4 | 754 (753) |
+| oltp_update_index | 1 | 2118 (2134) |
+| oltp_update_index | 4 | 4642 (4678) |
+| oltp_update_non_index | 1 | 3088 (3077) |
+| oltp_update_non_index | 4 | 6992 (7002) |
+| oltp_insert | 1 | 5290 (5269) |
+| oltp_insert | 4 | 12677 (12691) |
 
 ### Where a write's time goes
 

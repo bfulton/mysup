@@ -5,9 +5,10 @@
 tables taken again, and the goal fixed before any engine code exists. No
 engine work was done.
 
-**Amended 2026-11-27: the goal is against InnoDB alone.** MyRocks was a
-second rival when these measurements were taken. Its rows stay, as a
-reference, and what they showed is at the end.
+**Amended 2026-11-27: the goal is against InnoDB alone, and it is
+double-digit gains where an engine can make them, not a threshold on every
+test.** MyRocks was a second rival when these measurements were taken. Its
+rows stay, as a reference, and what they showed is at the end.
 
 Every number here was measured on one host in one nine-hour session. The
 rows are under [`bench/runs/`](../bench/runs/), every table drawn from them
@@ -19,11 +20,11 @@ under [`tables/`](tables/), and what a row means in
 
 1. **The brief's numbers hold.** Its three tables reproduce to within the
    host's noise, on its server and on two others.
-2. **In memory, a tenth more than InnoDB is within an engine's reach on two
-   of the four read tests.** In `select_random_points` and
+2. **In memory, a double-digit gain over InnoDB is within an engine's reach
+   on two of the four read tests.** In `select_random_points` and
    `select_random_ranges` a third to a half of what a query costs is
    InnoDB's own code. In `oltp_point_select` and `oltp_read_only` it is a
-   tenth, and a tenth is what the goal asks for.
+   tenth, and an engine that cost nothing would gain 8% to 16%.
 3. **Half of InnoDB's cost in those two tests is the optimizer's row
    estimate**, a quarter of all server CPU. The brief's design already has
    an answer to it. So does InnoDB: with the estimate switched off by one
@@ -43,11 +44,17 @@ under [`tables/`](tables/), and what a row means in
 
 ## The goal, as registered
 
-> For a sysbench test at a client thread count under a condition, MySup
-> meets the goal when its throughput is at least 1.10 times InnoDB's, both
-> measured in one run of this harness.
+> Double-digit throughput gains over InnoDB on sysbench, where an engine
+> can make them, on the same server and host.
 
-What that fixes:
+- **Every test is reported**, as MySup's throughput over InnoDB's in one
+  run of this harness, gains and losses alike. No test has a threshold of
+  its own: a gain may be more or less than 10% on any one of them.
+- **The claim is the tests with a double-digit gain.** Where a cheaper
+  engine cannot make one, the result is reported as it comes. The next
+  section says which tests those are likely to be.
+
+What is fixed, so that the ratios mean the same thing at M1 as at M5:
 
 - **Tests:** `oltp_point_select`, `oltp_read_only`, `select_random_points`,
   `select_random_ranges`, and the write tests `oltp_write_only`,
@@ -65,44 +72,69 @@ What that fixes:
   why.
 - **One run:** the host's speed drifts, by 13% to 22% between two runs of
   the same queries three hours apart. A ratio counts only between arms
-  that took turns in one run. The marks below are today's, for
-  orientation. The test is the ratio.
+  that took turns in one run. InnoDB's numbers below are today's, for
+  orientation. What counts is the ratio.
 - **Beside throughput**, from the same rows: bytes on disk, disk reads per
   query, and the write tests.
 
 What I fixed that the brief left open, for you to confirm or change:
 
-- The threshold is per test. The brief says "on sysbench" and not on which
-  tests. The grid is reported whole, wins and losses.
 - 1 and 4 threads, one table, the two table sizes.
 - InnoDB at the server's defaults but for its cache, its log size, direct
   I/O and no reload of its buffer pool at start. It is not compressed. The
   brief's "compare compressed against compressed" was about MyRocks.
 
-### Today's marks
+### Where a double-digit gain looks possible
 
-MariaDB 12.3.4, transactions per second. The mark is 1.10 times InnoDB.
+From "Where the room is" and "Writes" below: how much of an event is
+InnoDB's, and how much of that a 10% gain would have to remove. A ceiling
+on what replacing InnoDB like for like can do, not a forecast.
 
-| Test | Threads | In memory, InnoDB | Mark | Under the limit, InnoDB | Mark |
-|---|---|---|---|---|---|
-| `oltp_point_select` | 1 | 16,948 | 18,643 | 10,579 | 11,637 |
-| | 4 | 202,553 | 222,808 | 32,323 | 35,555 |
-| `oltp_read_only` | 1 | 877 | 965 | 503 | 553 |
-| | 4 | 7,848 | 8,632 | 1,378 | 1,516 |
-| `select_random_points` | 1 | 6,785 | 7,463 | 1,174 | 1,292 |
-| | 4 | 35,484 | 39,033 | 3,197 | 3,516 |
-| `select_random_ranges` | 1 | 7,206 | 7,927 | 6,358 | 6,994 |
-| | 4 | 36,917 | 40,609 | 30,929 | 34,022 |
-| `oltp_write_only` | 1 | 1,537 | 1,690 | 1,020 | 1,122 |
-| | 4 | 4,874 | 5,362 | 2,266 | 2,493 |
-| `oltp_read_write` | 1 | 513 | 565 | 279 | 307 |
-| | 4 | 1,650 | 1,815 | 754 | 829 |
-| `oltp_update_index` | 1 | 4,336 | 4,770 | 2,118 | 2,330 |
-| | 4 | 11,258 | 12,384 | 4,642 | 5,106 |
-| `oltp_update_non_index` | 1 | 5,158 | 5,674 | 3,088 | 3,397 |
-| | 4 | 12,720 | 13,992 | 6,992 | 7,691 |
-| `oltp_insert` | 1 | 4,956 | 5,451 | 5,290 | 5,819 |
-| | 4 | 12,513 | 13,764 | 12,677 | 13,944 |
+| | Tests | Threads | InnoDB's part of an event | A 10% gain removes |
+|---|---|---|---|---|
+| Within reach, in memory | `select_random_points`, `select_random_ranges` | 1, 4 | 34% to 57% | 16% to 27% of it |
+| Hard, in memory | `oltp_read_only` | 1, 4 | 10% to 14% | 65% to 91% |
+| | `oltp_update_index` | 1, 4 | 12% to 19% | 49% to 77% |
+| | `oltp_write_only`, `oltp_read_write` | 1 | 12% | 74% to 77% |
+| Out of reach for a cheaper engine alone, or nearly, in memory | `oltp_point_select` | 1, 4 | 7% to 10% | 91% to more than all of it |
+| | `oltp_write_only`, `oltp_read_write` | 4 | 8% to 9% | more than all of it |
+| | `oltp_insert`, `oltp_update_non_index` | 1, 4 | 5% to 7% | more than all of it |
+| Under the limit, reads | all four | 1, 4 | 43% to 88% | 10% to 21% |
+| Under the limit, writes | all five | | not profiled | |
+
+For the reads InnoDB's part is its CPU and its wait on disk reads. For the
+writes it is its own code alone: the kernel's share, carrying the log to
+the device, is a cost any durable engine pays in some form.
+
+Under the limit about half of InnoDB's part is the wait for the disk, which
+only reading less often removes, and sysbench's rows do not compress under
+LZ4. The writes in memory are mostly the device: the log write and its
+flush.
+
+### InnoDB today
+
+MariaDB 12.3.4, transactions per second.
+
+| Test | Threads | In memory | Under the limit |
+|---|---|---|---|
+| `oltp_point_select` | 1 | 16,948 | 10,579 |
+| | 4 | 202,553 | 32,323 |
+| `oltp_read_only` | 1 | 877 | 503 |
+| | 4 | 7,848 | 1,378 |
+| `select_random_points` | 1 | 6,785 | 1,174 |
+| | 4 | 35,484 | 3,197 |
+| `select_random_ranges` | 1 | 7,206 | 6,358 |
+| | 4 | 36,917 | 30,929 |
+| `oltp_write_only` | 1 | 1,537 | 1,020 |
+| | 4 | 4,874 | 2,266 |
+| `oltp_read_write` | 1 | 513 | 279 |
+| | 4 | 1,650 | 754 |
+| `oltp_update_index` | 1 | 4,336 | 2,118 |
+| | 4 | 11,258 | 4,642 |
+| `oltp_update_non_index` | 1 | 5,158 | 3,088 |
+| | 4 | 12,720 | 6,992 |
+| `oltp_insert` | 1 | 4,956 | 5,290 |
+| | 4 | 12,513 | 12,677 |
 
 - The two conditions were measured hours apart, so a number in one column
   is not to be set against the other. An insert was faster under the limit
@@ -283,8 +315,8 @@ the limit. See "Writes".
 For each test, InnoDB's part of an event: the server CPU spent in InnoDB's
 own code, from the profile, plus the time off the CPU waiting on its disk
 reads, over the time the event takes with the client's CPU in it. The last
-column is how much of that part a tenth more throughput takes away, all
-else equal. These are ceilings on what replacing InnoDB like for like can
+column is how much of that part has to go for a 10% gain, the smallest
+double-digit one, all else equal. These are ceilings on what replacing InnoDB like for like can
 do, not forecasts.
 
 | Test | Condition | Threads | InnoDB's part of an event | Gain if that part cost nothing | What +10% takes away |
@@ -411,7 +443,7 @@ ships no MyRocks, and that reason went with MyRocks.
 - For MariaDB 12.3, from 12.3.4: a storage engine builds against the
   installed development package, with no server source tree, and the
   release is supported to June 2029. Both were read from the vendor's pages
-  and not checked a second time ([`servers.md`](servers.md)). Every mark
+  and not checked a second time ([`servers.md`](servers.md)). Every number
   above was taken on it.
 - For MySQL: the name, and its InnoDB is the one most readers will take
   "InnoDB" to mean. No supported way to build an engine outside its source
@@ -420,7 +452,7 @@ ships no MyRocks, and that reason went with MyRocks.
   same on MariaDB 10.11.14, MariaDB 12.3.4 and Percona Server 8.4.11, which
   is MySQL 8.4's code, to within a few percent. Nothing else was measured
   on a MySQL-family server, and Oracle's own build was not measured at all.
-  On MySQL the marks would have to be taken again.
+  On MySQL the baselines would have to be taken again.
 - I would still build on MariaDB 12.3.4 first, for the build route alone.
   It is a weaker case than it was.
 - In both families an engine is tied to one exact server version.
@@ -444,10 +476,6 @@ table.
 
 **New, raised by M0:**
 
-- **Which tests carry the claim.** By the measurements, in memory the goal
-  is beyond a cheaper engine against InnoDB on `oltp_point_select`, on
-  inserts and on updates that touch no index, and close to beyond it on
-  `oltp_read_only`.
 - **Whether InnoDB runs at the server's defaults.** One variable is worth
   24% to 47% to it on `select_random_points`.
 - **InnoDB's buffer pool under the limit.** At the brief's 640 MiB the
