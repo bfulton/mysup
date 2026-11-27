@@ -16,14 +16,20 @@ conditions, the workloads. A change there is a change to the benchmark.
 sh bench/setup.sh                      # MariaDB, the MyRocks plugin, jemalloc, sysbench, perf
 cd bench
 python3 -m unittest discover tests     # the harness's own arithmetic, no server
-python3 -m mysupbench run --condition mem   --arms blackhole,innodb,myrocks,myrocks-default \
+python3 -m mysupbench run --condition mem   --arms blackhole,innodb \
         --suite micro --passes 3 --profile oltp_point_select,sum100,range100
-python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite read --passes 3 --reps 2
-python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite micro4 --reps 2
-python3 -m mysupbench run --condition mem   --arms innodb,myrocks --suite write --reps 2
-python3 -m mysupbench run --condition limit --arms innodb,myrocks --suite micro,read --reps 2 --warmup 30
+python3 -m mysupbench run --condition mem   --arms innodb --suite read --passes 3 --reps 2
+python3 -m mysupbench run --condition mem   --arms innodb --suite micro4 --reps 2
+python3 -m mysupbench run --condition mem   --arms innodb --suite write --reps 2
+python3 -m mysupbench run --condition limit --arms innodb --suite micro,read --reps 2 --warmup 30
+python3 -m mysupbench run --condition limit --arms innodb --suite write --passes 1 --reps 3
 python3 -m mysupbench report --server mariadb-10.11.14 > ../docs/tables/mariadb-10.11.14.md
 ```
+
+The goal is against InnoDB, and `BASELINE_ARMS` in `plan.py` says so. The
+arms `myrocks` and `myrocks-default` remain from when MyRocks was a second
+rival, and the rows under `runs/` were taken with them beside InnoDB. Add
+them to `--arms` to measure them again.
 
 `--suite none --profile <workloads> --profile-threads 4` profiles without
 measuring, at a thread count of its own.
@@ -206,4 +212,3 @@ claims can be checked:
 - cgroup v2.
 - A client on another host. With the client on the server's host, a quarter
   of a point select's wall time is the client's own CPU.
-- A MyRocks configuration that survives the write tests under the limit.

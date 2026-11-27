@@ -93,6 +93,8 @@ ARMS = {
             ("innodb_flush_log_at_trx_commit", 1),
         ],
     },
+    # MyRocks, compressed as its users run it. A reference, measured in
+    # M0 beside InnoDB; not a rival for the goal since 2026-11-27.
     "myrocks": {
         "engine": "rocksdb",
         "title": "MyRocks",
@@ -108,7 +110,7 @@ ARMS = {
     },
     # MyRocks as the server ships it: the arm the brief measured. Kept to
     # tie this harness to those numbers and to show what the tuned arm
-    # changes. Not a baseline for the goal.
+    # changes.
     "myrocks-default": {
         "engine": "rocksdb",
         "title": "MyRocks, server defaults",
@@ -128,7 +130,10 @@ ARMS = {
     },
 }
 
-BASELINE_ARMS = ("innodb", "myrocks")
+# The arms the goal is measured against: MySup's throughput is to be at
+# least 1.10 times the best of these in the same run. InnoDB alone since
+# 2026-11-27; MyRocks was a second rival before that.
+BASELINE_ARMS = ("innodb",)
 
 
 # Where MySQL names a thing differently, or ships it differently. MariaDB

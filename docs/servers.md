@@ -4,6 +4,10 @@ For the open decision in the [brief](brief.md), MySQL or MariaDB. The
 measurements on three servers are in [`baselines.md`](baselines.md). This
 page holds the facts that were read and not measured.
 
+MyRocks stopped being a rival on 2026-11-27, so who ships it no longer
+bears on the choice. That table stays for the record. What still bears on
+it is the second half: how an engine is built for each server.
+
 Everything below was read from the pages listed on 2026-11-26 by a research
 pass. Lines marked **checked here** were also seen on this host. The rest was
 not checked a second time.

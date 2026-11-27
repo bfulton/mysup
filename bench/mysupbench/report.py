@@ -428,12 +428,14 @@ def throughput_table(cells, cond):
                 continue
             both = False
             row.append("server died" if c and c.failed else "")
-        # A mark needs both rivals: it is a tenth over the better of them.
+        # A mark needs every rival: it is a tenth over the best of them.
         row.append(f"{best * 1.10:.0f}" if both else "")
         rows.append(row)
+    rival = (plan.ARMS[plan.BASELINE_ARMS[0]]["title"]
+             if len(plan.BASELINE_ARMS) == 1 else "the best rival")
     return table(["Test", "Threads"] +
                  [plan.ARMS[a]["title"] + " tps" for a in plan.BASELINE_ARMS]
-                 + ["MySup's mark (1.10× the better)"], rows)
+                 + [f"MySup's mark (1.10× {rival})"], rows)
 
 
 def detail_table(cells, cond):

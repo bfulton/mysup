@@ -1,12 +1,17 @@
 # M0: the baselines
 
-2026-11-26. This is milestone M0 of the [brief](brief.md): the rivals
-measured by a harness that is kept, the brief's tables taken again, and the
-goal fixed before any engine code exists. No engine work was done.
+2026-11-26, amended 2026-11-27. This is milestone M0 of the
+[brief](brief.md): the rival measured by a harness that is kept, the brief's
+tables taken again, and the goal fixed before any engine code exists. No
+engine work was done.
 
-Every number here was measured on one host in one nine-hour session. The rows are under
-[`bench/runs/`](../bench/runs/), every table drawn from them under
-[`tables/`](tables/), and what a row means in
+**Amended 2026-11-27: the goal is against InnoDB alone.** MyRocks was a
+second rival when these measurements were taken. Its rows stay, as a
+reference, and what they showed is at the end.
+
+Every number here was measured on one host in one nine-hour session. The
+rows are under [`bench/runs/`](../bench/runs/), every table drawn from them
+under [`tables/`](tables/), and what a row means in
 [`bench/README.md`](../bench/README.md) and
 [`bench/mysupbench/plan.py`](../bench/mysupbench/plan.py).
 
@@ -14,39 +19,33 @@ Every number here was measured on one host in one nine-hour session. The rows ar
 
 1. **The brief's numbers hold.** Its three tables reproduce to within the
    host's noise, on its server and on two others.
-2. **InnoDB sets the mark almost everywhere.** MyRocks, compressed, is
-   behind InnoDB in every test at every thread count in memory, by 10% to
-   79%, and under the memory limit in all but one. It wins on bytes on disk,
-   0.57 per byte stored against InnoDB's 1.3.
-3. **In memory, a tenth more than InnoDB is within an engine's reach on two
+2. **In memory, a tenth more than InnoDB is within an engine's reach on two
    of the four read tests.** In `select_random_points` and
    `select_random_ranges` a third to a half of what a query costs is
    InnoDB's own code. In `oltp_point_select` and `oltp_read_only` it is a
    tenth, and a tenth is what the goal asks for.
-4. **Half of InnoDB's cost in those two tests is the optimizer's row
+3. **Half of InnoDB's cost in those two tests is the optimizer's row
    estimate**, a quarter of all server CPU. The brief's design already has
    an answer to it. So does InnoDB: with the estimate switched off by one
    server variable it ran `select_random_points` 24% faster at one thread
    and 47% faster at four.
-5. **Under the memory limit more of a query is the engine's**, 44% of a
+4. **Under the memory limit more of a query is the engine's**, 44% of a
    point select, but half of that is the wait for the disk, and sysbench's
    rows do not shrink without entropy coding. supdb's compact form has
    none.
-6. **A durable write at one client thread is mostly the device.** Of an
+5. **A durable write at one client thread is mostly the device.** Of an
    InnoDB insert's 202 µs, 101 µs is the wait for the log to reach the
    device, which is what one write and one flush cost here by themselves,
    and 11 µs is InnoDB's own code.
-7. **MyRocks is killed under the limit by glibc's allocator, not by its
-   cache size.** With jemalloc it survives every read test. It does not yet
-   survive the write tests at any cache size tried.
-8. **Server: MariaDB 12.3, from 12.3.4.** Oracle's MySQL ships no MyRocks, so
-   the goal as worded cannot be tested on it.
+6. **The server is an open choice again.** My case for MariaDB rested first
+   on Oracle's MySQL shipping no MyRocks. What is left is that MariaDB is
+   the easier one to build an engine for.
 
 ## The goal, as registered
 
 > For a sysbench test at a client thread count under a condition, MySup
-> meets the goal when its throughput is at least 1.10 times the better of
-> InnoDB's and MyRocks', all three measured in one run of this harness.
+> meets the goal when its throughput is at least 1.10 times InnoDB's, both
+> measured in one run of this harness.
 
 What that fixes:
 
@@ -57,9 +56,10 @@ What that fixes:
 - **Threads:** 1 and 4. The host has 4 vCPUs and the client runs on it.
 - **Conditions:** in memory (1M rows, 2 GiB cache, no limit) and under a
   memory limit (16M rows, 640 MiB cache, the server's cgroup held to 1 GiB).
-- **Rivals:** InnoDB, and MyRocks with LZ4 above its last level and ZSTD in
-  it. Both flush their log to the device at every commit and use direct
-  I/O. Every setting is in `plan.py`.
+- **The rival:** InnoDB, flushing its log to the device at every commit, on
+  direct I/O, otherwise at the server's defaults. Every setting is in
+  `plan.py`. MySup runs on the same terms: the same cache size, the same
+  limit, its log on the device at every commit.
 - **The number:** for a read test, the edge of the best tenth of measured
   seconds; for a write test, the whole run's mean. `bench/README.md` says
   why.
@@ -75,79 +75,51 @@ What I fixed that the brief left open, for you to confirm or change:
 - The threshold is per test. The brief says "on sysbench" and not on which
   tests. The grid is reported whole, wins and losses.
 - 1 and 4 threads, one table, the two table sizes.
-- MyRocks' options: its own tuning page's example, without the lines that
-  size it for a large machine.
-- MyRocks runs under jemalloc where there is a memory limit.
 - InnoDB at the server's defaults but for its cache, its log size, direct
-  I/O and no reload of its buffer pool at start.
+  I/O and no reload of its buffer pool at start. It is not compressed. The
+  brief's "compare compressed against compressed" was about MyRocks.
 
-### Today's marks, in memory
+### Today's marks
 
-MariaDB 12.3.4, transactions per second. The mark is 1.10 times the better
-rival.
+MariaDB 12.3.4, transactions per second. The mark is 1.10 times InnoDB.
 
-| Test | Threads | InnoDB | MyRocks | Mark |
-|---|---|---|---|---|
-| `oltp_point_select` | 1 | 16,948 | 15,316 | 18,643 |
-| | 4 | 202,553 | 161,273 | 222,808 |
-| `oltp_read_only` | 1 | 877 | 759 | 965 |
-| | 4 | 7,848 | 6,078 | 8,632 |
-| `select_random_points` | 1 | 6,785 | 5,459 | 7,463 |
-| | 4 | 35,484 | 24,913 | 39,033 |
-| `select_random_ranges` | 1 | 7,206 | 6,290 | 7,927 |
-| | 4 | 36,917 | 33,559 | 40,609 |
-| `oltp_write_only` | 1 | 1,537 | 1,265 | 1,690 |
-| | 4 | 4,874 | 3,551 | 5,362 |
-| `oltp_read_write` | 1 | 513 | 425 | 565 |
-| | 4 | 1,650 | 1,304 | 1,815 |
-| `oltp_update_index` | 1 | 4,336 | 2,951 | 4,770 |
-| | 4 | 11,258 | 7,084 | 12,384 |
-| `oltp_update_non_index` | 1 | 5,158 | 2,920 | 5,674 |
-| | 4 | 12,720 | 7,117 | 13,992 |
-| `oltp_insert` | 1 | 4,956 | 3,089 | 5,451 |
-| | 4 | 12,513 | 7,367 | 13,764 |
+| Test | Threads | In memory, InnoDB | Mark | Under the limit, InnoDB | Mark |
+|---|---|---|---|---|---|
+| `oltp_point_select` | 1 | 16,948 | 18,643 | 10,579 | 11,637 |
+| | 4 | 202,553 | 222,808 | 32,323 | 35,555 |
+| `oltp_read_only` | 1 | 877 | 965 | 503 | 553 |
+| | 4 | 7,848 | 8,632 | 1,378 | 1,516 |
+| `select_random_points` | 1 | 6,785 | 7,463 | 1,174 | 1,292 |
+| | 4 | 35,484 | 39,033 | 3,197 | 3,516 |
+| `select_random_ranges` | 1 | 7,206 | 7,927 | 6,358 | 6,994 |
+| | 4 | 36,917 | 40,609 | 30,929 | 34,022 |
+| `oltp_write_only` | 1 | 1,537 | 1,690 | 1,020 | 1,122 |
+| | 4 | 4,874 | 5,362 | 2,266 | 2,493 |
+| `oltp_read_write` | 1 | 513 | 565 | 279 | 307 |
+| | 4 | 1,650 | 1,815 | 754 | 829 |
+| `oltp_update_index` | 1 | 4,336 | 4,770 | 2,118 | 2,330 |
+| | 4 | 11,258 | 12,384 | 4,642 | 5,106 |
+| `oltp_update_non_index` | 1 | 5,158 | 5,674 | 3,088 | 3,397 |
+| | 4 | 12,720 | 13,992 | 6,992 | 7,691 |
+| `oltp_insert` | 1 | 4,956 | 5,451 | 5,290 | 5,819 |
+| | 4 | 12,513 | 13,764 | 12,677 | 13,944 |
 
-Between the passes of one run the read tests moved by up to 9% and the
-write tests by up to 23%. The device's flush time drifts more than the CPU
-does.
-
-### Today's marks, under the memory limit
-
-| Test | Threads | InnoDB | MyRocks | Mark |
-|---|---|---|---|---|
-| `oltp_point_select` | 1 | 10,579 | 7,608 | 11,637 |
-| | 4 | 32,323 | 21,390 | 35,555 |
-| `oltp_read_only` | 1 | 503 | 340 | 553 |
-| | 4 | 1,378 | 1,071 | 1,516 |
-| `select_random_points` | 1 | 1,174 | 895 | 1,292 |
-| | 4 | 3,197 | 2,842 | 3,516 |
-| `select_random_ranges` | 1 | 6,358 | 5,989 | 6,994 |
-| | 4 | 30,929 | 32,348 | 35,583 |
-| `oltp_write_only` | 1 | 1,020 | none yet | |
-| | 4 | 2,266 | none yet | |
-| `oltp_read_write` | 1 | 279 | none yet | |
-| | 4 | 754 | none yet | |
-| `oltp_update_index` | 1 | 2,118 | none yet | |
-| | 4 | 4,642 | none yet | |
-| `oltp_update_non_index` | 1 | 3,088 | none yet | |
-| | 4 | 6,992 | none yet | |
-| `oltp_insert` | 1 | 5,290 | none yet | |
-| | 4 | 12,677 | none yet | |
-
-`select_random_ranges` reads only the `k` index, which fits in the cache, so
-it does no disk reads under the limit either. InnoDB's write rows are from a
-run of their own, an hour after the reads.
+- The two conditions were measured hours apart, so a number in one column
+  is not to be set against the other. An insert was faster under the limit
+  only because the device was faster that hour.
+- Between the passes of one run the read tests moved by up to 9% and the
+  write tests by up to 23%. The device's flush time drifts more than the
+  CPU does.
+- The write tests under the limit are one pass of three runs. Everything
+  else is two or three passes.
+- `select_random_ranges` reads only the `k` index, which fits in the cache,
+  so it does no disk reads under the limit either.
 
 ### Bytes on disk
 
-| | 1M rows | 16M rows | Bytes on disk per byte stored |
-|---|---|---|---|
-| InnoDB | 232 MiB | 3,653 MiB | 1.27 to 1.29 |
-| MyRocks, ZSTD in the last level | 101 MiB | 1,628 MiB | 0.57 |
-| MyRocks, the server's defaults (Snappy) | 198 MiB | | 1.11 |
-
-A row is 188 bytes as the table declares it. MyRocks was compacted into one
-level before measuring, the best case for its size and its reads.
+InnoDB stores sysbench's table at 1.27 to 1.29 bytes on disk per byte
+stored: 232 MiB for 1M rows, 3,653 MiB for 16M. A row is 188 bytes as the
+table declares it.
 
 ## The brief's tables, taken again
 
@@ -223,8 +195,6 @@ MariaDB 12.3.4, one table where the brief had four.
   reads per query did not move.
 - Compressed, MyRocks is well behind InnoDB here and not level with it: 41%
   more time for a point select, 78% more for a SUM. The difference is CPU.
-  It reads as often as InnoDB and then decompresses the block: `libzstd` is
-  24% of the server's CPU in its point select.
 - With 16 KiB blocks MyRocks reads 1.76 times per SUM where the brief's
   defaults read 3.2.
 - The last column is what the brief called waiting on disk: the time the
@@ -302,11 +272,11 @@ larger than memory."** From the secondary index, yes. The next section has
 the rest.
 
 **"MyRocks with four client threads passed the 1 GiB limit and was killed.
-Size its cache with headroom."** The cache is not what grows. See "MyRocks
-under the limit".
+Size its cache with headroom."** The cache is not what grows. See "MyRocks,
+for reference".
 
-**"Writes are unmeasured."** In memory they now are, and InnoDB's under the
-limit. See "Writes".
+**"Writes are unmeasured."** They now are for InnoDB, in memory and under
+the limit. See "Writes".
 
 ## Where the room is
 
@@ -394,129 +364,76 @@ in memory:
 
 ## Writes
 
-In memory, MariaDB 12.3.4, both engines flushing at every commit, one
-client thread. Time per transaction, and where it went.
+In memory, MariaDB 12.3.4, InnoDB flushing at every commit, one client
+thread. Time per transaction, where it went, and how much of it is InnoDB's
+own code by the profile.
 
-| Test | Engine | Transactions per second | Time | Server CPU | Client CPU | Neither | KiB written |
-|---|---|---|---|---|---|---|---|
-| `oltp_insert` | InnoDB | 4,956 | 202 µs | 81 µs | 20 µs | 101 µs | 4.6 |
-| | MyRocks | 3,089 | 324 µs | 124 µs | 26 µs | 174 µs | 8.3 |
-| `oltp_update_non_index` | InnoDB | 5,158 | 194 µs | 80 µs | 18 µs | 96 µs | 4.6 |
-| | MyRocks | 2,920 | 343 µs | 136 µs | 25 µs | 181 µs | 8.2 |
-| `oltp_update_index` | InnoDB | 4,336 | 231 µs | 115 µs | 19 µs | 97 µs | 7.1 |
-| | MyRocks | 2,951 | 339 µs | 137 µs | 24 µs | 178 µs | 8.3 |
-| `oltp_write_only` | InnoDB | 1,537 | 651 µs | 330 µs | 106 µs | 216 µs | 7.7 |
-| | MyRocks | 1,265 | 790 µs | 394 µs | 110 µs | 286 µs | 8.7 |
+| Test | Time | Server CPU | Client CPU | Neither | InnoDB's own code | What +10% takes away |
+|---|---|---|---|---|---|---|
+| `oltp_insert` | 202 µs | 81 µs | 20 µs | 101 µs | 11 µs | more than all of it |
+| `oltp_update_non_index` | 194 µs | 80 µs | 18 µs | 96 µs | 13 µs | more than all of it |
+| `oltp_update_index` | 231 µs | 115 µs | 19 µs | 97 µs | 43 µs | 49% of it |
+| `oltp_write_only` | 651 µs | 330 µs | 106 µs | 216 µs | 80 µs | 74% of it |
+| `oltp_read_write` | 1.95 ms | 1.27 ms | 365 µs | 309 µs | 231 µs | 77% of it |
 
 - "Neither" is the wait for the log to reach the device, plus the idle
-  moments between client and server. At one thread both engines make
-  exactly one write call and one device flush per transaction.
-- What differs is what reaches the device: InnoDB 2.05 writes per insert,
-  MyRocks 3.00. The third write is what growing a file costs on this
-  filesystem. InnoDB overwrites a log of fixed size. RocksDB appends to one
-  that grows, and each `fdatasync` then also writes the file's new length.
-  That alone, in `bench/tools/logsync.py`, six runs of 3,000 commits each:
-
-  | Log layout | Device writes per commit | Time per commit, median |
-  |---|---|---|
-  | Overwrite a file already written, 4 KiB direct writes | 2.03 | 100 µs |
-  | Overwrite a file already written | 2.03 | 130 µs |
-  | Append, the file grows | 3.00 | 155 µs |
-  | Append into space reserved with `fallocate` | 3.00 | 161 µs |
-
-- That accounts for 40 to 60 µs of the 73 µs by which a MyRocks insert
-  waits longer than an InnoDB one. Traced with `strace`, in turns, twice,
-  InnoDB's write and sync calls took 282 µs a commit and MyRocks' 332 and
-  356 µs (`bench/tools/tracesync.py`).
-- supdb already overwrites a recycled, pre-written log for this reason
-  (`recycle_wal` in its `Options`).
+  moments between client and server. InnoDB makes exactly one write call
+  and one device flush per transaction at one thread.
 - InnoDB's wait is already at the device's floor: 101 µs an insert, where
-  one direct 4 KiB write and one flush took 100 µs by themselves.
+  one direct 4 KiB write and one flush took 100 µs by themselves
+  (`bench/tools/logsync.py`).
 - Most of InnoDB's CPU in a simple write is the kernel carrying the log to
-  the device, which a durable engine pays in some form. Its own code is
-  small. At one thread, from the profile:
-
-  | Test | InnoDB's share of server CPU | of which in the kernel | InnoDB's own code | as part of the transaction | What +10% takes away |
-  |---|---|---|---|---|---|
-  | `oltp_insert` | 46.7% | 33.3% | 11 µs | 5% | more than all of it |
-  | `oltp_update_non_index` | 49.5% | 33.5% | 13 µs | 7% | more than all of it |
-  | `oltp_update_index` | 62.0% | 24.5% | 43 µs | 19% | 49% of it |
-  | `oltp_write_only` | 35.9% | 11.7% | 80 µs | 12% | 74% of it |
-  | `oltp_read_write` | 23.2% | 5.0% | 231 µs | 12% | 77% of it |
-
-  In an insert the commit, which is the log write and its sync, is 35.0% of
-  the server's CPU and writing the row 9.0%.
+  the device, which a durable engine pays in some form. InnoDB is 46.7% of
+  the server's CPU in an insert, and 33.3% of the server's CPU is InnoDB in
+  the kernel. The commit, which is the log write and its sync, is 35.0%,
+  and writing the row 9.0%.
 - At four threads the wait is the larger part still: 199 µs of a 320 µs
   insert, with InnoDB flushing 0.53 times per transaction. Its own code is
   15 µs of that insert.
+- A log that grows costs more than one that is overwritten. The same test
+  took 155 µs a commit appending to a file and 100 to 130 µs overwriting
+  one, with one more device write each time: an `fdatasync` after an append
+  also writes the file's new length. InnoDB overwrites a log of fixed size.
+  supdb already overwrites a recycled, pre-written one (`recycle_wal` in
+  its `Options`).
 
 Under the limit InnoDB runs every write test and stays under 800 MiB. An
 update there writes 34 to 73 KiB to the device where an insert writes 4.6.
 34 KiB is what a 16 KiB page written twice comes to, once through the
 doublewrite buffer, with the log. I did not trace those writes. An engine
-that only appends does not pay that, and there is no rival number for it
-yet.
-
-## MyRocks under the limit
-
-The brief's kill reproduces. With a 640 MiB block cache and glibc's
-allocator MyRocks is killed at 1 GiB when four client threads follow one, in
-every test that reads from disk.
-
-- The block cache is not what grows. By RocksDB's own count it holds 639 MiB
-  throughout. The process holds 728 MiB after one thread has filled the
-  cache, and 1,017 MiB five seconds after four threads start.
-- It is glibc's per-thread arenas. Held to one arena (`MALLOC_ARENA_MAX=1`)
-  the process stays under 830 MiB at four threads. Under jemalloc it sits
-  at 890 MiB whatever the thread count.
-- A smaller cache does not help under glibc. At 448 MiB the process still
-  reaches the limit and is killed in `select_random_points`.
-- So under the limit the MyRocks arm runs with jemalloc, and the harness
-  records it. Throughput at one thread was the same either way.
-  `bench/tools/rocksmem.py` repeats all three.
-
-Not settled: the write tests. Writing adds memtables, 160 to 250 MiB of
-them, to the cache and the allocator's overhead. Under jemalloc, in a row of
-4-thread write tests a minute each:
-
-| Block cache | What happened |
-|---|---|
-| 640 MiB | at the limit in the first test, 60 transactions a second in the second, killed in the third |
-| 512 MiB | at the limit, 60 transactions a second in the fifth |
-| 448 MiB | killed in the fifth |
-| 384 MiB | killed in the sixth |
-
-MyRocks needs a configuration for writes under 1 GiB that bounds its
-memtables as well as its cache. That is a choice about the rival, and it is
-yours. Until it is made there is no MyRocks number for the write tests
-under the limit, the condition where MyRocks is most likely to lead.
+that only appends does not pay that.
 
 ## Open decisions, with what M0 adds
 
-**Server.** Recommended: MariaDB 12.3, from 12.3.4.
+**Server.** Open again. I recommended MariaDB first because Oracle's MySQL
+ships no MyRocks, and that reason went with MyRocks.
 
-- The goal is "against both InnoDB and MyRocks, on the same server". Oracle's
-  MySQL ships no MyRocks. In the MySQL family only Percona Server does.
-- Measured here: the three servers cost the same per query to within a few
-  percent, and Percona's newer MyRocks is not a stronger rival on reads.
-- Read today from the vendors' pages by a research pass, listed with
-  sources in [`servers.md`](servers.md), and not checked a second time:
-  MariaDB 12.3 is a long-term release supported to June 2029. From 12.3.4 a
-  storage engine builds against the installed development package, with no
-  server source tree. MySQL has no such route. Meta's MyRocks tree was
-  archived in March 2026. In both families an engine is tied to one exact
-  server version.
+- For MariaDB 12.3, from 12.3.4: a storage engine builds against the
+  installed development package, with no server source tree, and the
+  release is supported to June 2029. Both were read from the vendor's pages
+  and not checked a second time ([`servers.md`](servers.md)). Every mark
+  above was taken on it.
+- For MySQL: the name, and its InnoDB is the one most readers will take
+  "InnoDB" to mean. No supported way to build an engine outside its source
+  tree was found.
+- Measured: on the three one-statement queries in memory InnoDB costs the
+  same on MariaDB 10.11.14, MariaDB 12.3.4 and Percona Server 8.4.11, which
+  is MySQL 8.4's code, to within a few percent. Nothing else was measured
+  on a MySQL-family server, and Oracle's own build was not measured at all.
+  On MySQL the marks would have to be taken again.
+- I would still build on MariaDB 12.3.4 first, for the build route alone.
+  It is a weaker case than it was.
+- In both families an engine is tied to one exact server version.
 
 **Whether supdb grows a mode that stores only its compact form.** If bytes
 on disk are reported beside throughput, as the plan says, it needs one.
 
-- InnoDB stores sysbench's table at 1.27 to 1.34 bytes per byte, MyRocks
-  with ZSTD at 0.57.
+- InnoDB stores sysbench's table at 1.27 to 1.34 bytes per byte across the
+  three servers.
 - supdb keeps both forms today, 1.94 on its own suite by the brief. Its
   compact form is LZ4, which leaves these rows at 0.82 to 0.94 of their
-  size. Derived, not measured: with both forms supdb would be the largest of
-  the three on this table, and with the compact form alone still about
-  half again as large as MyRocks.
+  size. Derived, not measured: with both forms supdb would be larger than
+  InnoDB on this table, and with the compact form alone smaller.
 - The same arithmetic touches the brief's strongest number. "It reads 74
   bytes from disk per point read … because its compact form fits in memory"
   was on data that compresses. Sixteen million of these rows are 3 GB, and
@@ -533,10 +450,9 @@ table.
   `oltp_read_only`.
 - **Whether InnoDB runs at the server's defaults.** One variable is worth
   24% to 47% to it on `select_random_points`.
-- **MyRocks' configuration for writes under the limit.**
 - **InnoDB's buffer pool under the limit.** At the brief's 640 MiB the
-  server peaks at 787 MiB of its 1,024. A larger pool would make InnoDB a
-  stronger rival there, and InnoDB sets the marks.
+  server peaks at 787 MiB of its 1,024 in the read tests. A larger pool
+  would make InnoDB a stronger rival there.
 - **Where the client runs.** On this host at four threads it takes 23% of
   the CPU a point select costs.
 
@@ -545,14 +461,44 @@ table.
 - **supdb on sysbench's rows**, alone: its bytes on disk, and its disk reads
   per query at three times memory. This is the measurement the project most
   needs next, and it needs no MySQL.
-- Write tests under the limit for MyRocks, and profiles of them for
-  either engine.
+- Profiles of the write tests under the limit.
 - Percona Server and MariaDB 10.11.14 were measured on the three
   one-statement queries in memory only.
 - A client on another host, bare metal, cgroup v2.
 - The facts in [`servers.md`](servers.md) beyond what is marked as checked
   here.
 - Everything was measured once, on one day, on one virtual machine.
+
+## MyRocks, for reference
+
+MyRocks was the second rival until 2026-11-27. What its rows showed, with
+LZ4 above its last level and ZSTD in it:
+
+- **It trailed InnoDB almost everywhere.** In memory by 10% to 79% in every
+  test at both thread counts. Under the limit in all but
+  `select_random_ranges` at four threads, where it led by 5%. No write test
+  under the limit was measured for it.
+- **It is much smaller on disk:** 0.57 bytes per byte stored against
+  InnoDB's 1.27 to 1.29, and 1.11 with the server's default, Snappy.
+- **Under the limit it reads as often as InnoDB and then decompresses.**
+  `libzstd` is 24% of the server's CPU in its point select.
+- **Its log grows.** A MyRocks insert waits 73 µs longer than an InnoDB one,
+  and 40 to 60 µs of that is the extra device write described under
+  "Writes". Traced with `strace`, in turns, twice, InnoDB's write and sync
+  calls took 282 µs a commit and MyRocks' 332 and 356 µs
+  (`bench/tools/tracesync.py`).
+- **The brief's kill under the limit is glibc's allocator, not the cache
+  size.** With a 640 MiB block cache MyRocks is killed at 1 GiB when four
+  client threads follow one. By RocksDB's own count the cache holds 639 MiB
+  throughout. The process holds 728 MiB after one thread has filled it and
+  1,017 MiB five seconds after four threads start, in glibc's per-thread
+  arenas. Held to one arena it stays under 830 MiB, and under jemalloc at
+  890 MiB at any thread count. A smaller cache does not help under glibc.
+  `bench/tools/rocksmem.py` repeats this. The same allocator sits under any
+  engine loaded into the server, MySup included.
+- Under jemalloc it survived every read test under the limit, and no write
+  test at any cache size tried from 640 down to 384 MiB. That question
+  closed with the decision.
 
 ## The host
 
