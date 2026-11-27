@@ -111,6 +111,16 @@ class Cell:
         self.reads = sum(r["block"]["read_ios"] for r in rs) / q
         self.read_kb = sum(r["block"]["read_sectors"] for r in rs) / q / 2
         self.read_wait_us = sum(r["block"]["read_ms"] for r in rs) / q * 1e3
+        # Time per query that neither the server nor the client was on a
+        # CPU. At one thread that is the wait: for the device, or for a
+        # wake-up.
+        self.off_cpu_us = max(
+            0.0, self.wall_us - self.cpu_us_total - self.client_us)
+        # The wait for disk reads: off the CPU, and no longer than the
+        # device says the reads took. The device's time alone overstates
+        # it, because a request is still open while the thread that sent
+        # it is on the CPU sending it and again collecting it.
+        self.disk_wait_us = min(self.read_wait_us, self.off_cpu_us)
         self.write_kb = sum(r["block"]["write_sectors"] for r in rs) / q / 2
         self.flushes = sum(r["block"]["flush_ios"] for r in rs) / tx
         self.peak = max(r["cgroup"]["peak"] for r in rs)
@@ -236,15 +246,15 @@ def split_table(cells, cond, threads=1, workloads=None):
             rows.append([
                 title, plan.ARMS[a]["title"], us(c.wall_us),
                 us(srv * (1 - c.sys_share)), us(srv * c.sys_share),
-                us(c.client_us), us(c.read_wait_us),
+                us(c.client_us), us(c.off_cpu_us), us(c.read_wait_us),
                 f"{c.reads:.2f}", f"{c.read_kb:.1f}",
                 f"{c.peak / 2**20:.0f}"])
     if not rows:
         return None
     return table(["Query", "Arm", "Wall" if threads == 1 else "Thread time",
                   "Server user", "Server kernel",
-                  "Client CPU", "Waiting on disk", "Disk reads",
-                  "KiB read", "Peak MiB"], rows)
+                  "Client CPU", "Neither", "Device time in reads",
+                  "Disk reads", "KiB read", "Peak MiB"], rows)
 
 
 def write_table(cells, cond):
@@ -320,7 +330,7 @@ def room_table(cells, profiles, cond, threads=1):
             continue
         share = p["owners"]["innodb"] / p["samples"]
         engine = share * c.cpu_us_total
-        wait = c.read_wait_us
+        wait = c.disk_wait_us
         mine = engine + wait
         # A tenth more events in the same time is 1/11 less time each.
         need = (c.wall_us / 11) / mine
@@ -566,8 +576,13 @@ def main_report(args):
         t = split_table(cells, cond)
         if t:
             out.append("### Where a query's time goes, one client thread\n")
-            out.append("Whole-run means, so the columns add up to the wall "
-                       "time less what the client waited.\n")
+            out.append("Whole-run means. The two CPU columns, the "
+                       "client's and Neither add up to the wall time. "
+                       "Neither is time no one was on a CPU: the wait for "
+                       "the device, or for a wake-up. The device's own time "
+                       "in reads is beside it and is longer, because a "
+                       "request is still open while its thread is on the "
+                       "CPU sending and collecting it.\n")
             out.append(t + "\n")
         for arm in ("innodb", "myrocks", "myrocks-default"):
             t = profile_table(profiles, cond, arm)
@@ -594,7 +609,9 @@ def main_report(args):
         if t:
             out.append("### Room against InnoDB, one client thread\n")
             out.append("InnoDB's share is from the profile; the times are "
-                       "whole-run means.\n")
+                       "whole-run means. Waiting on disk is the time off "
+                       "the CPU, and no more than the device's time in "
+                       "reads.\n")
             out.append(t + "\n")
         reads = [(w, w) for w, d in plan.WORKLOADS.items()
                  if not d["writes"]]
@@ -605,7 +622,8 @@ def main_report(args):
                            "threads\n")
                 out.append("Per query, not per event. Thread time is the "
                            "client threads' seconds over the queries they "
-                           "finished.\n")
+                           "finished. Neither is the part of it no one was "
+                           "on a CPU for.\n")
                 out.append(t + "\n")
             pn = profiles_of(docs, n)
             for arm in ("innodb", "myrocks"):
