@@ -104,6 +104,30 @@ class Attribution(unittest.TestCase):
         self.assertEqual(got["kernel"], {"server": 1})
         self.assertEqual(got["rooted"], 1)
 
+    def test_an_engines_own_thread_owns_what_no_frame_claims(self):
+        # The page cleaner writes pages out through no handler call.
+        flush = ("buf_flush_page_cleaner()", SERVER)
+        text = ("page_cleaner \n\t1 pwrite64 (" + LIBC + ")\n\t2 "
+                + flush[0] + " (" + SERVER + ")\n\n"
+                "one_connection \n\t1 Protocol::net_store_data() ("
+                + SERVER + ")\n\n"
+                "ib_tpool_worker \n\t1 fil_aio_callback() (" + SERVER
+                + ")\n\n"
+                "rocksdb:low \n\t1 __memmove_avx512 (" + LIBC + ")\n")
+        got = profile.attribute(text)
+        self.assertEqual(got["owners"],
+                         {"innodb": 2, "server": 1, "rocksdb_core": 1})
+        self.assertEqual(got["own_threads"],
+                         {"innodb": 2, "rocksdb_core": 1})
+        self.assertEqual(got["threads"]["one_connection"], 1)
+
+    def test_a_query_thread_decides_nothing(self):
+        self.assertIsNone(profile.thread_owner("one_connection"))
+        self.assertIsNone(profile.thread_owner("mariadbd"))
+        self.assertIsNone(profile.thread_owner(None))
+        self.assertEqual(profile.thread_owner("ib_pg_flush_co"), "innodb")
+        self.assertEqual(profile.thread_owner("myrocks-bg"), "myrocks")
+
     def test_a_truncated_stack_is_counted_as_not_rooted(self):
         got = profile.attribute(stack(("[unknown]", "[unknown]")))
         self.assertEqual((got["samples"], got["rooted"]), (1, 0))

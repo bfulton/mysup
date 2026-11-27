@@ -4,11 +4,14 @@
 workload, then each sample is given to exactly one owner:
 
     the innermost frame of its call stack that belongs to an engine names
-    the owner; a sample with no engine frame belongs to the server.
+    the owner; a sample with no engine frame belongs to the engine whose
+    own thread it was taken in, and otherwise to the server.
 
 So time in libc or the kernel is charged to whichever engine code called
 it, and an engine's callbacks into the server (field packing, say) are
-charged to the engine frame they return to. The owners:
+charged to the engine frame they return to. An engine's own threads, the
+ones that flush and purge behind the queries, are known by the names the
+server gives them. The owners:
 
     rocksdb_core  RocksDB proper: what a RocksDB-compatible layer replaces
     rocksdb_txn   RocksDB's transaction and write-batch-with-index
@@ -60,6 +63,17 @@ _INNODB_ENTRY = re.compile(r"(?:ha_innobase::|ha_innopart::|innobase_|innodb_)")
 
 _FRAME = re.compile(r"^\s*([0-9a-f]+) (.*) \(([^()]*)\)$")
 
+# Threads an engine starts for itself, by the name the kernel shows for
+# them. InnoDB's work in these enters through none of its handler calls,
+# so the thread is the only thing that says whose it is. The names are
+# MariaDB's (its thread pool's workers serve InnoDB alone) and MySQL's,
+# which begin ib_.
+_OWN_THREADS = (
+    (re.compile(r"^(?:ib_|page_cleaner$|io_uring_wait$)"), "innodb"),
+    (re.compile(r"^rocksdb:"), "rocksdb_core"),
+    (re.compile(r"^myrocks-"), "myrocks"),
+)
+
 
 def perf_binary():
     """The newest perf under /usr/lib/linux-tools. Ubuntu's /usr/bin/perf
@@ -81,22 +95,35 @@ def record(pid, seconds, path, hz=1999):
 def script(path):
     # `-F dso,sym` alone prints blank lines; ip must be among the fields.
     return subprocess.run(
-        [perf_binary(), "script", "-i", path, "-F", "ip,sym,dso"],
+        [perf_binary(), "script", "-i", path, "-F", "comm,ip,sym,dso"],
         check=True, capture_output=True, text=True, errors="replace").stdout
 
 
 def samples(text):
-    """Yield each sample's frames, innermost first, as (symbol, dso)."""
-    frames = []
+    """Yield each sample as (thread name, frames), the frames innermost
+    first as (symbol, dso). A sample is a line naming its thread, then
+    its frames; the name is None where the text has none."""
+    thread, frames = None, []
     for line in text.splitlines():
         m = _FRAME.match(line)
         if m:
             frames.append((m.group(2), m.group(3)))
-        elif frames:
-            yield frames
-            frames = []
+            continue
+        if frames:
+            yield thread, frames
+            thread, frames = None, []
+        if line.strip():
+            thread = line.strip()
     if frames:
-        yield frames
+        yield thread, frames
+
+
+def thread_owner(name):
+    """The engine a thread belongs to by its name, or None."""
+    for pattern, owner in _OWN_THREADS:
+        if name and pattern.match(name):
+            return owner
+    return None
 
 
 def owner_of(symbol, dso):
@@ -122,9 +149,11 @@ def attribute(text, top=25):
     kernel = collections.Counter()
     self_syms = collections.defaultdict(collections.Counter)
     owner_frames = collections.defaultdict(collections.Counter)
+    threads = collections.Counter()
+    own = collections.Counter()
     rooted = 0
     total = 0
-    for frames in samples(text):
+    for thread, frames in samples(text):
         total += 1
         who = "server"
         via = None
@@ -133,6 +162,15 @@ def attribute(text, top=25):
             if o:
                 who, via = o, sym
                 break
+        if thread:
+            threads[thread] += 1
+        mine = thread_owner(thread)
+        if mine:
+            # Whatever the frames said, this was the engine's own thread;
+            # where they said nothing, the thread decides.
+            own[mine] += 1
+            if who == "server":
+                who = mine
         counts[who] += 1
         leaf_sym, leaf_dso = frames[0]
         if is_kernel(leaf_dso):
@@ -150,6 +188,10 @@ def attribute(text, top=25):
         "rooted": rooted,
         "owners": dict(counts),
         "kernel": dict(kernel),
+        # Samples by thread name, and those taken in an engine's own
+        # threads by engine.
+        "threads": dict(threads.most_common(top)),
+        "own_threads": dict(own),
         "top_self": {o: c.most_common(top) for o, c in self_syms.items()},
         "top_owner_frames": {o: c.most_common(top)
                              for o, c in owner_frames.items()},
