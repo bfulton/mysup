@@ -536,7 +536,11 @@ def main_report(args):
     cells = cells_of(docs)
     profiles = profiles_of(docs)
     arms = arms_of(docs)
-    out = [f"Server: {args.server}.\n"]
+    out = [f"# Tables: {args.server}\n",
+           "Drawn from the rows under `bench/runs/` by "
+           f"`python3 -m mysupbench report --server {args.server}`. "
+           "Not edited by hand. [`bench/README.md`](../../bench/README.md) "
+           "says how a cell's samples become its number.\n"]
     for cond in conds:
         t = servers_table(every, cond)
         if t:
