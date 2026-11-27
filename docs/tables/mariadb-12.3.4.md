@@ -34,19 +34,19 @@ Microseconds: the best tenth of measured seconds, with the median in brackets.
 
 ### Where a query's time goes, one client thread
 
-Whole-run means, so the columns add up to the wall time less what the client waited.
+Whole-run means. The two CPU columns, the client's and Neither add up to the wall time. Neither is time no one was on a CPU: the wait for the device, or for a wake-up. The device's own time in reads is beside it and is longer, because a request is still open while its thread is on the CPU sending and collecting it.
 
-| Query | Arm | Wall | Server user | Server kernel | Client CPU | Waiting on disk | Disk reads | KiB read | Peak MiB |
-|---|---|---|---|---|---|---|---|---|---|
-| Point select by primary key | BLACKHOLE | 54.9 µs | 16.6 µs | 20.9 µs | 18.1 µs | 0.0 µs | 0.00 | 0.0 | 133 |
-| Point select by primary key | InnoDB | 62.7 µs | 23.6 µs | 21.4 µs | 18.6 µs | 0.0 µs | 0.00 | 0.0 | 399 |
-| Point select by primary key | MyRocks | 70.8 µs | 32.5 µs | 22.5 µs | 18.5 µs | 0.0 µs | 0.00 | 0.0 | 350 |
-| SUM over a 100-row range | BLACKHOLE | 63.5 µs | 23.8 µs | 21.6 µs | 18.7 µs | 0.0 µs | 0.00 | 0.0 | 133 |
-| SUM over a 100-row range | InnoDB | 98.5 µs | 58.2 µs | 21.5 µs | 19.4 µs | 0.0 µs | 0.00 | 0.0 | 398 |
-| SUM over a 100-row range | MyRocks | 128.7 µs | 88.5 µs | 22.9 µs | 19.5 µs | 0.0 µs | 0.00 | 0.0 | 350 |
-| Return a 100-row range | BLACKHOLE | 60.5 µs | 21.5 µs | 21.4 µs | 18.4 µs | 0.0 µs | 0.00 | 0.0 | 133 |
-| Return a 100-row range | InnoDB | 113.9 µs | 62.2 µs | 26.2 µs | 25.8 µs | 0.0 µs | 0.00 | 0.0 | 399 |
-| Return a 100-row range | MyRocks | 143.5 µs | 93.4 µs | 25.5 µs | 26.3 µs | 0.0 µs | 0.00 | 0.0 | 351 |
+| Query | Arm | Wall | Server user | Server kernel | Client CPU | Neither | Device time in reads | Disk reads | KiB read | Peak MiB |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Point select by primary key | BLACKHOLE | 54.9 µs | 16.6 µs | 20.9 µs | 18.1 µs | 0.0 µs | 0.0 µs | 0.00 | 0.0 | 133 |
+| Point select by primary key | InnoDB | 62.7 µs | 23.6 µs | 21.4 µs | 18.6 µs | 0.0 µs | 0.0 µs | 0.00 | 0.0 | 399 |
+| Point select by primary key | MyRocks | 70.8 µs | 32.5 µs | 22.5 µs | 18.5 µs | 0.0 µs | 0.0 µs | 0.00 | 0.0 | 350 |
+| SUM over a 100-row range | BLACKHOLE | 63.5 µs | 23.8 µs | 21.6 µs | 18.7 µs | 0.0 µs | 0.0 µs | 0.00 | 0.0 | 133 |
+| SUM over a 100-row range | InnoDB | 98.5 µs | 58.2 µs | 21.5 µs | 19.4 µs | 0.0 µs | 0.0 µs | 0.00 | 0.0 | 398 |
+| SUM over a 100-row range | MyRocks | 128.7 µs | 88.5 µs | 22.9 µs | 19.5 µs | 0.0 µs | 0.0 µs | 0.00 | 0.0 | 350 |
+| Return a 100-row range | BLACKHOLE | 60.5 µs | 21.5 µs | 21.4 µs | 18.4 µs | 0.0 µs | 0.0 µs | 0.00 | 0.0 | 133 |
+| Return a 100-row range | InnoDB | 113.9 µs | 62.2 µs | 26.2 µs | 25.8 µs | 0.0 µs | 0.0 µs | 0.00 | 0.0 | 399 |
+| Return a 100-row range | MyRocks | 143.5 µs | 93.4 µs | 25.5 µs | 26.3 µs | 0.0 µs | 0.0 µs | 0.00 | 0.0 | 351 |
 
 ### Share of server CPU by owner, InnoDB
 
@@ -76,31 +76,46 @@ Whole-run means, so the columns add up to the wall time less what the client wai
 | oltp_read_only | 13.3% | 13.3% | 43.5% | 30178 |
 | select_random_points | 54.4% | 54.4% | 20.5% | 34566 |
 | select_random_ranges | 39.3% | 39.3% | 21.7% | 34459 |
+| oltp_write_only | 35.9% | 35.9% | 41.1% | 21538 |
+| oltp_read_write | 23.2% | 23.2% | 38.1% | 26879 |
+| oltp_update_index | 62.0% | 62.0% | 20.5% | 19583 |
+| oltp_update_non_index | 49.5% | 49.5% | 27.0% | 16872 |
+| oltp_insert | 46.7% | 46.7% | 28.3% | 16708 |
 
 ### Share of server CPU by owner, MyRocks, sysbench's tests
 
-| Test | RocksDB core | RocksDB transaction utilities | MyRocks | Engine, all of it | Server's kernel time | Samples |
-|---|---|---|---|---|---|---|
-| oltp_read_only | 16.1% | 1.6% | 7.3% | 25.0% | 35.9% | 31458 |
-| select_random_points | 52.3% | 1.8% | 6.8% | 60.9% | 16.8% | 35244 |
-| select_random_ranges | 37.9% | 2.2% | 9.2% | 49.3% | 17.9% | 34961 |
+| Test | RocksDB core | RocksDB transaction utilities | MyRocks | InnoDB | Engine, all of it | Server's kernel time | Samples |
+|---|---|---|---|---|---|---|---|
+| oltp_read_only | 16.1% | 1.6% | 7.3% | 0.0% | 25.0% | 35.9% | 31458 |
+| select_random_points | 52.3% | 1.8% | 6.8% | 0.0% | 60.9% | 16.8% | 35244 |
+| select_random_ranges | 37.9% | 2.2% | 9.2% | 0.0% | 49.3% | 17.9% | 34961 |
+| oltp_write_only | 33.9% | 3.3% | 4.5% | 0.0% | 41.7% | 35.9% | 21039 |
+| oltp_read_write | 24.8% | 2.0% | 6.7% | 0.0% | 33.5% | 31.4% | 27852 |
+| oltp_update_index | 55.7% | 2.8% | 4.2% | 0.0% | 62.8% | 18.3% | 16682 |
+| oltp_update_non_index | 53.3% | 3.1% | 4.3% | 0.0% | 60.8% | 18.3% | 16652 |
+| oltp_insert | 53.1% | 2.9% | 3.1% | 0.0% | 59.1% | 20.1% | 16500 |
 
 ### What the server asked InnoDB for, one client thread
 
 Share of server CPU, by the handler call InnoDB was entered through.
 
-| Test | InnoDB, all | Estimating rows for the optimizer | Finding the first row of a lookup or range | Stepping to the next row | Ranges handed over as a batch | Preparing the row template | Everything else |
-|---|---|---|---|---|---|---|---|
-| oltp_point_select | 9.9% | 0.0% | 7.1% | 0.0% | 0.0% | 0.8% | 2.0% |
-| sum100 | 23.2% | 6.7% | 1.7% | 12.0% | 1.0% | 0.3% | 1.5% |
-| range100 | 23.3% | 6.5% | 1.6% | 12.7% | 0.8% | 0.4% | 1.3% |
-| oltp_read_only | 13.3% | 2.5% | 4.2% | 4.3% | 0.3% | 0.6% | 1.4% |
-| select_random_points | 54.4% | 26.2% | 24.2% | 0.8% | 1.5% | 0.5% | 1.1% |
-| select_random_ranges | 39.3% | 23.8% | 6.0% | 6.8% | 1.3% | 0.3% | 1.1% |
+| Test | InnoDB, all | Estimating rows for the optimizer | Finding the first row of a lookup or range | Stepping to the next row | Changing a row | Committing: the log write and its sync | In its own threads | Everything else |
+|---|---|---|---|---|---|---|---|---|
+| oltp_point_select | 9.9% | 0.0% | 7.1% | 0.0% | 0.0% | 0.5% | 0.0% | 2.3% |
+| sum100 | 23.2% | 6.7% | 1.7% | 12.2% | 0.0% | 0.2% | 0.0% | 2.4% |
+| range100 | 23.3% | 6.5% | 1.6% | 12.8% | 0.0% | 0.2% | 0.0% | 2.2% |
+| oltp_read_only | 13.3% | 2.5% | 4.2% | 4.4% | 0.0% | 0.2% | 0.0% | 2.0% |
+| select_random_points | 54.4% | 26.2% | 24.2% | 0.9% | 0.0% | 0.2% | 0.0% | 2.9% |
+| select_random_ranges | 39.3% | 23.8% | 6.0% | 6.9% | 0.0% | 0.2% | 0.0% | 2.4% |
+| oltp_write_only | 35.9% | 0.0% | 4.1% | 0.0% | 10.3% | 12.8% | 6.8% | 2.0% |
+| oltp_read_write | 23.2% | 1.8% | 4.1% | 3.0% | 4.2% | 5.6% | 2.3% | 2.1% |
+| oltp_update_index | 62.0% | 0.0% | 3.7% | 0.0% | 15.6% | 26.0% | 14.8% | 2.0% |
+| oltp_update_non_index | 49.5% | 0.0% | 5.1% | 0.0% | 3.9% | 36.0% | 1.8% | 2.8% |
+| oltp_insert | 46.7% | 0.0% | 0.0% | 0.0% | 9.0% | 35.0% | 1.8% | 0.8% |
 
 ### Room against InnoDB, one client thread
 
-InnoDB's share is from the profile; the times are whole-run means.
+InnoDB's share is from the profile; the times are whole-run means. Waiting on disk is the time off the CPU, and no more than the device's time in reads.
 
 | Test | InnoDB's share of server CPU | Time per event | InnoDB CPU per event | Waiting on disk per event | InnoDB's part of it | Gain if that part were free | Gain if it were halved | What +10% takes away |
 |---|---|---|---|---|---|---|---|---|
@@ -110,25 +125,33 @@ InnoDB's share is from the profile; the times are whole-run means.
 | oltp_read_only | 13.3% | 1.21 ms | 120.1 µs | 0.8 µs | 10% | +11% | +5% | 91% of it |
 | select_random_points | 54.4% | 156.3 µs | 72.7 µs | 0.0 µs | 47% | +87% | +30% | 20% of it |
 | select_random_ranges | 39.3% | 146.4 µs | 49.7 µs | 0.0 µs | 34% | +51% | +20% | 27% of it |
+| oltp_write_only | 35.9% | 650.7 µs | 118.3 µs | 0.1 µs | 18% | +22% | +10% | 50% of it |
+| oltp_read_write | 23.2% | 1.95 ms | 295.3 µs | 0.1 µs | 15% | +18% | +8% | 60% of it |
+| oltp_update_index | 62.0% | 230.6 µs | 71.3 µs | 0.0 µs | 31% | +45% | +18% | 29% of it |
+| oltp_update_non_index | 49.5% | 193.9 µs | 39.7 µs | 0.0 µs | 20% | +26% | +11% | 44% of it |
+| oltp_insert | 46.7% | 201.8 µs | 37.9 µs | 0.0 µs | 19% | +23% | +10% | 48% of it |
 
 ### Where a query's time goes, 4 client threads
 
-Per query, not per event. Thread time is the client threads' seconds over the queries they finished.
+Per query, not per event. Thread time is the client threads' seconds over the queries they finished. Neither is the part of it no one was on a CPU for.
 
-| Query | Arm | Thread time | Server user | Server kernel | Client CPU | Waiting on disk | Disk reads | KiB read | Peak MiB |
-|---|---|---|---|---|---|---|---|---|---|
-| oltp_point_select | InnoDB | 22.6 µs | 12.2 µs | 4.2 µs | 5.1 µs | 0.0 µs | 0.00 | 0.0 | 414 |
-| oltp_point_select | MyRocks | 27.9 µs | 17.5 µs | 4.3 µs | 5.1 µs | 0.0 µs | 0.00 | 0.0 | 376 |
-| sum100 | InnoDB | 46.4 µs | 35.4 µs | 4.4 µs | 5.6 µs | 0.0 µs | 0.00 | 0.0 | 421 |
-| sum100 | MyRocks | 68.6 µs | 57.0 µs | 4.6 µs | 5.7 µs | 0.0 µs | 0.00 | 0.0 | 368 |
-| range100 | InnoDB | 54.1 µs | 39.4 µs | 4.8 µs | 8.8 µs | 0.0 µs | 0.00 | 0.0 | 421 |
-| range100 | MyRocks | 76.6 µs | 60.8 µs | 5.4 µs | 9.0 µs | 0.0 µs | 0.00 | 0.0 | 376 |
-| oltp_read_only | InnoDB | 33.6 µs | 24.0 µs | 3.7 µs | 5.4 µs | 0.0 µs | 0.00 | 0.0 | 421 |
-| oltp_read_only | MyRocks | 43.6 µs | 33.1 µs | 4.1 µs | 5.8 µs | 0.0 µs | 0.00 | 0.0 | 376 |
-| select_random_points | InnoDB | 119.6 µs | 105.4 µs | 4.4 µs | 8.4 µs | 0.0 µs | 0.00 | 0.0 | 421 |
-| select_random_points | MyRocks | 169.6 µs | 141.5 µs | 11.1 µs | 10.4 µs | 0.0 µs | 0.00 | 0.0 | 376 |
-| select_random_ranges | InnoDB | 114.7 µs | 102.3 µs | 4.2 µs | 6.9 µs | 0.0 µs | 0.00 | 0.0 | 421 |
-| select_random_ranges | MyRocks | 129.8 µs | 110.8 µs | 7.2 µs | 8.2 µs | 0.0 µs | 0.00 | 0.0 | 376 |
+| Query | Arm | Thread time | Server user | Server kernel | Client CPU | Neither | Device time in reads | Disk reads | KiB read | Peak MiB |
+|---|---|---|---|---|---|---|---|---|---|---|
+| oltp_point_select | BLACKHOLE | 17.2 µs | 7.9 µs | 3.8 µs | 4.7 µs | 0.8 µs | 0.0 µs | 0.00 | 0.0 | 155 |
+| oltp_point_select | InnoDB | 20.8 µs | 11.3 µs | 4.0 µs | 4.7 µs | 0.7 µs | 0.0 µs | 0.00 | 0.0 | 421 |
+| oltp_point_select | MyRocks | 26.2 µs | 16.5 µs | 4.0 µs | 4.9 µs | 0.8 µs | 0.0 µs | 0.00 | 0.0 | 376 |
+| sum100 | BLACKHOLE | 19.5 µs | 10.6 µs | 3.4 µs | 4.8 µs | 0.7 µs | 0.0 µs | 0.00 | 0.0 | 148 |
+| sum100 | InnoDB | 44.2 µs | 34.4 µs | 3.9 µs | 5.2 µs | 0.7 µs | 0.0 µs | 0.00 | 0.0 | 414 |
+| sum100 | MyRocks | 65.0 µs | 55.0 µs | 3.8 µs | 5.2 µs | 1.0 µs | 0.0 µs | 0.00 | 0.0 | 368 |
+| range100 | BLACKHOLE | 19.5 µs | 10.5 µs | 3.3 µs | 4.9 µs | 0.8 µs | 0.0 µs | 0.00 | 0.0 | 155 |
+| range100 | InnoDB | 52.1 µs | 38.2 µs | 4.7 µs | 8.5 µs | 0.7 µs | 0.0 µs | 0.00 | 0.0 | 421 |
+| range100 | MyRocks | 73.9 µs | 59.3 µs | 4.9 µs | 8.7 µs | 1.0 µs | 0.0 µs | 0.00 | 0.0 | 376 |
+| oltp_read_only | InnoDB | 33.6 µs | 24.0 µs | 3.7 µs | 5.4 µs | 0.5 µs | 0.0 µs | 0.00 | 0.0 | 421 |
+| oltp_read_only | MyRocks | 43.6 µs | 33.1 µs | 4.1 µs | 5.8 µs | 0.7 µs | 0.0 µs | 0.00 | 0.0 | 376 |
+| select_random_points | InnoDB | 119.6 µs | 105.4 µs | 4.4 µs | 8.4 µs | 1.4 µs | 0.0 µs | 0.00 | 0.0 | 421 |
+| select_random_points | MyRocks | 169.6 µs | 141.5 µs | 11.1 µs | 10.4 µs | 6.6 µs | 0.0 µs | 0.00 | 0.0 | 376 |
+| select_random_ranges | InnoDB | 114.7 µs | 102.3 µs | 4.2 µs | 6.9 µs | 1.3 µs | 0.0 µs | 0.00 | 0.0 | 421 |
+| select_random_ranges | MyRocks | 129.8 µs | 110.8 µs | 7.2 µs | 8.2 µs | 3.6 µs | 0.0 µs | 0.00 | 0.0 | 376 |
 
 ### Share of server CPU by owner, InnoDB, 4 client threads
 
@@ -140,6 +163,11 @@ Per query, not per event. Thread time is the client threads' seconds over the qu
 | oltp_read_only | 16.9% | 16.9% | 30.7% | 115212 |
 | select_random_points | 61.8% | 61.8% | 12.0% | 135788 |
 | select_random_ranges | 48.5% | 48.5% | 12.1% | 135935 |
+| oltp_write_only | 36.1% | 36.1% | 40.9% | 68978 |
+| oltp_read_write | 23.7% | 23.7% | 38.6% | 85582 |
+| oltp_update_index | 58.7% | 58.7% | 22.8% | 57323 |
+| oltp_update_non_index | 47.2% | 47.2% | 28.7% | 48292 |
+| oltp_insert | 45.8% | 45.8% | 28.9% | 48113 |
 
 ### Share of server CPU by owner, MyRocks, 4 client threads
 
@@ -151,28 +179,43 @@ Per query, not per event. Thread time is the client threads' seconds over the qu
 | oltp_read_only | 18.5% | 1.7% | 8.8% | 29.0% | 24.6% | 120410 |
 | select_random_points | 58.9% | 1.8% | 7.3% | 68.0% | 9.6% | 136693 |
 | select_random_ranges | 40.7% | 2.3% | 10.1% | 53.1% | 11.4% | 136569 |
+| oltp_write_only | 34.8% | 3.5% | 5.0% | 43.3% | 33.1% | 67503 |
+| oltp_read_write | 26.6% | 2.2% | 6.8% | 35.5% | 31.1% | 91897 |
+| oltp_update_index | 52.2% | 3.5% | 5.3% | 61.0% | 17.4% | 49164 |
+| oltp_update_non_index | 50.9% | 3.7% | 5.3% | 59.9% | 18.1% | 48169 |
+| oltp_insert | 51.0% | 3.6% | 3.6% | 58.2% | 19.1% | 45069 |
 
 ### What the server asked InnoDB for, 4 client threads
 
-| Test | InnoDB, all | Estimating rows for the optimizer | Finding the first row of a lookup or range | Stepping to the next row | Ranges handed over as a batch | Preparing the row template | Everything else |
-|---|---|---|---|---|---|---|---|
-| oltp_point_select | 13.6% | 0.0% | 9.3% | 0.0% | 0.0% | 1.0% | 3.3% |
-| sum100 | 27.7% | 8.0% | 2.2% | 13.8% | 1.0% | 0.4% | 2.2% |
-| range100 | 28.6% | 8.2% | 2.1% | 14.8% | 1.0% | 0.5% | 2.0% |
-| oltp_read_only | 16.9% | 2.9% | 5.5% | 5.3% | 0.5% | 0.7% | 2.0% |
-| select_random_points | 61.8% | 26.1% | 31.3% | 1.1% | 1.2% | 0.5% | 1.6% |
-| select_random_ranges | 48.5% | 25.7% | 11.0% | 8.6% | 1.2% | 0.2% | 1.8% |
+| Test | InnoDB, all | Estimating rows for the optimizer | Finding the first row of a lookup or range | Stepping to the next row | Changing a row | Committing: the log write and its sync | In its own threads | Everything else |
+|---|---|---|---|---|---|---|---|---|
+| oltp_point_select | 13.6% | 0.0% | 9.3% | 0.0% | 0.0% | 0.7% | 0.0% | 3.5% |
+| sum100 | 27.7% | 8.0% | 2.2% | 14.0% | 0.0% | 0.4% | 0.0% | 3.0% |
+| range100 | 28.6% | 8.2% | 2.1% | 14.9% | 0.0% | 0.4% | 0.0% | 3.0% |
+| oltp_read_only | 16.9% | 2.9% | 5.5% | 5.3% | 0.0% | 0.2% | 0.0% | 2.9% |
+| select_random_points | 61.8% | 26.1% | 31.3% | 1.1% | 0.0% | 0.3% | 0.0% | 2.9% |
+| select_random_ranges | 48.5% | 25.7% | 11.0% | 8.6% | 0.0% | 0.3% | 0.0% | 2.9% |
+| oltp_write_only | 36.1% | 0.0% | 3.9% | 0.0% | 11.1% | 13.6% | 4.8% | 2.6% |
+| oltp_read_write | 23.7% | 2.0% | 4.7% | 3.2% | 4.1% | 5.4% | 1.7% | 2.8% |
+| oltp_update_index | 58.7% | 0.0% | 4.1% | 0.0% | 14.9% | 26.5% | 11.0% | 2.1% |
+| oltp_update_non_index | 47.2% | 0.0% | 5.4% | 0.0% | 4.8% | 32.6% | 1.6% | 2.9% |
+| oltp_insert | 45.8% | 0.0% | 0.0% | 0.0% | 11.0% | 32.1% | 1.5% | 1.2% |
 
 ### Room against InnoDB, 4 client threads
 
 | Test | InnoDB's share of server CPU | Time per event | InnoDB CPU per event | Waiting on disk per event | InnoDB's part of it | Gain if that part were free | Gain if it were halved | What +10% takes away |
 |---|---|---|---|---|---|---|---|---|
-| oltp_point_select | 13.6% | 22.6 µs | 2.2 µs | 0.0 µs | 10% | +11% | +5% | 92% of it |
-| sum100 | 27.7% | 46.4 µs | 11.0 µs | 0.0 µs | 24% | +31% | +13% | 38% of it |
-| range100 | 28.6% | 54.1 µs | 12.7 µs | 0.0 µs | 23% | +31% | +13% | 39% of it |
+| oltp_point_select | 13.6% | 20.8 µs | 2.1 µs | 0.0 µs | 10% | +11% | +5% | 91% of it |
+| sum100 | 27.7% | 44.2 µs | 10.6 µs | 0.0 µs | 24% | +32% | +14% | 38% of it |
+| range100 | 28.6% | 52.1 µs | 12.3 µs | 0.0 µs | 24% | +31% | +13% | 39% of it |
 | oltp_read_only | 16.9% | 537.2 µs | 75.0 µs | 0.0 µs | 14% | +16% | +8% | 65% of it |
 | select_random_points | 61.8% | 119.6 µs | 67.8 µs | 0.0 µs | 57% | +131% | +40% | 16% of it |
 | select_random_ranges | 48.5% | 114.7 µs | 51.6 µs | 0.0 µs | 45% | +82% | +29% | 20% of it |
+| oltp_write_only | 36.1% | 820.6 µs | 121.5 µs | 0.0 µs | 15% | +17% | +8% | 61% of it |
+| oltp_read_write | 23.7% | 2.42 ms | 281.1 µs | 0.0 µs | 12% | +13% | +6% | 78% of it |
+| oltp_update_index | 58.7% | 355.3 µs | 75.0 µs | 0.0 µs | 21% | +27% | +12% | 43% of it |
+| oltp_update_non_index | 47.2% | 314.5 µs | 43.9 µs | 0.0 µs | 14% | +16% | +7% | 65% of it |
+| oltp_insert | 45.8% | 319.7 µs | 43.0 µs | 0.0 µs | 13% | +16% | +7% | 68% of it |
 
 ### sysbench throughput
 
@@ -181,11 +224,11 @@ Transactions per second. Reads: the best tenth of measured seconds, median in br
 | Test | Threads | InnoDB tps | MyRocks tps | MySup's mark (1.10× the better) |
 |---|---|---|---|---|
 | oltp_point_select | 1 | 16948 (16056) | 15316 (14252) | 18643 |
-| oltp_point_select | 4 | 196022 (187708) | 153056 (146847) | 215624 |
+| oltp_point_select | 4 | 202553 (197096) | 161273 (155651) | 222808 |
 | sum100 | 1 | 11018 (10338) | 8590 (7813) | 12120 |
-| sum100 | 4 | 92033 (89029) | 62035 (60478) | 101236 |
+| sum100 | 4 | 95082 (92581) | 63988 (62364) | 104590 |
 | range100 | 1 | 9713 (8835) | 7722 (7101) | 10684 |
-| range100 | 4 | 77355 (75179) | 54597 (52757) | 85090 |
+| range100 | 4 | 79941 (77914) | 56388 (54734) | 87936 |
 | oltp_read_only | 1 | 877 (832) | 759 (716) | 965 |
 | oltp_read_only | 4 | 7848 (7585) | 6078 (5829) | 8632 |
 | select_random_points | 1 | 6785 (6443) | 5459 (5211) | 7463 |
@@ -237,18 +280,21 @@ Whole-run means per event.
 | oltp_point_select | 1 | InnoDB | 16948 | 1 | 42.0 µs | 0.00 | 0.0 | 0.11 | 2.2% | 399 |
 | oltp_point_select | 1 | MyRocks | 15316 | 1 | 50.3 µs | 0.00 | 0.0 | 0.14 | 4.9% | 350 |
 | oltp_point_select | 1 | BLACKHOLE | 19358 | 1 | 35.0 µs | 0.00 | 0.0 | 0.10 | 3.9% | 133 |
-| oltp_point_select | 4 | InnoDB | 196022 | 1 | 15.2 µs | 0.00 | 0.0 | 0.08 | 6.8% | 414 |
-| oltp_point_select | 4 | MyRocks | 153056 | 1 | 20.6 µs | 0.00 | 0.0 | 0.08 | 3.1% | 376 |
+| oltp_point_select | 4 | InnoDB | 202553 | 1 | 14.8 µs | 0.00 | 0.0 | 0.07 | 1.1% | 421 |
+| oltp_point_select | 4 | MyRocks | 161273 | 1 | 19.6 µs | 0.00 | 0.0 | 0.08 | 3.6% | 376 |
+| oltp_point_select | 4 | BLACKHOLE | 253595 | 1 | 11.0 µs | 0.00 | 0.0 | 0.07 | 2.2% | 155 |
 | sum100 | 1 | InnoDB | 11018 | 1 | 73.1 µs | 0.00 | 0.0 | 0.21 | 8.6% | 398 |
 | sum100 | 1 | MyRocks | 8590 | 1 | 99.6 µs | 0.00 | 0.0 | 0.28 | 0.5% | 350 |
 | sum100 | 1 | BLACKHOLE | 16883 | 1 | 41.9 µs | 0.00 | 0.0 | 0.12 | 3.3% | 133 |
-| sum100 | 4 | InnoDB | 92033 | 1 | 38.0 µs | 0.00 | 0.0 | 0.11 | 0.8% | 421 |
-| sum100 | 4 | MyRocks | 62035 | 1 | 58.8 µs | 0.00 | 0.0 | 0.16 | 0.8% | 368 |
+| sum100 | 4 | InnoDB | 95082 | 1 | 37.0 µs | 0.00 | 0.0 | 0.11 | 1.3% | 414 |
+| sum100 | 4 | MyRocks | 63988 | 1 | 57.0 µs | 0.00 | 0.0 | 0.14 | 0.3% | 368 |
+| sum100 | 4 | BLACKHOLE | 218979 | 1 | 13.4 µs | 0.00 | 0.0 | 0.07 | 0.1% | 148 |
 | range100 | 1 | InnoDB | 9713 | 1 | 79.2 µs | 0.00 | 0.0 | 0.25 | 7.3% | 399 |
 | range100 | 1 | MyRocks | 7722 | 1 | 106.5 µs | 0.00 | 0.0 | 0.30 | 4.6% | 351 |
 | range100 | 1 | BLACKHOLE | 17700 | 1 | 39.8 µs | 0.00 | 0.0 | 0.11 | 5.1% | 133 |
-| range100 | 4 | InnoDB | 77355 | 1 | 42.8 µs | 0.00 | 0.0 | 0.13 | 1.8% | 421 |
-| range100 | 4 | MyRocks | 54597 | 1 | 64.1 µs | 0.00 | 0.0 | 0.17 | 1.2% | 376 |
+| range100 | 4 | InnoDB | 79941 | 1 | 41.6 µs | 0.00 | 0.0 | 0.12 | 0.1% | 421 |
+| range100 | 4 | MyRocks | 56388 | 1 | 62.2 µs | 0.00 | 0.0 | 0.16 | 0.7% | 376 |
+| range100 | 4 | BLACKHOLE | 222619 | 1 | 13.1 µs | 0.00 | 0.0 | 0.08 | 2.9% | 155 |
 | oltp_read_only | 1 | InnoDB | 877 | 16 | 855.4 µs | 0.01 | 0.0 | 2.07 | 1.8% | 421 |
 | oltp_read_only | 1 | MyRocks | 759 | 16 | 1.04 ms | 0.00 | 0.0 | 2.39 | 2.9% | 376 |
 | oltp_read_only | 4 | InnoDB | 7848 | 16 | 423.9 µs | 0.00 | 0.0 | 1.04 | 2.9% | 421 |
@@ -299,6 +345,9 @@ Whole-run means per event.
 | mem/20261126T214215Z-607d300.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 10.13–10.79 | 45–49 |
 | mem/20261126T214901Z-607d300-dirty.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 10.41–10.91 | 34–50 |
 | mem/20261127T000109Z-73e0384.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 10.33–11.14 | 32–48 |
+| mem/20261127T010839Z-15313e1.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 10.39–11.10 | 33–60 |
+| mem/20261127T012436Z-15313e1.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 9.82–10.62 | 32–45 |
+| mem/20261127T013134Z-2e2643c.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 10.49–10.84 | 44–50 |
 
 ## Under the memory limit
 
@@ -316,16 +365,16 @@ Microseconds: the best tenth of measured seconds, with the median in brackets.
 
 ### Where a query's time goes, one client thread
 
-Whole-run means, so the columns add up to the wall time less what the client waited.
+Whole-run means. The two CPU columns, the client's and Neither add up to the wall time. Neither is time no one was on a CPU: the wait for the device, or for a wake-up. The device's own time in reads is beside it and is longer, because a request is still open while its thread is on the CPU sending and collecting it.
 
-| Query | Arm | Wall | Server user | Server kernel | Client CPU | Waiting on disk | Disk reads | KiB read | Peak MiB |
-|---|---|---|---|---|---|---|---|---|---|
-| Point select by primary key | InnoDB | 99.8 µs | 26.1 µs | 33.9 µs | 17.4 µs | 32.8 µs | 0.84 | 13.5 | 763 |
-| Point select by primary key | MyRocks | 141.1 µs | 65.2 µs | 34.0 µs | 17.1 µs | 36.3 µs | 0.80 | 6.8 | 935 |
-| SUM over a 100-row range | InnoDB | 190.2 µs | 65.7 µs | 53.7 µs | 18.4 µs | 74.4 µs | 1.98 | 31.7 | 763 |
-| SUM over a 100-row range | MyRocks | 337.9 µs | 172.3 µs | 55.8 µs | 25.8 µs | 92.3 µs | 1.76 | 16.6 | 935 |
-| Return a 100-row range | InnoDB | 206.5 µs | 69.4 µs | 55.3 µs | 24.4 µs | 77.7 µs | 1.97 | 31.6 | 763 |
-| Return a 100-row range | MyRocks | 361.8 µs | 174.2 µs | 57.9 µs | 33.2 µs | 103.3 µs | 1.76 | 16.6 | 935 |
+| Query | Arm | Wall | Server user | Server kernel | Client CPU | Neither | Device time in reads | Disk reads | KiB read | Peak MiB |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Point select by primary key | InnoDB | 99.8 µs | 26.1 µs | 33.9 µs | 17.4 µs | 22.4 µs | 32.8 µs | 0.84 | 13.5 | 763 |
+| Point select by primary key | MyRocks | 141.1 µs | 65.2 µs | 34.0 µs | 17.1 µs | 24.8 µs | 36.3 µs | 0.80 | 6.8 | 935 |
+| SUM over a 100-row range | InnoDB | 190.2 µs | 65.7 µs | 53.7 µs | 18.4 µs | 52.4 µs | 74.4 µs | 1.98 | 31.7 | 763 |
+| SUM over a 100-row range | MyRocks | 337.9 µs | 172.3 µs | 55.8 µs | 25.8 µs | 84.0 µs | 92.3 µs | 1.76 | 16.6 | 935 |
+| Return a 100-row range | InnoDB | 206.5 µs | 69.4 µs | 55.3 µs | 24.4 µs | 57.3 µs | 77.7 µs | 1.97 | 31.6 | 763 |
+| Return a 100-row range | MyRocks | 361.8 µs | 174.2 µs | 57.9 µs | 33.2 µs | 96.5 µs | 103.3 µs | 1.76 | 16.6 | 935 |
 
 ### Share of server CPU by owner, InnoDB
 
@@ -348,40 +397,98 @@ Whole-run means, so the columns add up to the wall time less what the client wai
 | of which in the kernel | 23.2% | 12.2% | 13.1% |
 | Samples | 26834 | 26402 | 26082 |
 
+### Share of server CPU by owner, InnoDB, sysbench's tests
+
+| Test | InnoDB | Engine, all of it | Server's kernel time | Samples |
+|---|---|---|---|---|
+| oltp_read_only | 37.1% | 37.1% | 28.9% | 24995 |
+| select_random_points | 79.5% | 79.5% | 6.4% | 22429 |
+| select_random_ranges | 49.2% | 49.2% | 18.1% | 35158 |
+
+### Share of server CPU by owner, MyRocks, sysbench's tests
+
+| Test | RocksDB core | RocksDB transaction utilities | MyRocks | Engine, all of it | Server's kernel time | Samples |
+|---|---|---|---|---|---|---|
+| oltp_read_only | 48.5% | 0.8% | 4.1% | 53.4% | 19.6% | 27306 |
+| select_random_points | 79.4% | 0.8% | 2.9% | 83.1% | 3.7% | 27864 |
+| select_random_ranges | 42.7% | 1.9% | 8.8% | 53.4% | 14.6% | 35228 |
+
 ### What the server asked InnoDB for, one client thread
 
 Share of server CPU, by the handler call InnoDB was entered through.
 
-| Test | InnoDB, all | Estimating rows for the optimizer | Finding the first row of a lookup or range | Stepping to the next row | Ranges handed over as a batch | Preparing the row template | Everything else |
-|---|---|---|---|---|---|---|---|
-| oltp_point_select | 36.4% | 0.0% | 34.5% | 0.0% | 0.0% | 0.5% | 1.5% |
-| sum100 | 48.7% | 38.3% | 1.6% | 6.7% | 0.8% | 0.3% | 1.0% |
-| range100 | 48.4% | 38.1% | 1.4% | 7.0% | 0.7% | 0.3% | 0.9% |
+| Test | InnoDB, all | Estimating rows for the optimizer | Finding the first row of a lookup or range | Stepping to the next row | Changing a row | Committing: the log write and its sync | In its own threads | Everything else |
+|---|---|---|---|---|---|---|---|---|
+| oltp_point_select | 36.4% | 0.0% | 34.5% | 0.0% | 0.0% | 0.3% | 0.0% | 1.7% |
+| sum100 | 48.7% | 38.3% | 1.6% | 6.7% | 0.0% | 0.2% | 0.0% | 1.9% |
+| range100 | 48.4% | 38.1% | 1.4% | 7.1% | 0.0% | 0.2% | 0.0% | 1.7% |
+| oltp_read_only | 37.1% | 14.9% | 17.6% | 2.7% | 0.0% | 0.1% | 0.0% | 1.7% |
+| select_random_points | 79.5% | 33.1% | 44.5% | 0.4% | 0.0% | 0.1% | 0.0% | 1.3% |
+| select_random_ranges | 49.2% | 34.3% | 6.4% | 6.1% | 0.0% | 0.1% | 0.0% | 2.3% |
 
 ### Room against InnoDB, one client thread
 
-InnoDB's share is from the profile; the times are whole-run means.
+InnoDB's share is from the profile; the times are whole-run means. Waiting on disk is the time off the CPU, and no more than the device's time in reads.
 
 | Test | InnoDB's share of server CPU | Time per event | InnoDB CPU per event | Waiting on disk per event | InnoDB's part of it | Gain if that part were free | Gain if it were halved | What +10% takes away |
 |---|---|---|---|---|---|---|---|---|
-| oltp_point_select | 36.4% | 99.8 µs | 21.9 µs | 32.8 µs | 55% | +121% | +38% | 17% of it |
-| sum100 | 48.7% | 190.2 µs | 58.1 µs | 74.4 µs | 70% | +229% | +53% | 13% of it |
-| range100 | 48.4% | 206.5 µs | 60.4 µs | 77.7 µs | 67% | +202% | +50% | 14% of it |
+| oltp_point_select | 36.4% | 99.8 µs | 21.9 µs | 22.4 µs | 44% | +80% | +28% | 20% of it |
+| sum100 | 48.7% | 190.2 µs | 58.1 µs | 52.4 µs | 58% | +139% | +41% | 16% of it |
+| range100 | 48.4% | 206.5 µs | 60.4 µs | 57.3 µs | 57% | +133% | +40% | 16% of it |
+| oltp_read_only | 37.1% | 2.11 ms | 482.2 µs | 507.2 µs | 47% | +88% | +31% | 19% of it |
+| select_random_points | 79.5% | 922.8 µs | 380.9 µs | 398.0 µs | 84% | +541% | +73% | 11% of it |
+| select_random_ranges | 49.2% | 162.4 µs | 70.5 µs | 0.0 µs | 43% | +77% | +28% | 21% of it |
 
 ### Where a query's time goes, 4 client threads
 
-Per query, not per event. Thread time is the client threads' seconds over the queries they finished.
+Per query, not per event. Thread time is the client threads' seconds over the queries they finished. Neither is the part of it no one was on a CPU for.
 
-| Query | Arm | Thread time | Server user | Server kernel | Client CPU | Waiting on disk | Disk reads | KiB read | Peak MiB |
-|---|---|---|---|---|---|---|---|---|---|
-| oltp_point_select | InnoDB | 135.2 µs | 27.9 µs | 32.2 µs | 19.4 µs | 44.8 µs | 0.84 | 13.5 | 780 |
-| oltp_point_select | MyRocks | 195.4 µs | 64.7 µs | 40.9 µs | 25.6 µs | 40.5 µs | 0.79 | 6.8 | 953 |
-| oltp_read_only | InnoDB | 189.9 µs | 46.1 µs | 44.1 µs | 25.4 µs | 52.2 µs | 1.02 | 16.2 | 787 |
-| oltp_read_only | MyRocks | 249.3 µs | 95.8 µs | 47.2 µs | 27.9 µs | 48.1 µs | 0.94 | 8.4 | 955 |
-| select_random_points | InnoDB | 1.31 ms | 270.7 µs | 247.2 µs | 41.6 µs | 769.0 µs | 14.07 | 225.2 | 787 |
-| select_random_points | MyRocks | 1.46 ms | 682.5 µs | 237.7 µs | 50.1 µs | 497.1 µs | 10.20 | 83.4 | 958 |
-| select_random_ranges | InnoDB | 134.6 µs | 123.8 µs | 2.6 µs | 6.8 µs | 0.0 µs | 0.00 | 0.0 | 787 |
-| select_random_ranges | MyRocks | 128.8 µs | 113.2 µs | 5.7 µs | 7.5 µs | 0.0 µs | 0.00 | 0.0 | 974 |
+| Query | Arm | Thread time | Server user | Server kernel | Client CPU | Neither | Device time in reads | Disk reads | KiB read | Peak MiB |
+|---|---|---|---|---|---|---|---|---|---|---|
+| oltp_point_select | InnoDB | 135.2 µs | 27.9 µs | 32.2 µs | 19.4 µs | 55.6 µs | 44.8 µs | 0.84 | 13.5 | 780 |
+| oltp_point_select | MyRocks | 195.4 µs | 64.7 µs | 40.9 µs | 25.6 µs | 64.2 µs | 40.5 µs | 0.79 | 6.8 | 953 |
+| oltp_read_only | InnoDB | 189.9 µs | 46.1 µs | 44.1 µs | 25.4 µs | 74.3 µs | 52.2 µs | 1.02 | 16.2 | 787 |
+| oltp_read_only | MyRocks | 249.3 µs | 95.8 µs | 47.2 µs | 27.9 µs | 78.3 µs | 48.1 µs | 0.94 | 8.4 | 955 |
+| select_random_points | InnoDB | 1.31 ms | 270.7 µs | 247.2 µs | 41.6 µs | 747.9 µs | 769.0 µs | 14.07 | 225.2 | 787 |
+| select_random_points | MyRocks | 1.46 ms | 682.5 µs | 237.7 µs | 50.1 µs | 492.2 µs | 497.1 µs | 10.20 | 83.4 | 958 |
+| select_random_ranges | InnoDB | 134.6 µs | 123.8 µs | 2.6 µs | 6.8 µs | 1.4 µs | 0.0 µs | 0.00 | 0.0 | 787 |
+| select_random_ranges | MyRocks | 128.8 µs | 113.2 µs | 5.7 µs | 7.5 µs | 2.4 µs | 0.0 µs | 0.00 | 0.0 | 974 |
+
+### Share of server CPU by owner, InnoDB, 4 client threads
+
+| Test | InnoDB | Engine, all of it | Server's kernel time | Samples |
+|---|---|---|---|---|
+| oltp_point_select | 36.9% | 36.9% | 37.4% | 76351 |
+| oltp_read_only | 36.7% | 36.7% | 30.8% | 80151 |
+| select_random_points | 77.8% | 77.8% | 7.6% | 68672 |
+| select_random_ranges | 56.5% | 56.5% | 10.4% | 139321 |
+
+### Share of server CPU by owner, MyRocks, 4 client threads
+
+| Test | RocksDB core | RocksDB transaction utilities | MyRocks | InnoDB | Engine, all of it | Server's kernel time | Samples |
+|---|---|---|---|---|---|---|---|
+| oltp_point_select | 51.0% | 1.3% | 3.1% | 0.0% | 55.4% | 24.2% | 92371 |
+| oltp_read_only | 49.1% | 0.9% | 4.5% | 0.0% | 54.5% | 19.4% | 99090 |
+| select_random_points | 78.4% | 0.9% | 3.2% | 0.0% | 82.6% | 4.8% | 102674 |
+| select_random_ranges | 45.6% | 2.0% | 9.9% | 0.0% | 57.5% | 10.1% | 138173 |
+
+### What the server asked InnoDB for, 4 client threads
+
+| Test | InnoDB, all | Estimating rows for the optimizer | Finding the first row of a lookup or range | Stepping to the next row | Changing a row | Committing: the log write and its sync | In its own threads | Everything else |
+|---|---|---|---|---|---|---|---|---|
+| oltp_point_select | 36.9% | 0.0% | 33.9% | 0.0% | 0.0% | 0.5% | 0.5% | 2.1% |
+| oltp_read_only | 36.7% | 14.1% | 17.0% | 2.8% | 0.0% | 0.2% | 0.4% | 2.2% |
+| select_random_points | 77.8% | 31.1% | 42.9% | 0.5% | 0.0% | 0.2% | 1.1% | 2.0% |
+| select_random_ranges | 56.5% | 36.5% | 10.5% | 6.9% | 0.0% | 0.2% | 0.0% | 2.4% |
+
+### Room against InnoDB, 4 client threads
+
+| Test | InnoDB's share of server CPU | Time per event | InnoDB CPU per event | Waiting on disk per event | InnoDB's part of it | Gain if that part were free | Gain if it were halved | What +10% takes away |
+|---|---|---|---|---|---|---|---|---|
+| oltp_point_select | 36.9% | 135.2 µs | 22.2 µs | 44.8 µs | 50% | +98% | +33% | 18% of it |
+| oltp_read_only | 36.7% | 3.04 ms | 529.2 µs | 835.0 µs | 45% | +81% | +29% | 20% of it |
+| select_random_points | 77.8% | 1.31 ms | 403.0 µs | 747.9 µs | 88% | +735% | +79% | 10% of it |
+| select_random_ranges | 56.5% | 134.6 µs | 71.4 µs | 0.0 µs | 53% | +113% | +36% | 17% of it |
 
 ### sysbench throughput
 
@@ -399,16 +506,16 @@ Transactions per second. Reads: the best tenth of measured seconds, median in br
 | select_random_points | 4 | 3197 (3074) | 2842 (2741) | 3516 |
 | select_random_ranges | 1 | 6358 (6186) | 5989 (5773) | 6994 |
 | select_random_ranges | 4 | 30929 (29926) | 32348 (31440) | 35583 |
-| oltp_write_only | 1 | 1020 (1020) |  | 1122 |
-| oltp_write_only | 4 | 2266 (2290) |  | 2493 |
-| oltp_read_write | 1 | 279 (280) |  | 307 |
-| oltp_read_write | 4 | 754 (753) |  | 829 |
-| oltp_update_index | 1 | 2118 (2134) |  | 2330 |
-| oltp_update_index | 4 | 4642 (4678) |  | 5106 |
-| oltp_update_non_index | 1 | 3088 (3077) |  | 3397 |
-| oltp_update_non_index | 4 | 6992 (7002) |  | 7691 |
-| oltp_insert | 1 | 5290 (5269) |  | 5819 |
-| oltp_insert | 4 | 12677 (12691) |  | 13944 |
+| oltp_write_only | 1 | 1020 (1020) |  |  |
+| oltp_write_only | 4 | 2266 (2290) |  |  |
+| oltp_read_write | 1 | 279 (280) |  |  |
+| oltp_read_write | 4 | 754 (753) |  |  |
+| oltp_update_index | 1 | 2118 (2134) |  |  |
+| oltp_update_index | 4 | 4642 (4678) |  |  |
+| oltp_update_non_index | 1 | 3088 (3077) |  |  |
+| oltp_update_non_index | 4 | 6992 (7002) |  |  |
+| oltp_insert | 1 | 5290 (5269) |  |  |
+| oltp_insert | 4 | 12677 (12691) |  |  |
 
 ### Where a write's time goes
 
@@ -476,4 +583,6 @@ Whole-run means per event.
 | limit/20261126T192759Z-8886b7c.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 9.46–10.52 | 48–59 |
 | limit/20261126T224815Z-7982e90.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 9.86–10.69 | 37–46 |
 | limit/20261126T233841Z-73e0384.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 10.71–10.96 | 34–36 |
+| limit/20261127T005349Z-8672bc4.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 10.02–10.87 | 32–46 |
+| limit/20261127T005957Z-15313e1.json | Intel(R) Xeon(R) Processor @ 2.10GHz | 10.67–10.73 | 35–51 |
 

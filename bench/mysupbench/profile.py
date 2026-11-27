@@ -190,7 +190,7 @@ def attribute(text, top=25):
         "kernel": dict(kernel),
         # Samples by thread name, and those taken in an engine's own
         # threads by engine.
-        "threads": dict(threads.most_common(top)),
+        "by_thread": dict(threads.most_common(top)),
         "own_threads": dict(own),
         "top_self": {o: c.most_common(top) for o, c in self_syms.items()},
         "top_owner_frames": {o: c.most_common(top)

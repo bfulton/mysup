@@ -370,17 +370,20 @@ def profile_table_any(profiles, cond, arm):
                  rows)
 
 
-ENTRY = [("records_in_range", "Estimating rows for the optimizer"),
-         ("index_read", "Finding the first row of a lookup or range"),
-         ("general_fetch", "Stepping to the next row"),
-         ("multi_range_read", "Ranges handed over as a batch"),
-         ("build_template", "Preparing the row template")]
+ENTRY = [(("records_in_range",), "Estimating rows for the optimizer"),
+         (("index_read",), "Finding the first row of a lookup or range"),
+         (("general_fetch", "index_next", "rnd_next"),
+          "Stepping to the next row"),
+         (("write_row", "update_row", "delete_row"), "Changing a row"),
+         (("innobase_commit", "innobase_xa_prepare"),
+          "Committing: the log write and its sync")]
 
 
 def entry_table(profiles, cond):
     """InnoDB's share of server CPU by the handler call it was reached
     through. InnoDB is known in a profile by its entry points, so the
-    innermost one in a sample's stack is what the server had asked for."""
+    innermost one in a sample's stack is what the server had asked for.
+    What its own threads did was asked for by no call."""
     rows = []
     for w in plan.WORKLOADS:
         p = profiles.get((cond, "innodb", w))
@@ -390,16 +393,21 @@ def entry_table(profiles, cond):
         frames = p["top_owner_frames"].get("innodb", [])
         row = [w, f"{p['owners']['innodb'] / n:.1%}"]
         seen = 0
-        for key, _ in ENTRY:
-            c = sum(k for name, k in frames if key in name.split("(")[0])
+        for keys, _ in ENTRY:
+            c = sum(k for name, k in frames
+                    if any(key in name.split("(")[0] for key in keys))
             seen += c
             row.append(f"{c / n:.1%}")
-        row.append(f"{(p['owners']['innodb'] - seen) / n:.1%}")
+        own = p.get("own_threads", {}).get("innodb", 0)
+        row.append(f"{own / n:.1%}")
+        # A sample in InnoDB's own thread that also passed an entry point
+        # would be in both; its threads pass none.
+        row.append(f"{max(0, p['owners']['innodb'] - seen - own) / n:.1%}")
         rows.append(row)
     if not rows:
         return None
     return table(["Test", "InnoDB, all"] + [t for _, t in ENTRY]
-                 + ["Everything else"], rows)
+                 + ["In its own threads", "Everything else"], rows)
 
 
 def throughput_table(cells, cond):
@@ -411,16 +419,17 @@ def throughput_table(cells, cond):
         cs = {a: cells.get((cond, a, w, t)) for a in plan.BASELINE_ARMS}
         row = [w, t]
         best = 0.0
+        both = True
         for a in plan.BASELINE_ARMS:
             c = cs[a]
             if c and c.n:
                 row.append(f"{c.rate:.0f} ({c.tps[1]:.0f})")
                 best = max(best, c.rate)
-            elif c and c.failed:
-                row.append("server died")
-            else:
-                row.append("")
-        row.append(f"{best * 1.10:.0f}" if best else "")
+                continue
+            both = False
+            row.append("server died" if c and c.failed else "")
+        # A mark needs both rivals: it is a tenth over the better of them.
+        row.append(f"{best * 1.10:.0f}" if both else "")
         rows.append(row)
     return table(["Test", "Threads"] +
                  [plan.ARMS[a]["title"] + " tps" for a in plan.BASELINE_ARMS]

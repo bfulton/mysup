@@ -99,7 +99,8 @@ a time. The host's speed drifts, and a pass apart is how the rows show it.
 for 20 seconds of the workload, and every sample given to one owner by the
 rule at the top of [`mysupbench/profile.py`](mysupbench/profile.py). The
 rule finds an engine by the calls that enter it from a query's thread, and
-by the names of the threads it runs for itself.
+by the names of the threads it runs for itself. A server that has not yet
+run the workload runs it for the condition's warm-up first.
 
 **Allocator.** An arm runs under the C library's allocator unless the
 condition names another for it in `plan.py`. Under the memory limit MyRocks
@@ -117,6 +118,7 @@ before and after:
 | server CPU, exact | the process's CPU-time clock, `clock_gettime` |
 | server CPU by second | the same clock, read as each of sysbench's one-second reports arrives |
 | user and kernel split | `utime`, `stime` in `/proc/<pid>/stat` |
+| server CPU by thread name | `/proc/<pid>/task/*/stat`, over the threads that lived through the run |
 | client CPU | sysbench's own `rusage` |
 | disk reads, sectors, time in reads | `/sys/block/<dev>/stat` |
 | bytes the server read and wrote | `/proc/<pid>/io` |
@@ -197,6 +199,7 @@ claims can be checked:
 | `tools/logsync.py` | what a durable log write costs by how the log file is laid out |
 | `tools/tracesync.py` | each engine's write and sync calls per commit, under `strace` |
 | `tools/rocksmem.py` | MyRocks' memory under the limit, by allocator and cache size |
+| `tools/divelimit.py` | what InnoDB's row estimates cost it in `select_random_points`, by switching them off |
 
 ## Not done
 

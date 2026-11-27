@@ -119,7 +119,7 @@ class Attribution(unittest.TestCase):
                          {"innodb": 2, "server": 1, "rocksdb_core": 1})
         self.assertEqual(got["own_threads"],
                          {"innodb": 2, "rocksdb_core": 1})
-        self.assertEqual(got["threads"]["one_connection"], 1)
+        self.assertEqual(got["by_thread"]["one_connection"], 1)
 
     def test_a_query_thread_decides_nothing(self):
         self.assertIsNone(profile.thread_owner("one_connection"))

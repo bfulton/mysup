@@ -34,22 +34,22 @@ Microseconds: the best tenth of measured seconds, with the median in brackets.
 
 ### Where a query's time goes, one client thread
 
-Whole-run means, so the columns add up to the wall time less what the client waited.
+Whole-run means. The two CPU columns, the client's and Neither add up to the wall time. Neither is time no one was on a CPU: the wait for the device, or for a wake-up. The device's own time in reads is beside it and is longer, because a request is still open while its thread is on the CPU sending and collecting it.
 
-| Query | Arm | Wall | Server user | Server kernel | Client CPU | Waiting on disk | Disk reads | KiB read | Peak MiB |
-|---|---|---|---|---|---|---|---|---|---|
-| Point select by primary key | BLACKHOLE | 58.9 µs | 16.8 µs | 21.5 µs | 18.7 µs | 0.0 µs | 0.00 | 0.0 | 114 |
-| Point select by primary key | InnoDB | 66.6 µs | 24.4 µs | 21.4 µs | 18.6 µs | 0.0 µs | 0.00 | 0.0 | 381 |
-| Point select by primary key | MyRocks | 74.5 µs | 32.0 µs | 21.6 µs | 18.7 µs | 0.1 µs | 0.00 | 0.0 | 333 |
-| Point select by primary key | MyRocks, server defaults | 78.4 µs | 34.6 µs | 22.1 µs | 19.2 µs | 0.0 µs | 0.00 | 0.0 | 343 |
-| SUM over a 100-row range | BLACKHOLE | 65.6 µs | 22.2 µs | 22.6 µs | 18.9 µs | 0.0 µs | 0.00 | 0.0 | 114 |
-| SUM over a 100-row range | InnoDB | 105.9 µs | 61.4 µs | 22.0 µs | 19.7 µs | 0.0 µs | 0.00 | 0.0 | 381 |
-| SUM over a 100-row range | MyRocks | 132.7 µs | 87.7 µs | 21.8 µs | 19.8 µs | 0.0 µs | 0.00 | 0.0 | 334 |
-| SUM over a 100-row range | MyRocks, server defaults | 147.8 µs | 100.1 µs | 23.1 µs | 20.8 µs | 0.0 µs | 0.00 | 0.0 | 342 |
-| Return a 100-row range | BLACKHOLE | 63.1 µs | 20.9 µs | 21.6 µs | 18.5 µs | 0.0 µs | 0.00 | 0.0 | 114 |
-| Return a 100-row range | InnoDB | 119.0 µs | 63.7 µs | 26.2 µs | 25.9 µs | 0.0 µs | 0.00 | 0.0 | 382 |
-| Return a 100-row range | MyRocks | 145.9 µs | 90.2 µs | 25.8 µs | 26.4 µs | 0.0 µs | 0.00 | 0.0 | 334 |
-| Return a 100-row range | MyRocks, server defaults | 160.0 µs | 101.5 µs | 26.8 µs | 27.3 µs | 0.0 µs | 0.00 | 0.0 | 343 |
+| Query | Arm | Wall | Server user | Server kernel | Client CPU | Neither | Device time in reads | Disk reads | KiB read | Peak MiB |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Point select by primary key | BLACKHOLE | 58.9 µs | 16.8 µs | 21.5 µs | 18.7 µs | 1.8 µs | 0.0 µs | 0.00 | 0.0 | 114 |
+| Point select by primary key | InnoDB | 66.6 µs | 24.4 µs | 21.4 µs | 18.6 µs | 2.2 µs | 0.0 µs | 0.00 | 0.0 | 381 |
+| Point select by primary key | MyRocks | 74.5 µs | 32.0 µs | 21.6 µs | 18.7 µs | 2.1 µs | 0.1 µs | 0.00 | 0.0 | 333 |
+| Point select by primary key | MyRocks, server defaults | 78.4 µs | 34.6 µs | 22.1 µs | 19.2 µs | 2.4 µs | 0.0 µs | 0.00 | 0.0 | 343 |
+| SUM over a 100-row range | BLACKHOLE | 65.6 µs | 22.2 µs | 22.6 µs | 18.9 µs | 1.9 µs | 0.0 µs | 0.00 | 0.0 | 114 |
+| SUM over a 100-row range | InnoDB | 105.9 µs | 61.4 µs | 22.0 µs | 19.7 µs | 2.8 µs | 0.0 µs | 0.00 | 0.0 | 381 |
+| SUM over a 100-row range | MyRocks | 132.7 µs | 87.7 µs | 21.8 µs | 19.8 µs | 3.4 µs | 0.0 µs | 0.00 | 0.0 | 334 |
+| SUM over a 100-row range | MyRocks, server defaults | 147.8 µs | 100.1 µs | 23.1 µs | 20.8 µs | 3.9 µs | 0.0 µs | 0.00 | 0.0 | 342 |
+| Return a 100-row range | BLACKHOLE | 63.1 µs | 20.9 µs | 21.6 µs | 18.5 µs | 2.1 µs | 0.0 µs | 0.00 | 0.0 | 114 |
+| Return a 100-row range | InnoDB | 119.0 µs | 63.7 µs | 26.2 µs | 25.9 µs | 3.2 µs | 0.0 µs | 0.00 | 0.0 | 382 |
+| Return a 100-row range | MyRocks | 145.9 µs | 90.2 µs | 25.8 µs | 26.4 µs | 3.5 µs | 0.0 µs | 0.00 | 0.0 | 334 |
+| Return a 100-row range | MyRocks, server defaults | 160.0 µs | 101.5 µs | 26.8 µs | 27.3 µs | 4.4 µs | 0.0 µs | 0.00 | 0.0 | 343 |
 
 ### Share of server CPU by owner, InnoDB
 
@@ -88,15 +88,15 @@ Whole-run means, so the columns add up to the wall time less what the client wai
 
 Share of server CPU, by the handler call InnoDB was entered through.
 
-| Test | InnoDB, all | Estimating rows for the optimizer | Finding the first row of a lookup or range | Stepping to the next row | Ranges handed over as a batch | Preparing the row template | Everything else |
-|---|---|---|---|---|---|---|---|
-| oltp_point_select | 12.6% | 0.0% | 10.3% | 0.0% | 0.0% | 0.7% | 1.6% |
-| sum100 | 24.0% | 8.2% | 1.8% | 0.0% | 0.2% | 0.3% | 13.4% |
-| range100 | 25.9% | 8.2% | 1.9% | 0.0% | 0.2% | 0.4% | 15.2% |
+| Test | InnoDB, all | Estimating rows for the optimizer | Finding the first row of a lookup or range | Stepping to the next row | Changing a row | Committing: the log write and its sync | In its own threads | Everything else |
+|---|---|---|---|---|---|---|---|---|
+| oltp_point_select | 12.6% | 0.0% | 10.3% | 0.0% | 0.0% | 0.3% | 0.0% | 2.0% |
+| sum100 | 24.0% | 8.2% | 1.8% | 12.0% | 0.0% | 0.2% | 0.0% | 1.8% |
+| range100 | 25.9% | 8.2% | 1.9% | 13.7% | 0.0% | 0.2% | 0.0% | 2.0% |
 
 ### Room against InnoDB, one client thread
 
-InnoDB's share is from the profile; the times are whole-run means.
+InnoDB's share is from the profile; the times are whole-run means. Waiting on disk is the time off the CPU, and no more than the device's time in reads.
 
 | Test | InnoDB's share of server CPU | Time per event | InnoDB CPU per event | Waiting on disk per event | InnoDB's part of it | Gain if that part were free | Gain if it were halved | What +10% takes away |
 |---|---|---|---|---|---|---|---|---|

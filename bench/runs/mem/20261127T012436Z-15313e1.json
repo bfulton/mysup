@@ -1,0 +1,6604 @@
+{
+ "arms": {
+  "innodb": {
+   "cnf": "[mariadbd]\ndatadir=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/data\nsocket=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/mysqld.sock\npid-file=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/mysqld.pid\nlog-error=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/error.log\ntmpdir=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/tmp\nuser=root\nbasedir=/opt/mysup-servers/mariadb-12.3.4/usr\nplugin_dir=/opt/mysup-servers/mariadb-12.3.4/usr/lib/mysql/plugin\nskip-networking\ncharacter-set-server=latin1\ncollation-server=latin1_swedish_ci\nmax_connections=256\ninnodb_buffer_pool_load_at_startup=OFF\ninnodb_buffer_pool_dump_at_shutdown=OFF\ninnodb_buffer_pool_size=2147483648\ninnodb_flush_method=O_DIRECT\ninnodb_log_file_size=1073741824\ninnodb_flush_log_at_trx_commit=1\n",
+   "explain": {
+    "distinct100": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tPRIMARY\tPRIMARY\t4\tNULL\t100\tUsing where; Using temporary; Using filesort\n",
+    "oltp_point_select": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\tconst\tPRIMARY\tPRIMARY\t4\tconst\t1\t\n",
+    "order100": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tPRIMARY\tPRIMARY\t4\tNULL\t100\tUsing where; Using filesort\n",
+    "range100": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tPRIMARY\tPRIMARY\t4\tNULL\t100\tUsing where\n",
+    "select_random_points": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tk_1\tk_1\t4\tNULL\t13\tUsing index condition\n",
+    "select_random_ranges": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tk_1\tk_1\t4\tNULL\t53\tUsing where; Using index\n",
+    "sum100": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tPRIMARY\tPRIMARY\t4\tNULL\t100\tUsing where\n"
+   },
+   "load": {
+    "bytes": {
+     "datadir": 1367195648,
+     "table": 243421184
+    },
+    "cnf": "[mariadbd]\ndatadir=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/data\nsocket=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/mysqld.sock\npid-file=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/mysqld.pid\nlog-error=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/error.log\ntmpdir=/var/tmp/mysup-bench/mariadb-12.3.4/mem-innodb/tmp\nuser=root\nbasedir=/opt/mysup-servers/mariadb-12.3.4/usr\nplugin_dir=/opt/mysup-servers/mariadb-12.3.4/usr/lib/mysql/plugin\nskip-networking\ncharacter-set-server=latin1\ncollation-server=latin1_swedish_ci\nmax_connections=256\ninnodb_buffer_pool_load_at_startup=OFF\ninnodb_buffer_pool_dump_at_shutdown=OFF\ninnodb_buffer_pool_size=2147483648\ninnodb_flush_method=O_DIRECT\ninnodb_log_file_size=1073741824\ninnodb_flush_log_at_trx_commit=1\n",
+    "count": 1000000,
+    "insert_wall_s": 9.311782382999809,
+    "rows": 1000000,
+    "server_cpu_s": 7.213838847,
+    "settle_wall_s": 0.037118405000001076
+   },
+   "malloc": "the C library's",
+   "variables": {
+    "character_set_server": "latin1",
+    "collation_server": "latin1_swedish_ci",
+    "innodb_adaptive_flushing": "ON",
+    "innodb_adaptive_flushing_lwm": "10.000000",
+    "innodb_adaptive_hash_index": "OFF",
+    "innodb_adaptive_hash_index_cells": "553253",
+    "innodb_adaptive_hash_index_parts": "8",
+    "innodb_alter_copy_bulk": "ON",
+    "innodb_autoextend_increment": "64",
+    "innodb_autoinc_lock_mode": "1",
+    "innodb_binlog_state_interval": "2097152",
+    "innodb_buf_dump_status_frequency": "0",
+    "innodb_buffer_pool_chunk_size": "0",
+    "innodb_buffer_pool_dump_at_shutdown": "OFF",
+    "innodb_buffer_pool_dump_now": "OFF",
+    "innodb_buffer_pool_dump_pct": "25",
+    "innodb_buffer_pool_filename": "ib_buffer_pool",
+    "innodb_buffer_pool_in_core_dump": "OFF",
+    "innodb_buffer_pool_load_abort": "OFF",
+    "innodb_buffer_pool_load_at_startup": "OFF",
+    "innodb_buffer_pool_load_now": "OFF",
+    "innodb_buffer_pool_size": "2147483648",
+    "innodb_buffer_pool_size_auto_min": "8796093022208",
+    "innodb_buffer_pool_size_max": "8796093022208",
+    "innodb_checksum_algorithm": "full_crc32",
+    "innodb_cmp_per_index_enabled": "OFF",
+    "innodb_compression_algorithm": "zlib",
+    "innodb_compression_default": "OFF",
+    "innodb_compression_failure_threshold_pct": "5",
+    "innodb_compression_level": "6",
+    "innodb_compression_pad_pct_max": "50",
+    "innodb_data_file_buffering": "OFF",
+    "innodb_data_file_path": "ibdata1:12M:autoextend",
+    "innodb_data_file_write_through": "OFF",
+    "innodb_data_home_dir": "",
+    "innodb_deadlock_detect": "ON",
+    "innodb_deadlock_report": "full",
+    "innodb_default_encryption_key_id": "1",
+    "innodb_default_row_format": "dynamic",
+    "innodb_disable_sort_file_cache": "OFF",
+    "innodb_doublewrite": "ON",
+    "innodb_encrypt_log": "OFF",
+    "innodb_encrypt_tables": "OFF",
+    "innodb_encrypt_temporary_tables": "OFF",
+    "innodb_encryption_rotate_key_age": "1",
+    "innodb_encryption_rotation_iops": "100",
+    "innodb_encryption_threads": "0",
+    "innodb_fast_shutdown": "1",
+    "innodb_fatal_semaphore_wait_threshold": "600",
+    "innodb_file_per_table": "ON",
+    "innodb_fill_factor": "100",
+    "innodb_flush_log_at_timeout": "1",
+    "innodb_flush_log_at_trx_commit": "1",
+    "innodb_flush_method": "O_DIRECT",
+    "innodb_flush_neighbors": "1",
+    "innodb_flush_sync": "ON",
+    "innodb_flushing_avg_loops": "30",
+    "innodb_force_primary_key": "OFF",
+    "innodb_force_recovery": "0",
+    "innodb_ft_aux_table": "",
+    "innodb_ft_cache_size": "8000000",
+    "innodb_ft_enable_diag_print": "OFF",
+    "innodb_ft_enable_stopword": "ON",
+    "innodb_ft_max_token_size": "84",
+    "innodb_ft_min_token_size": "3",
+    "innodb_ft_num_word_optimize": "2000",
+    "innodb_ft_result_cache_limit": "2000000000",
+    "innodb_ft_server_stopword_table": "",
+    "innodb_ft_sort_pll_degree": "2",
+    "innodb_ft_total_cache_size": "640000000",
+    "innodb_ft_user_stopword_table": "",
+    "innodb_immediate_scrub_data_uncompressed": "OFF",
+    "innodb_index_shrink": "ON",
+    "innodb_instant_alter_column_allowed": "add_drop_reorder",
+    "innodb_io_capacity": "200",
+    "innodb_io_capacity_max": "2000",
+    "innodb_linux_aio": "auto",
+    "innodb_lock_wait_timeout": "50",
+    "innodb_log_buffer_size": "16777216",
+    "innodb_log_checkpoint_now": "OFF",
+    "innodb_log_file_buffering": "OFF",
+    "innodb_log_file_mmap": "OFF",
+    "innodb_log_file_size": "1073741824",
+    "innodb_log_file_write_through": "OFF",
+    "innodb_log_group_home_dir": "./",
+    "innodb_log_spin_wait_delay": "0",
+    "innodb_log_write_ahead_size": "4096",
+    "innodb_lru_flush_size": "0",
+    "innodb_lru_scan_depth": "1536",
+    "innodb_max_dirty_pages_pct": "90.000000",
+    "innodb_max_dirty_pages_pct_lwm": "0.000000",
+    "innodb_max_purge_lag": "0",
+    "innodb_max_purge_lag_delay": "0",
+    "innodb_max_purge_lag_wait": "4294967295",
+    "innodb_max_undo_log_size": "10485760",
+    "innodb_monitor_disable": "",
+    "innodb_monitor_enable": "",
+    "innodb_monitor_reset": "",
+    "innodb_monitor_reset_all": "",
+    "innodb_old_blocks_pct": "37",
+    "innodb_old_blocks_time": "1000",
+    "innodb_online_alter_log_max_size": "134217728",
+    "innodb_open_files": "2000",
+    "innodb_optimize_fulltext_only": "OFF",
+    "innodb_page_size": "16384",
+    "innodb_prefix_index_cluster_optimization": "OFF",
+    "innodb_print_all_deadlocks": "OFF",
+    "innodb_purge_batch_size": "127",
+    "innodb_purge_rseg_truncate_frequency": "128",
+    "innodb_purge_threads": "4",
+    "innodb_random_read_ahead": "OFF",
+    "innodb_read_ahead_threshold": "56",
+    "innodb_read_io_threads": "4",
+    "innodb_read_only": "OFF",
+    "innodb_read_only_compressed": "OFF",
+    "innodb_rollback_on_timeout": "OFF",
+    "innodb_snapshot_isolation": "ON",
+    "innodb_sort_buffer_size": "1048576",
+    "innodb_spin_wait_delay": "4",
+    "innodb_stats_auto_recalc": "ON",
+    "innodb_stats_include_delete_marked": "OFF",
+    "innodb_stats_method": "nulls_equal",
+    "innodb_stats_modified_counter": "0",
+    "innodb_stats_on_metadata": "OFF",
+    "innodb_stats_persistent": "ON",
+    "innodb_stats_persistent_sample_pages": "20",
+    "innodb_stats_traditional": "ON",
+    "innodb_stats_transient_sample_pages": "8",
+    "innodb_status_output": "OFF",
+    "innodb_status_output_locks": "OFF",
+    "innodb_strict_mode": "ON",
+    "innodb_sync_spin_loops": "30",
+    "innodb_table_locks": "ON",
+    "innodb_temp_data_file_path": "ibtmp1:12M:autoextend",
+    "innodb_tmpdir": "",
+    "innodb_truncate_temporary_tablespace_now": "OFF",
+    "innodb_undo_directory": "./",
+    "innodb_undo_log_truncate": "OFF",
+    "innodb_undo_tablespaces": "3",
+    "innodb_use_atomic_writes": "ON",
+    "innodb_use_native_aio": "ON",
+    "innodb_write_io_threads": "4",
+    "join_cache_level": "2",
+    "log_bin": "OFF",
+    "max_connections": "256",
+    "optimizer_switch": "index_merge=on,index_merge_union=on,index_merge_sort_union=on,index_merge_intersection=on,index_merge_sort_intersection=off,index_condition_pushdown=on,derived_merge=on,derived_with_keys=on,firstmatch=on,loosescan=on,duplicateweedout=on,materialization=on,in_to_exists=on,semijoin=on,partial_match_rowid_merge=on,partial_match_table_scan=on,subquery_cache=on,mrr=off,mrr_cost_based=off,mrr_sort_keys=off,outer_join_with_cache=on,semijoin_with_cache=on,join_cache_incremental=on,join_cache_hashed=on,join_cache_bka=on,optimize_join_buffer_size=on,table_elimination=on,extended_keys=on,exists_to_in=on,orderby_uses_equalities=on,condition_pushdown_for_derived=on,split_materialized=on,condition_pushdown_for_subquery=on,rowid_filter=on,condition_pushdown_from_having=on,not_null_range_scan=off,hash_join_cardinality=on,cset_narrowing=on,sargable_casefold=on,reorder_outer_joins=off",
+    "performance_schema": "OFF",
+    "query_cache_size": "1048576",
+    "query_cache_type": "OFF",
+    "sync_binlog": "0",
+    "table_open_cache": "2000",
+    "thread_handling": "one-thread-per-connection",
+    "transaction_isolation": "REPEATABLE-READ",
+    "tx_isolation": "REPEATABLE-READ",
+    "version": "12.3.4-MariaDB-ubu2404",
+    "version_comment": "mariadb.org binary distribution"
+   }
+  },
+  "myrocks": {
+   "cnf": "[mariadbd]\ndatadir=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/data\nsocket=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/mysqld.sock\npid-file=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/mysqld.pid\nlog-error=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/error.log\ntmpdir=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/tmp\nuser=root\nbasedir=/opt/mysup-servers/mariadb-12.3.4/usr\nplugin_dir=/opt/mysup-servers/mariadb-12.3.4/usr/lib/mysql/plugin\nskip-networking\ncharacter-set-server=latin1\ncollation-server=latin1_swedish_ci\nmax_connections=256\ninnodb_buffer_pool_load_at_startup=OFF\ninnodb_buffer_pool_dump_at_shutdown=OFF\ninnodb_buffer_pool_size=33554432\nplugin-load-add=ha_rocksdb.so\nrocksdb_block_cache_size=2147483648\nrocksdb_block_size=16384\nrocksdb_use_direct_reads=ON\nrocksdb_use_direct_io_for_flush_and_compaction=ON\nrocksdb_flush_log_at_trx_commit=1\nrocksdb_default_cf_options=compression_per_level=kLZ4Compression;bottommost_compression=kZSTD;compression_opts=-14:6:0;block_based_table_factory={cache_index_and_filter_blocks=1;filter_policy=bloomfilter:10:false;whole_key_filtering=1};level_compaction_dynamic_level_bytes=true;optimize_filters_for_hits=true;compaction_pri=kMinOverlappingRatio\n",
+   "explain": {
+    "distinct100": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tPRIMARY\tPRIMARY\t4\tNULL\t81\tUsing where; Using temporary; Using filesort\n",
+    "oltp_point_select": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\tconst\tPRIMARY\tPRIMARY\t4\tconst\t1\t\n",
+    "order100": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tPRIMARY\tPRIMARY\t4\tNULL\t81\tUsing where; Using filesort\n",
+    "range100": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tPRIMARY\tPRIMARY\t4\tNULL\t81\tUsing where\n",
+    "select_random_points": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tk_1\tk_1\t4\tNULL\t10\tUsing index condition\n",
+    "select_random_ranges": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tk_1\tk_1\t4\tNULL\t10\tUsing where; Using index\n",
+    "sum100": "id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra\n1\tSIMPLE\tsbtest1\trange\tPRIMARY\tPRIMARY\t4\tNULL\t81\tUsing where\n"
+   },
+   "load": {
+    "bytes": {
+     "datadir": 257101824,
+     "table": 106237952
+    },
+    "cnf": "[mariadbd]\ndatadir=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/data\nsocket=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/mysqld.sock\npid-file=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/mysqld.pid\nlog-error=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/error.log\ntmpdir=/var/tmp/mysup-bench/mariadb-12.3.4/mem-myrocks/tmp\nuser=root\nbasedir=/opt/mysup-servers/mariadb-12.3.4/usr\nplugin_dir=/opt/mysup-servers/mariadb-12.3.4/usr/lib/mysql/plugin\nskip-networking\ncharacter-set-server=latin1\ncollation-server=latin1_swedish_ci\nmax_connections=256\ninnodb_buffer_pool_load_at_startup=OFF\ninnodb_buffer_pool_dump_at_shutdown=OFF\ninnodb_buffer_pool_size=33554432\nplugin-load-add=ha_rocksdb.so\nrocksdb_block_cache_size=2147483648\nrocksdb_block_size=16384\nrocksdb_use_direct_reads=ON\nrocksdb_use_direct_io_for_flush_and_compaction=ON\nrocksdb_flush_log_at_trx_commit=1\nrocksdb_default_cf_options=compression_per_level=kLZ4Compression;bottommost_compression=kZSTD;compression_opts=-14:6:0;block_based_table_factory={cache_index_and_filter_blocks=1;filter_policy=bloomfilter:10:false;whole_key_filtering=1};level_compaction_dynamic_level_bytes=true;optimize_filters_for_hits=true;compaction_pri=kMinOverlappingRatio\n",
+    "count": 1000000,
+    "insert_wall_s": 17.65993826199974,
+    "levels": [
+     {
+      "files": 0,
+      "level": "L0",
+      "size": "0.00 KB"
+     },
+     {
+      "files": 2,
+      "level": "L6",
+      "size": "101.30 MB"
+     },
+     {
+      "files": 2,
+      "level": "Sum",
+      "size": "101.30 MB"
+     }
+    ],
+    "rows": 1000000,
+    "server_cpu_s": 28.059380971,
+    "settle_wall_s": 14.074864667999464,
+    "sst": [
+     {
+      "algo": "ZSTD",
+      "data_block": "106080995",
+      "entries": "2000000",
+      "files": "2",
+      "filter_block": "0",
+      "index_block": "382236",
+      "raw_key": "36000000",
+      "raw_value": "184000000"
+     }
+    ]
+   },
+   "malloc": "the C library's",
+   "variables": {
+    "character_set_server": "latin1",
+    "collation_server": "latin1_swedish_ci",
+    "innodb_adaptive_flushing": "ON",
+    "innodb_adaptive_flushing_lwm": "10.000000",
+    "innodb_adaptive_hash_index": "OFF",
+    "innodb_adaptive_hash_index_cells": "16381",
+    "innodb_adaptive_hash_index_parts": "8",
+    "innodb_alter_copy_bulk": "ON",
+    "innodb_autoextend_increment": "64",
+    "innodb_autoinc_lock_mode": "1",
+    "innodb_binlog_state_interval": "2097152",
+    "innodb_buf_dump_status_frequency": "0",
+    "innodb_buffer_pool_chunk_size": "0",
+    "innodb_buffer_pool_dump_at_shutdown": "OFF",
+    "innodb_buffer_pool_dump_now": "OFF",
+    "innodb_buffer_pool_dump_pct": "25",
+    "innodb_buffer_pool_filename": "ib_buffer_pool",
+    "innodb_buffer_pool_in_core_dump": "OFF",
+    "innodb_buffer_pool_load_abort": "OFF",
+    "innodb_buffer_pool_load_at_startup": "OFF",
+    "innodb_buffer_pool_load_now": "OFF",
+    "innodb_buffer_pool_size": "33554432",
+    "innodb_buffer_pool_size_auto_min": "8796093022208",
+    "innodb_buffer_pool_size_max": "8796093022208",
+    "innodb_checksum_algorithm": "full_crc32",
+    "innodb_cmp_per_index_enabled": "OFF",
+    "innodb_compression_algorithm": "zlib",
+    "innodb_compression_default": "OFF",
+    "innodb_compression_failure_threshold_pct": "5",
+    "innodb_compression_level": "6",
+    "innodb_compression_pad_pct_max": "50",
+    "innodb_data_file_buffering": "OFF",
+    "innodb_data_file_path": "ibdata1:12M:autoextend",
+    "innodb_data_file_write_through": "OFF",
+    "innodb_data_home_dir": "",
+    "innodb_deadlock_detect": "ON",
+    "innodb_deadlock_report": "full",
+    "innodb_default_encryption_key_id": "1",
+    "innodb_default_row_format": "dynamic",
+    "innodb_disable_sort_file_cache": "OFF",
+    "innodb_doublewrite": "ON",
+    "innodb_encrypt_log": "OFF",
+    "innodb_encrypt_tables": "OFF",
+    "innodb_encrypt_temporary_tables": "OFF",
+    "innodb_encryption_rotate_key_age": "1",
+    "innodb_encryption_rotation_iops": "100",
+    "innodb_encryption_threads": "0",
+    "innodb_fast_shutdown": "1",
+    "innodb_fatal_semaphore_wait_threshold": "600",
+    "innodb_file_per_table": "ON",
+    "innodb_fill_factor": "100",
+    "innodb_flush_log_at_timeout": "1",
+    "innodb_flush_log_at_trx_commit": "1",
+    "innodb_flush_method": "O_DIRECT",
+    "innodb_flush_neighbors": "1",
+    "innodb_flush_sync": "ON",
+    "innodb_flushing_avg_loops": "30",
+    "innodb_force_primary_key": "OFF",
+    "innodb_force_recovery": "0",
+    "innodb_ft_aux_table": "",
+    "innodb_ft_cache_size": "8000000",
+    "innodb_ft_enable_diag_print": "OFF",
+    "innodb_ft_enable_stopword": "ON",
+    "innodb_ft_max_token_size": "84",
+    "innodb_ft_min_token_size": "3",
+    "innodb_ft_num_word_optimize": "2000",
+    "innodb_ft_result_cache_limit": "2000000000",
+    "innodb_ft_server_stopword_table": "",
+    "innodb_ft_sort_pll_degree": "2",
+    "innodb_ft_total_cache_size": "640000000",
+    "innodb_ft_user_stopword_table": "",
+    "innodb_immediate_scrub_data_uncompressed": "OFF",
+    "innodb_index_shrink": "ON",
+    "innodb_instant_alter_column_allowed": "add_drop_reorder",
+    "innodb_io_capacity": "200",
+    "innodb_io_capacity_max": "2000",
+    "innodb_linux_aio": "auto",
+    "innodb_lock_wait_timeout": "50",
+    "innodb_log_buffer_size": "16777216",
+    "innodb_log_checkpoint_now": "OFF",
+    "innodb_log_file_buffering": "OFF",
+    "innodb_log_file_mmap": "OFF",
+    "innodb_log_file_size": "100663296",
+    "innodb_log_file_write_through": "OFF",
+    "innodb_log_group_home_dir": "./",
+    "innodb_log_spin_wait_delay": "0",
+    "innodb_log_write_ahead_size": "4096",
+    "innodb_lru_flush_size": "0",
+    "innodb_lru_scan_depth": "1536",
+    "innodb_max_dirty_pages_pct": "90.000000",
+    "innodb_max_dirty_pages_pct_lwm": "0.000000",
+    "innodb_max_purge_lag": "0",
+    "innodb_max_purge_lag_delay": "0",
+    "innodb_max_purge_lag_wait": "4294967295",
+    "innodb_max_undo_log_size": "10485760",
+    "innodb_monitor_disable": "",
+    "innodb_monitor_enable": "",
+    "innodb_monitor_reset": "",
+    "innodb_monitor_reset_all": "",
+    "innodb_old_blocks_pct": "37",
+    "innodb_old_blocks_time": "1000",
+    "innodb_online_alter_log_max_size": "134217728",
+    "innodb_open_files": "2000",
+    "innodb_optimize_fulltext_only": "OFF",
+    "innodb_page_size": "16384",
+    "innodb_prefix_index_cluster_optimization": "OFF",
+    "innodb_print_all_deadlocks": "OFF",
+    "innodb_purge_batch_size": "127",
+    "innodb_purge_rseg_truncate_frequency": "128",
+    "innodb_purge_threads": "4",
+    "innodb_random_read_ahead": "OFF",
+    "innodb_read_ahead_threshold": "56",
+    "innodb_read_io_threads": "4",
+    "innodb_read_only": "OFF",
+    "innodb_read_only_compressed": "OFF",
+    "innodb_rollback_on_timeout": "OFF",
+    "innodb_snapshot_isolation": "ON",
+    "innodb_sort_buffer_size": "1048576",
+    "innodb_spin_wait_delay": "4",
+    "innodb_stats_auto_recalc": "ON",
+    "innodb_stats_include_delete_marked": "OFF",
+    "innodb_stats_method": "nulls_equal",
+    "innodb_stats_modified_counter": "0",
+    "innodb_stats_on_metadata": "OFF",
+    "innodb_stats_persistent": "ON",
+    "innodb_stats_persistent_sample_pages": "20",
+    "innodb_stats_traditional": "ON",
+    "innodb_stats_transient_sample_pages": "8",
+    "innodb_status_output": "OFF",
+    "innodb_status_output_locks": "OFF",
+    "innodb_strict_mode": "ON",
+    "innodb_sync_spin_loops": "30",
+    "innodb_table_locks": "ON",
+    "innodb_temp_data_file_path": "ibtmp1:12M:autoextend",
+    "innodb_tmpdir": "",
+    "innodb_truncate_temporary_tablespace_now": "OFF",
+    "innodb_undo_directory": "./",
+    "innodb_undo_log_truncate": "OFF",
+    "innodb_undo_tablespaces": "3",
+    "innodb_use_atomic_writes": "ON",
+    "innodb_use_native_aio": "ON",
+    "innodb_write_io_threads": "4",
+    "join_cache_level": "2",
+    "log_bin": "OFF",
+    "max_connections": "256",
+    "optimizer_switch": "index_merge=on,index_merge_union=on,index_merge_sort_union=on,index_merge_intersection=on,index_merge_sort_intersection=off,index_condition_pushdown=on,derived_merge=on,derived_with_keys=on,firstmatch=on,loosescan=on,duplicateweedout=on,materialization=on,in_to_exists=on,semijoin=on,partial_match_rowid_merge=on,partial_match_table_scan=on,subquery_cache=on,mrr=off,mrr_cost_based=off,mrr_sort_keys=off,outer_join_with_cache=on,semijoin_with_cache=on,join_cache_incremental=on,join_cache_hashed=on,join_cache_bka=on,optimize_join_buffer_size=on,table_elimination=on,extended_keys=on,exists_to_in=on,orderby_uses_equalities=on,condition_pushdown_for_derived=on,split_materialized=on,condition_pushdown_for_subquery=on,rowid_filter=on,condition_pushdown_from_having=on,not_null_range_scan=off,hash_join_cardinality=on,cset_narrowing=on,sargable_casefold=on,reorder_outer_joins=off",
+    "performance_schema": "OFF",
+    "query_cache_size": "1048576",
+    "query_cache_type": "OFF",
+    "rocksdb_access_hint_on_compaction_start": "1",
+    "rocksdb_advise_random_on_open": "ON",
+    "rocksdb_allow_concurrent_memtable_write": "OFF",
+    "rocksdb_allow_mmap_reads": "OFF",
+    "rocksdb_allow_mmap_writes": "OFF",
+    "rocksdb_allow_to_start_after_corruption": "OFF",
+    "rocksdb_blind_delete_primary_key": "OFF",
+    "rocksdb_block_cache_size": "2147483648",
+    "rocksdb_block_restart_interval": "16",
+    "rocksdb_block_size": "16384",
+    "rocksdb_block_size_deviation": "10",
+    "rocksdb_bulk_load": "OFF",
+    "rocksdb_bulk_load_allow_sk": "OFF",
+    "rocksdb_bulk_load_allow_unsorted": "OFF",
+    "rocksdb_bulk_load_size": "1000",
+    "rocksdb_bytes_per_sync": "0",
+    "rocksdb_cache_dump": "ON",
+    "rocksdb_cache_high_pri_pool_ratio": "0.000000",
+    "rocksdb_cache_index_and_filter_blocks": "ON",
+    "rocksdb_cache_index_and_filter_with_high_priority": "ON",
+    "rocksdb_checksums_pct": "100",
+    "rocksdb_collect_sst_properties": "ON",
+    "rocksdb_commit_in_the_middle": "OFF",
+    "rocksdb_commit_time_batch_for_recovery": "ON",
+    "rocksdb_compact_cf": "",
+    "rocksdb_compaction_readahead_size": "0",
+    "rocksdb_compaction_sequential_deletes": "0",
+    "rocksdb_compaction_sequential_deletes_count_sd": "OFF",
+    "rocksdb_compaction_sequential_deletes_file_size": "0",
+    "rocksdb_compaction_sequential_deletes_window": "0",
+    "rocksdb_create_checkpoint": "",
+    "rocksdb_create_if_missing": "ON",
+    "rocksdb_create_missing_column_families": "OFF",
+    "rocksdb_datadir": "./#rocksdb",
+    "rocksdb_db_write_buffer_size": "0",
+    "rocksdb_deadlock_detect": "OFF",
+    "rocksdb_deadlock_detect_depth": "50",
+    "rocksdb_debug_manual_compaction_delay": "0",
+    "rocksdb_debug_optimizer_no_zero_cardinality": "ON",
+    "rocksdb_debug_ttl_ignore_pk": "OFF",
+    "rocksdb_debug_ttl_read_filter_ts": "0",
+    "rocksdb_debug_ttl_rec_ts": "0",
+    "rocksdb_debug_ttl_snapshot_ts": "0",
+    "rocksdb_default_cf_options": "compression_per_level=kLZ4Compression;bottommost_compression=kZSTD;compression_opts=-14:6:0;block_based_table_factory={cache_index_and_filter_blocks=1;filter_policy=bloomfilter:10:false;whole_key_filtering=1};level_compaction_dynamic_level_bytes=true;optimize_filters_for_hits=true;compaction_pri=kMinOverlappingRatio",
+    "rocksdb_delayed_write_rate": "0",
+    "rocksdb_delete_cf": "",
+    "rocksdb_delete_obsolete_files_period_micros": "21600000000",
+    "rocksdb_enable_2pc": "ON",
+    "rocksdb_enable_bulk_load_api": "ON",
+    "rocksdb_enable_insert_with_update_caching": "ON",
+    "rocksdb_enable_thread_tracking": "ON",
+    "rocksdb_enable_ttl": "ON",
+    "rocksdb_enable_ttl_read_filtering": "ON",
+    "rocksdb_enable_write_thread_adaptive_yield": "OFF",
+    "rocksdb_error_if_exists": "OFF",
+    "rocksdb_error_on_suboptimal_collation": "ON",
+    "rocksdb_flush_log_at_trx_commit": "1",
+    "rocksdb_force_compute_memtable_stats": "ON",
+    "rocksdb_force_compute_memtable_stats_cachetime": "60000000",
+    "rocksdb_force_flush_memtable_and_lzero_now": "OFF",
+    "rocksdb_force_flush_memtable_now": "OFF",
+    "rocksdb_force_index_records_in_range": "0",
+    "rocksdb_git_hash": "79f08d7ffa6d34d9ca3357777bcb335884a56cfb",
+    "rocksdb_hash_index_allow_collision": "ON",
+    "rocksdb_ignore_datadic_errors": "0",
+    "rocksdb_ignore_unknown_options": "ON",
+    "rocksdb_index_type": "kBinarySearch",
+    "rocksdb_info_log_level": "error_level",
+    "rocksdb_io_write_timeout": "0",
+    "rocksdb_is_fd_close_on_exec": "ON",
+    "rocksdb_keep_log_file_num": "1000",
+    "rocksdb_large_prefix": "OFF",
+    "rocksdb_lock_scanned_rows": "OFF",
+    "rocksdb_lock_wait_timeout": "1",
+    "rocksdb_log_dir": "",
+    "rocksdb_log_file_time_to_roll": "0",
+    "rocksdb_manifest_preallocation_size": "4194304",
+    "rocksdb_manual_compaction_threads": "0",
+    "rocksdb_manual_wal_flush": "ON",
+    "rocksdb_master_skip_tx_api": "OFF",
+    "rocksdb_max_background_jobs": "2",
+    "rocksdb_max_latest_deadlocks": "5",
+    "rocksdb_max_log_file_size": "0",
+    "rocksdb_max_manifest_file_size": "1073741824",
+    "rocksdb_max_manual_compactions": "10",
+    "rocksdb_max_open_files": "10000",
+    "rocksdb_max_row_locks": "1048576",
+    "rocksdb_max_subcompactions": "1",
+    "rocksdb_max_total_wal_size": "0",
+    "rocksdb_merge_buf_size": "67108864",
+    "rocksdb_merge_combine_read_size": "1073741824",
+    "rocksdb_merge_tmp_file_removal_delay_ms": "0",
+    "rocksdb_new_table_reader_for_compaction_inputs": "OFF",
+    "rocksdb_no_block_cache": "OFF",
+    "rocksdb_override_cf_options": "",
+    "rocksdb_paranoid_checks": "ON",
+    "rocksdb_pause_background_work": "OFF",
+    "rocksdb_perf_context_level": "0",
+    "rocksdb_persistent_cache_path": "",
+    "rocksdb_persistent_cache_size_mb": "0",
+    "rocksdb_pin_l0_filter_and_index_blocks_in_cache": "ON",
+    "rocksdb_print_snapshot_conflict_queries": "OFF",
+    "rocksdb_rate_limiter_bytes_per_sec": "0",
+    "rocksdb_records_in_range": "0",
+    "rocksdb_remove_mariabackup_checkpoint": "OFF",
+    "rocksdb_reset_stats": "OFF",
+    "rocksdb_rollback_on_timeout": "OFF",
+    "rocksdb_seconds_between_stat_computes": "3600",
+    "rocksdb_signal_drop_index_thread": "OFF",
+    "rocksdb_sim_cache_size": "0",
+    "rocksdb_skip_bloom_filter_on_read": "OFF",
+    "rocksdb_skip_fill_cache": "OFF",
+    "rocksdb_skip_unique_check_tables": ".*",
+    "rocksdb_sst_mgr_rate_bytes_per_sec": "0",
+    "rocksdb_stats_dump_period_sec": "600",
+    "rocksdb_stats_level": "1",
+    "rocksdb_stats_recalc_rate": "0",
+    "rocksdb_store_row_debug_checksums": "OFF",
+    "rocksdb_strict_collation_check": "ON",
+    "rocksdb_strict_collation_exceptions": "",
+    "rocksdb_supported_compression_types": "Snappy,Zlib,LZ4,LZ4HC,ZSTDNotFinal",
+    "rocksdb_table_cache_numshardbits": "6",
+    "rocksdb_table_stats_sampling_pct": "10",
+    "rocksdb_tmpdir": "",
+    "rocksdb_trace_sst_api": "OFF",
+    "rocksdb_two_write_queues": "ON",
+    "rocksdb_unsafe_for_binlog": "OFF",
+    "rocksdb_update_cf_options": "",
+    "rocksdb_use_adaptive_mutex": "OFF",
+    "rocksdb_use_clock_cache": "OFF",
+    "rocksdb_use_direct_io_for_flush_and_compaction": "ON",
+    "rocksdb_use_direct_reads": "ON",
+    "rocksdb_use_fsync": "OFF",
+    "rocksdb_validate_tables": "1",
+    "rocksdb_verify_row_debug_checksums": "OFF",
+    "rocksdb_wal_bytes_per_sync": "0",
+    "rocksdb_wal_dir": "",
+    "rocksdb_wal_recovery_mode": "1",
+    "rocksdb_wal_size_limit_mb": "0",
+    "rocksdb_wal_ttl_seconds": "0",
+    "rocksdb_whole_key_filtering": "ON",
+    "rocksdb_write_batch_max_bytes": "0",
+    "rocksdb_write_disable_wal": "OFF",
+    "rocksdb_write_ignore_missing_column_families": "OFF",
+    "rocksdb_write_policy": "write_committed",
+    "sync_binlog": "0",
+    "table_open_cache": "2000",
+    "thread_handling": "one-thread-per-connection",
+    "transaction_isolation": "REPEATABLE-READ",
+    "tx_isolation": "REPEATABLE-READ",
+    "version": "12.3.4-MariaDB-ubu2404",
+    "version_comment": "mariadb.org binary distribution"
+   }
+  }
+ },
+ "condition": "mem",
+ "condition_def": {
+  "cache": 2147483648,
+  "limit": null,
+  "malloc": {},
+  "preload": true,
+  "rows": 1000000,
+  "warmup": 10
+ },
+ "floors": {
+  "end": {
+   "cpu": {
+    "cpu_over_wall": 0.9930711970476609,
+    "iters_per_cpu_s": 10556860.73692751
+   },
+   "disk_read_16k": {
+    "block_bytes": 16384,
+    "mean_us": 44.7235465,
+    "p50_us": 42.109,
+    "p99_us": 71.152,
+    "reads": 2000
+   }
+  },
+  "pass 0 before innodb": {
+   "cpu": {
+    "cpu_over_wall": 0.9981119135425037,
+    "iters_per_cpu_s": 10616813.394388655
+   },
+   "disk_read_16k": {
+    "block_bytes": 16384,
+    "mean_us": 32.0273635,
+    "p50_us": 30.55,
+    "p99_us": 55.677,
+    "reads": 2000
+   }
+  },
+  "pass 0 before myrocks": {
+   "cpu": {
+    "cpu_over_wall": 0.9984174191868045,
+    "iters_per_cpu_s": 9818805.281756368
+   },
+   "disk_read_16k": {
+    "block_bytes": 16384,
+    "mean_us": 34.4911655,
+    "p50_us": 33.613,
+    "p99_us": 55.644,
+    "reads": 2000
+   }
+  }
+ },
+ "host": {
+  "block_device": "/sys/devices/pci0000:00/0000:00:02.0/virtio1/block/vda",
+  "cpu_model": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "kernel": "6.18.44-fc-v880",
+  "mem_bytes": 16868675584,
+  "os": "Ubuntu 24.04.5 LTS",
+  "vcpus": 4
+ },
+ "passes": 1,
+ "profiles": [
+  {
+   "arm": "innodb",
+   "kernel": {
+    "innodb": 2527,
+    "server": 8860
+   },
+   "own_threads": {
+    "innodb": 1460
+   },
+   "owners": {
+    "innodb": 7733,
+    "server": 13805
+   },
+   "pass": 0,
+   "rooted": 21538,
+   "samples": 21538,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 0.73,
+    "lat_max_ms": 21.65,
+    "lat_min_ms": 0.4,
+    "lat_p99_ms": 1.39,
+    "other": 66074,
+    "qps_by_second": [
+     8947.85,
+     10484.04,
+     8580.48,
+     7691.4,
+     8376.63,
+     8335.66,
+     8312.52,
+     7144.63,
+     8730.47,
+     8696.79,
+     8335.17,
+     7643.69,
+     8232.31,
+     7851.47,
+     8113.73,
+     7500.61,
+     7769.04,
+     7318.06,
+     8365.14,
+     8385.99,
+     7574.74,
+     8166.48,
+     8400.9
+    ],
+    "queries": 198222,
+    "reads": 0,
+    "reconnects": 0,
+    "seconds": 24.0019,
+    "tps_by_second": [
+     1490.48,
+     1748.17,
+     1429.25,
+     1282.23,
+     1395.77,
+     1389.94,
+     1385.09,
+     1190.94,
+     1455.08,
+     1448.96,
+     1390.03,
+     1273.78,
+     1371.39,
+     1308.91,
+     1351.95,
+     1250.1,
+     1294.84,
+     1220.01,
+     1393.86,
+     1398.16,
+     1261.96,
+     1361.08,
+     1400.15
+    ],
+    "transactions": 33037,
+    "writes": 132148
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "innodb": [
+     [
+      "innobase_commit(THD*, bool) [clone .lto_priv.0]",
+      2606
+     ],
+     [
+      "ha_innobase::update_row(unsigned char const*, unsigned char const*)",
+      1111
+     ],
+     [
+      "ha_innobase::index_read(unsigned char*, unsigned char const*, unsigned int, ha_rkey_function)",
+      875
+     ],
+     [
+      "ha_innobase::write_row(unsigned char const*)",
+      752
+     ],
+     [
+      "ha_innobase::delete_row(unsigned char const*)",
+      366
+     ],
+     [
+      "innobase_commit_ordered_2(trx_t*, THD*)",
+      142
+     ],
+     [
+      "ha_innobase::build_template(bool)",
+      98
+     ],
+     [
+      "ha_innobase::multi_range_read_info_const(unsigned int, st_range_seq_if*, void*, unsigned int, unsigned int*, unsigned int*, unsigned long long, Cost_estimate*)",
+      92
+     ],
+     [
+      "ha_innobase::external_lock(THD*, int)",
+      32
+     ],
+     [
+      "ha_innobase::extra(ha_extra_function)",
+      28
+     ],
+     [
+      "ha_innobase::store_lock(THD*, st_thr_lock_data**, thr_lock_type)",
+      23
+     ],
+     [
+      "ha_innobase::info_low(unsigned int, bool)",
+      21
+     ],
+     [
+      "ha_innobase::change_active_index(unsigned int)",
+      17
+     ],
+     [
+      "innobase_trx_init(THD*, trx_t*) [clone .lto_priv.0]",
+      15
+     ],
+     [
+      "ha_innobase::multi_range_read_init(st_range_seq_if*, void*, unsigned int, unsigned int, st_handler_buffer*)",
+      14
+     ],
+     [
+      "ha_innobase::column_bitmaps_signal(bool)",
+      12
+     ],
+     [
+      "ha_innobase::reset()",
+      11
+     ],
+     [
+      "ha_innobase::referenced_by_foreign_key() const",
+      8
+     ],
+     [
+      "ha_innobase::table_flags() const",
+      7
+     ],
+     [
+      "ha_innobase::index_end()",
+      7
+     ],
+     [
+      "ha_innobase::index_init(unsigned int, bool)",
+      6
+     ],
+     [
+      "ha_innobase::info(unsigned int)",
+      6
+     ],
+     [
+      "ha_innobase::try_semi_consistent_read(bool)",
+      5
+     ],
+     [
+      "innodb_prepare_commit_versioned(THD*, unsigned long long*)",
+      5
+     ],
+     [
+      "ha_innobase::multi_range_read_explain_info(unsigned int, char*, unsigned long)",
+      3
+     ]
+    ]
+   },
+   "top_self": {
+    "innodb": [
+     [
+      "iowrite16",
+      821
+     ],
+     [
+      "finish_task_switch.isra.0",
+      788
+     ],
+     [
+      "cmp_dtuple_rec_bytes(unsigned char const*, dict_index_t const&, dtuple_t const&, int*, unsigned long) [clone .lto_priv.0]",
+      457
+     ],
+     [
+      "btr_cur_t::search_leaf(dtuple_t const*, page_cur_mode_t, btr_latch_mode, mtr_t*)",
+      437
+     ],
+     [
+      "buf_page_get_gen(page_id_t, unsigned long, rw_lock_type_t, buf_block_t*, unsigned long, mtr_t*, dberr_t*)",
+      423
+     ],
+     [
+      "page_cur_insert_rec_low(page_cur_t const*, unsigned char const*, unsigned short*, mtr_t*)",
+      339
+     ],
+     [
+      "__memcmp_evex_movbe",
+      204
+     ],
+     [
+      "int page_cur_dtuple_cmp<false>(dtuple_t const&, unsigned char const*, dict_index_t const&, unsigned short*, unsigned long) [clone .lto_priv.0]",
+      188
+     ],
+     [
+      "page_cur_search_with_match(dtuple_t const*, page_cur_mode_t, unsigned short*, unsigned short*, page_cur_t*, rtr_info*) [clone .constprop.0]",
+      151
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      119
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      116
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      110
+     ],
+     [
+      "rec_get_offsets_func(unsigned char const*, dict_index_t const*, unsigned short*, unsigned long, unsigned long, mem_block_info_t**)",
+      102
+     ],
+     [
+      "void rec_init_offsets_comp_ordinary<false, false>(unsigned char const*, dict_index_t const*, unsigned short*, unsigned long, dict_col_t::def_t const*, rec_leaf_format)",
+      82
+     ],
+     [
+      "ssux_lock_impl<true>::rd_lock_spin()",
+      76
+     ],
+     [
+      "LockGuard::LockGuard(lock_sys_t::hash_table&, page_id_t)",
+      74
+     ],
+     [
+      "page_dir_split_slot(buf_block_t const&, unsigned char*) [clone .lto_priv.0]",
+      69
+     ],
+     [
+      "cmp_data(unsigned long, unsigned long, bool, unsigned char const*, unsigned long, unsigned char const*, unsigned long)",
+      65
+     ],
+     [
+      "mtr_t::set_modified(buf_block_t const&)",
+      64
+     ],
+     [
+      "malloc",
+      59
+     ],
+     [
+      "trx_undo_report_row_operation(que_thr_t*, dict_index_t*, dtuple_t const*, upd_t const*, unsigned long, unsigned char const*, unsigned short const*, unsigned long*)",
+      52
+     ],
+     [
+      "page_dir_find_owner_slot(unsigned char const*)",
+      48
+     ],
+     [
+      "unsigned char* mtr_t::log_write<(unsigned char)32>(page_id_t, buf_page_t const*, unsigned long, bool, unsigned long) [clone .constprop.0]",
+      40
+     ],
+     [
+      "void mtr_t::commit_log<true>(mtr_t*, std::pair<unsigned long, unsigned long>)",
+      38
+     ],
+     [
+      "row_search_mvcc(unsigned char*, page_cur_mode_t, row_prebuilt_t*, unsigned long, unsigned long)",
+      35
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      4866
+     ],
+     [
+      "finish_task_switch.isra.0",
+      2049
+     ],
+     [
+      "__memcg_slab_free_hook",
+      228
+     ],
+     [
+      "__send",
+      148
+     ],
+     [
+      "skb_release_data",
+      131
+     ],
+     [
+      "_raw_spin_lock",
+      105
+     ],
+     [
+      "_copy_to_iter",
+      102
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      97
+     ],
+     [
+      "do_syscall_64",
+      89
+     ],
+     [
+      "__GI___pthread_disable_asynccancel",
+      86
+     ],
+     [
+      "__memcg_slab_post_alloc_hook",
+      84
+     ],
+     [
+      "my_string_metadata_get",
+      81
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      78
+     ],
+     [
+      "dispatch_command(enum_server_command, THD*, char*, unsigned int, bool)",
+      71
+     ],
+     [
+      "__libc_recv",
+      70
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      69
+     ],
+     [
+      "unix_stream_read_generic",
+      66
+     ],
+     [
+      "fdget",
+      65
+     ],
+     [
+      "__vdso_clock_gettime",
+      64
+     ],
+     [
+      "Prepared_statement::execute(String*, bool, select_result*, Server_side_cursor**)",
+      62
+     ],
+     [
+      "sock_wfree",
+      61
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      61
+     ],
+     [
+      "poll_schedule_timeout.constprop.0",
+      61
+     ],
+     [
+      "Sql_cmd_update::update_single_table(THD*)",
+      54
+     ],
+     [
+      "SQL_SELECT::test_quick_select(THD*, Bitmap<64u>, unsigned long long, unsigned long long, bool, bool, bool, bool, Item_func::Bitmap)",
+      50
+     ]
+    ]
+   },
+   "window_read_ios": 199,
+   "window_read_ms": 15,
+   "window_server_cpu_s": 11.5349327,
+   "window_wall_s": 21.193470778001938,
+   "workload": "oltp_write_only"
+  },
+  {
+   "arm": "innodb",
+   "kernel": {
+    "innodb": 1349,
+    "server": 10237
+   },
+   "own_threads": {
+    "innodb": 631
+   },
+   "owners": {
+    "innodb": 6230,
+    "server": 20649
+   },
+   "pass": 0,
+   "rooted": 26879,
+   "samples": 26879,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 2.2,
+    "lat_max_ms": 24.02,
+    "lat_min_ms": 0.94,
+    "lat_p99_ms": 3.3,
+    "other": 21824,
+    "qps_by_second": [
+     9424.26,
+     9256.15,
+     9286.21,
+     9194.61,
+     8543.05,
+     9058.14,
+     8962.61,
+     9460.63,
+     9310.86,
+     9005.83,
+     9679.54,
+     8591.35,
+     9594.07,
+     8860.5,
+     8278.71,
+     8335.64,
+     8864.1,
+     8649.11,
+     9078.16,
+     8832.02,
+     9575.86,
+     8933.85,
+     10226.68,
+     9218.16
+    ],
+    "queries": 218240,
+    "reads": 152768,
+    "reconnects": 0,
+    "seconds": 24.0021,
+    "tps_by_second": [
+     470.26,
+     463.11,
+     464.01,
+     459.93,
+     427.05,
+     453.01,
+     447.98,
+     472.98,
+     466.04,
+     449.99,
+     483.98,
+     430.02,
+     479.9,
+     443.07,
+     413.99,
+     415.98,
+     443.05,
+     432.96,
+     453.91,
+     441.15,
+     478.99,
+     446.99,
+     511.03,
+     460.96
+    ],
+    "transactions": 10912,
+    "writes": 43648
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "innodb": [
+     [
+      "innobase_commit(THD*, bool) [clone .lto_priv.0]",
+      1409
+     ],
+     [
+      "ha_innobase::index_read(unsigned char*, unsigned char const*, unsigned int, ha_rkey_function)",
+      1113
+     ],
+     [
+      "ha_innobase::general_fetch(unsigned char*, unsigned int, unsigned int)",
+      804
+     ],
+     [
+      "ha_innobase::update_row(unsigned char const*, unsigned char const*)",
+      647
+     ],
+     [
+      "ha_innobase::records_in_range(unsigned int, st_key_range const*, st_key_range const*, st_page_range*)",
+      487
+     ],
+     [
+      "ha_innobase::write_row(unsigned char const*)",
+      370
+     ],
+     [
+      "ha_innobase::build_template(bool)",
+      153
+     ],
+     [
+      "ha_innobase::delete_row(unsigned char const*)",
+      117
+     ],
+     [
+      "ha_innobase::multi_range_read_info_const(unsigned int, st_range_seq_if*, void*, unsigned int, unsigned int*, unsigned int*, unsigned long long, Cost_estimate*)",
+      97
+     ],
+     [
+      "innobase_commit_ordered_2(trx_t*, THD*)",
+      90
+     ],
+     [
+      "ha_innobase::external_lock(THD*, int)",
+      55
+     ],
+     [
+      "ha_innobase::extra(ha_extra_function)",
+      35
+     ],
+     [
+      "ha_innobase::info_low(unsigned int, bool)",
+      32
+     ],
+     [
+      "innobase_trx_init(THD*, trx_t*) [clone .lto_priv.0]",
+      26
+     ],
+     [
+      "ha_innobase::change_active_index(unsigned int)",
+      25
+     ],
+     [
+      "ha_innobase::store_lock(THD*, st_thr_lock_data**, thr_lock_type)",
+      21
+     ],
+     [
+      "ha_innobase::reset()",
+      17
+     ],
+     [
+      "ha_innobase::column_bitmaps_signal(bool)",
+      15
+     ],
+     [
+      "ha_innobase::table_flags() const",
+      13
+     ],
+     [
+      "ha_innobase::index_end()",
+      11
+     ],
+     [
+      "ha_innobase::multi_range_read_init(st_range_seq_if*, void*, unsigned int, unsigned int, st_handler_buffer*)",
+      7
+     ],
+     [
+      "ha_innobase::referenced_by_foreign_key() const",
+      7
+     ],
+     [
+      "ha_innobase::index_flags(unsigned int, unsigned int, bool) const",
+      7
+     ],
+     [
+      "ha_innobase::multi_range_read_next(void**)",
+      6
+     ],
+     [
+      "ha_innobase::innobase_get_index(unsigned int)",
+      5
+     ]
+    ]
+   },
+   "top_self": {
+    "innodb": [
+     [
+      "iowrite16",
+      418
+     ],
+     [
+      "buf_page_get_gen(page_id_t, unsigned long, rw_lock_type_t, buf_block_t*, unsigned long, mtr_t*, dberr_t*)",
+      345
+     ],
+     [
+      "finish_task_switch.isra.0",
+      309
+     ],
+     [
+      "btr_cur_t::search_leaf(dtuple_t const*, page_cur_mode_t, btr_latch_mode, mtr_t*)",
+      287
+     ],
+     [
+      "cmp_dtuple_rec_bytes(unsigned char const*, dict_index_t const&, dtuple_t const&, int*, unsigned long) [clone .lto_priv.0]",
+      256
+     ],
+     [
+      "row_search_mvcc(unsigned char*, page_cur_mode_t, row_prebuilt_t*, unsigned long, unsigned long)",
+      255
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      250
+     ],
+     [
+      "page_cur_insert_rec_low(page_cur_t const*, unsigned char const*, unsigned short*, mtr_t*)",
+      213
+     ],
+     [
+      "__memcmp_evex_movbe",
+      190
+     ],
+     [
+      "int page_cur_dtuple_cmp<false>(dtuple_t const&, unsigned char const*, dict_index_t const&, unsigned short*, unsigned long) [clone .lto_priv.0]",
+      179
+     ],
+     [
+      "page_cur_search_with_match(dtuple_t const*, page_cur_mode_t, unsigned short*, unsigned short*, page_cur_t*, rtr_info*) [clone .constprop.0]",
+      173
+     ],
+     [
+      "int page_cur_dtuple_cmp<true>(dtuple_t const&, unsigned char const*, dict_index_t const&, unsigned short*, unsigned long) [clone .lto_priv.0]",
+      100
+     ],
+     [
+      "void rec_init_offsets_comp_ordinary<false, false>(unsigned char const*, dict_index_t const*, unsigned short*, unsigned long, dict_col_t::def_t const*, rec_leaf_format)",
+      97
+     ],
+     [
+      "page_rec_get_n_recs_before(unsigned char const*)",
+      84
+     ],
+     [
+      "row_sel_field_store_in_mysql_format_func(unsigned char*, mysql_row_templ_t const*, unsigned char const*, unsigned long)",
+      83
+     ],
+     [
+      "rec_get_offsets_func(unsigned char const*, dict_index_t const*, unsigned short*, unsigned long, unsigned long, mem_block_info_t**)",
+      74
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      73
+     ],
+     [
+      "cmp_data(unsigned long, unsigned long, bool, unsigned char const*, unsigned long, unsigned char const*, unsigned long)",
+      68
+     ],
+     [
+      "row_sel_store_mysql_rec(unsigned char*, row_prebuilt_t*, unsigned char const*, dtuple_t const*, bool, dict_index_t const*, unsigned short const*)",
+      63
+     ],
+     [
+      "row_sel_store_mysql_field(unsigned char*, row_prebuilt_t*, unsigned char const*, dict_index_t const*, unsigned short const*, unsigned long, mysql_row_templ_t const*)",
+      52
+     ],
+     [
+      "ha_innobase::build_template(bool)",
+      45
+     ],
+     [
+      "mtr_memo_slot_t::release() const",
+      43
+     ],
+     [
+      "build_template_field(row_prebuilt_t*, dict_index_t*, dict_index_t*, TABLE*, Field const*, unsigned long, unsigned long)",
+      41
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      41
+     ],
+     [
+      "page_dir_find_owner_slot(unsigned char const*)",
+      39
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      5648
+     ],
+     [
+      "finish_task_switch.isra.0",
+      2291
+     ],
+     [
+      "my_hash_sort_simple_nopad",
+      567
+     ],
+     [
+      "__memcg_slab_free_hook",
+      258
+     ],
+     [
+      "__memcmp_evex_movbe",
+      221
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      220
+     ],
+     [
+      "__send",
+      172
+     ],
+     [
+      "my_strnxfrm_simple_internal",
+      168
+     ],
+     [
+      "my_qsort2",
+      154
+     ],
+     [
+      "__GI___pthread_disable_asynccancel",
+      127
+     ],
+     [
+      "_raw_spin_lock",
+      123
+     ],
+     [
+      "skb_release_data",
+      112
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      106
+     ],
+     [
+      "_copy_to_iter",
+      106
+     ],
+     [
+      "make_join_statistics(JOIN*, List<TABLE_LIST>&, st_dynamic_array*)",
+      105
+     ],
+     [
+      "do_syscall_64",
+      102
+     ],
+     [
+      "evaluate_join_record(JOIN*, st_join_table*, int) [clone .lto_priv.0]",
+      91
+     ],
+     [
+      "__libc_recv",
+      90
+     ],
+     [
+      "__memcg_slab_post_alloc_hook",
+      86
+     ],
+     [
+      "_copy_from_iter",
+      85
+     ],
+     [
+      "Protocol::net_store_data_cs(unsigned char const*, unsigned long, charset_info_st const*, charset_info_st const*)",
+      82
+     ],
+     [
+      "hp_write_key",
+      79
+     ],
+     [
+      "JOIN::optimize_stage2()",
+      79
+     ],
+     [
+      "__memset_avx512_unaligned_erms",
+      77
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      76
+     ]
+    ]
+   },
+   "window_read_ios": 555,
+   "window_read_ms": 51,
+   "window_server_cpu_s": 14.412282721,
+   "window_wall_s": 21.185172678000527,
+   "workload": "oltp_read_write"
+  },
+  {
+   "arm": "innodb",
+   "kernel": {
+    "innodb": 4797,
+    "server": 4011
+   },
+   "own_threads": {
+    "innodb": 2901
+   },
+   "owners": {
+    "innodb": 12147,
+    "server": 7436
+   },
+   "pass": 0,
+   "rooted": 19583,
+   "samples": 19583,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 0.29,
+    "lat_max_ms": 23.29,
+    "lat_min_ms": 0.14,
+    "lat_p99_ms": 0.7,
+    "other": 0,
+    "qps_by_second": [
+     4042.51,
+     4778.86,
+     3529.93,
+     2940.7,
+     3019.15,
+     3139.81,
+     3450.35,
+     3380.35,
+     3325.42,
+     3588.87,
+     3562.94,
+     3407.17,
+     3210.83,
+     3024.41,
+     2947.61,
+     2750.15,
+     2838.89,
+     3599.42,
+     3208.7,
+     3554.01,
+     3474.62,
+     3595.34,
+     3560.05
+    ],
+    "queries": 81644,
+    "reads": 0,
+    "reconnects": 0,
+    "seconds": 24.0016,
+    "tps_by_second": [
+     4042.51,
+     4778.86,
+     3529.93,
+     2940.7,
+     3019.15,
+     3139.81,
+     3450.35,
+     3380.35,
+     3325.42,
+     3588.87,
+     3562.94,
+     3407.17,
+     3210.83,
+     3024.41,
+     2947.61,
+     2750.15,
+     2838.89,
+     3599.42,
+     3208.7,
+     3554.01,
+     3474.62,
+     3595.34,
+     3560.05
+    ],
+    "transactions": 81644,
+    "writes": 81644
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "innodb": [
+     [
+      "innobase_commit(THD*, bool) [clone .lto_priv.0]",
+      4914
+     ],
+     [
+      "ha_innobase::update_row(unsigned char const*, unsigned char const*)",
+      3049
+     ],
+     [
+      "ha_innobase::index_read(unsigned char*, unsigned char const*, unsigned int, ha_rkey_function)",
+      716
+     ],
+     [
+      "innobase_commit_ordered_2(trx_t*, THD*)",
+      180
+     ],
+     [
+      "ha_innobase::multi_range_read_info_const(unsigned int, st_range_seq_if*, void*, unsigned int, unsigned int*, unsigned int*, unsigned long long, Cost_estimate*)",
+      111
+     ],
+     [
+      "ha_innobase::build_template(bool)",
+      87
+     ],
+     [
+      "ha_innobase::external_lock(THD*, int)",
+      30
+     ],
+     [
+      "ha_innobase::extra(ha_extra_function)",
+      25
+     ],
+     [
+      "ha_innobase::info_low(unsigned int, bool)",
+      16
+     ],
+     [
+      "ha_innobase::referenced_by_foreign_key() const",
+      14
+     ],
+     [
+      "ha_innobase::change_active_index(unsigned int)",
+      12
+     ],
+     [
+      "ha_innobase::store_lock(THD*, st_thr_lock_data**, thr_lock_type)",
+      11
+     ],
+     [
+      "innobase_trx_init(THD*, trx_t*) [clone .lto_priv.0]",
+      10
+     ],
+     [
+      "ha_innobase::multi_range_read_init(st_range_seq_if*, void*, unsigned int, unsigned int, st_handler_buffer*)",
+      9
+     ],
+     [
+      "ha_innobase::column_bitmaps_signal(bool)",
+      9
+     ],
+     [
+      "ha_innobase::try_semi_consistent_read(bool)",
+      9
+     ],
+     [
+      "ha_innobase::table_flags() const",
+      7
+     ],
+     [
+      "ha_innobase::index_flags(unsigned int, unsigned int, bool) const",
+      6
+     ],
+     [
+      "ha_innobase::info(unsigned int)",
+      6
+     ],
+     [
+      "ha_innobase::index_end()",
+      5
+     ],
+     [
+      "ha_innobase::reset()",
+      4
+     ],
+     [
+      "innodb_prepare_commit_versioned(THD*, unsigned long long*)",
+      4
+     ],
+     [
+      "ha_innobase::index_init(unsigned int, bool)",
+      3
+     ],
+     [
+      "ha_innobase::was_semi_consistent_read()",
+      3
+     ],
+     [
+      "ha_innobase::innobase_get_index(unsigned int)",
+      2
+     ]
+    ]
+   },
+   "top_self": {
+    "innodb": [
+     [
+      "finish_task_switch.isra.0",
+      1817
+     ],
+     [
+      "iowrite16",
+      1446
+     ],
+     [
+      "page_cur_insert_rec_low(page_cur_t const*, unsigned char const*, unsigned short*, mtr_t*)",
+      1130
+     ],
+     [
+      "buf_page_get_gen(page_id_t, unsigned long, rw_lock_type_t, buf_block_t*, unsigned long, mtr_t*, dberr_t*)",
+      431
+     ],
+     [
+      "cmp_dtuple_rec_bytes(unsigned char const*, dict_index_t const&, dtuple_t const&, int*, unsigned long) [clone .lto_priv.0]",
+      406
+     ],
+     [
+      "btr_cur_t::search_leaf(dtuple_t const*, page_cur_mode_t, btr_latch_mode, mtr_t*)",
+      394
+     ],
+     [
+      "page_dir_split_slot(buf_block_t const&, unsigned char*) [clone .lto_priv.0]",
+      277
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      269
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      252
+     ],
+     [
+      "void rec_init_offsets_comp_ordinary<false, false>(unsigned char const*, dict_index_t const*, unsigned short*, unsigned long, dict_col_t::def_t const*, rec_leaf_format)",
+      202
+     ],
+     [
+      "ssux_lock_impl<true>::rd_lock_spin()",
+      196
+     ],
+     [
+      "__memcmp_evex_movbe",
+      193
+     ],
+     [
+      "int page_cur_dtuple_cmp<false>(dtuple_t const&, unsigned char const*, dict_index_t const&, unsigned short*, unsigned long) [clone .lto_priv.0]",
+      192
+     ],
+     [
+      "rec_get_offsets_func(unsigned char const*, dict_index_t const*, unsigned short*, unsigned long, unsigned long, mem_block_info_t**)",
+      180
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      170
+     ],
+     [
+      "mtr_t::set_modified(buf_block_t const&)",
+      143
+     ],
+     [
+      "page_dir_find_owner_slot(unsigned char const*)",
+      141
+     ],
+     [
+      "page_cur_search_with_match(dtuple_t const*, page_cur_mode_t, unsigned short*, unsigned short*, page_cur_t*, rtr_info*) [clone .constprop.0]",
+      136
+     ],
+     [
+      "srw_mutex_impl<true>::wait_and_lock()",
+      113
+     ],
+     [
+      "unsigned char* mtr_t::log_write<(unsigned char)32>(page_id_t, buf_page_t const*, unsigned long, bool, unsigned long) [clone .constprop.0]",
+      105
+     ],
+     [
+      "cmp_data(unsigned long, unsigned long, bool, unsigned char const*, unsigned long, unsigned char const*, unsigned long)",
+      76
+     ],
+     [
+      "page_copy_rec_list_end_no_locks(buf_block_t*, unsigned char const*, dict_index_t*, mtr_t*)",
+      71
+     ],
+     [
+      "blk_mq_submit_bio",
+      68
+     ],
+     [
+      "LockGuard::LockGuard(lock_sys_t::hash_table&, page_id_t)",
+      65
+     ],
+     [
+      "trx_t::commit_persist()",
+      58
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      2190
+     ],
+     [
+      "finish_task_switch.isra.0",
+      840
+     ],
+     [
+      "__send",
+      89
+     ],
+     [
+      "__memcg_slab_free_hook",
+      77
+     ],
+     [
+      "skb_release_data",
+      63
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      57
+     ],
+     [
+      "SQL_SELECT::test_quick_select(THD*, Bitmap<64u>, unsigned long long, unsigned long long, bool, bool, bool, bool, Item_func::Bitmap)",
+      57
+     ],
+     [
+      "Prepared_statement::execute(String*, bool, select_result*, Server_side_cursor**)",
+      56
+     ],
+     [
+      "dispatch_command(enum_server_command, THD*, char*, unsigned int, bool)",
+      50
+     ],
+     [
+      "_raw_spin_lock",
+      48
+     ],
+     [
+      "Sql_cmd_update::update_single_table(THD*)",
+      48
+     ],
+     [
+      "__memcg_slab_post_alloc_hook",
+      48
+     ],
+     [
+      "do_syscall_64",
+      44
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      44
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      42
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      42
+     ],
+     [
+      "__vdso_clock_gettime",
+      39
+     ],
+     [
+      "unix_stream_sendmsg",
+      39
+     ],
+     [
+      "l_find(LF_SLIST**, charset_info_st const*, unsigned int, unsigned char const*, unsigned long, CURSOR*, LF_PINS*, char (*)(void*, void*))",
+      37
+     ],
+     [
+      "open_table(THD*, TABLE_LIST*, Open_table_context*)",
+      36
+     ],
+     [
+      "JOIN::prepare(TABLE_LIST*, Item*, unsigned int, st_order*, bool, st_order*, Item*, st_order*, st_select_lex*, st_select_lex_unit*)",
+      36
+     ],
+     [
+      "alloc_root",
+      35
+     ],
+     [
+      "__libc_recv",
+      35
+     ],
+     [
+      "malloc",
+      34
+     ],
+     [
+      "start_stage_noop.lto_priv.0",
+      29
+     ]
+    ]
+   },
+   "window_read_ios": 251,
+   "window_read_ms": 21,
+   "window_server_cpu_s": 10.529306557,
+   "window_wall_s": 21.198026596001,
+   "workload": "oltp_update_index"
+  },
+  {
+   "arm": "innodb",
+   "kernel": {
+    "innodb": 5645,
+    "server": 4558
+   },
+   "own_threads": {
+    "innodb": 300
+   },
+   "owners": {
+    "innodb": 8360,
+    "server": 8512
+   },
+   "pass": 0,
+   "rooted": 16872,
+   "samples": 16872,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 0.25,
+    "lat_max_ms": 22.79,
+    "lat_min_ms": 0.13,
+    "lat_p99_ms": 0.63,
+    "other": 0,
+    "qps_by_second": [
+     4765.87,
+     5515.26,
+     3772.83,
+     3997.2,
+     3632.66,
+     3784.72,
+     4020.22,
+     4083.13,
+     4057.08,
+     4054.89,
+     3761.15,
+     3645.5,
+     4279.86,
+     4067.46,
+     3567.57,
+     3410.39,
+     3767.11,
+     3552.03,
+     4126.44,
+     4389.65,
+     3616.54,
+     3586.22,
+     4779.19
+    ],
+    "queries": 97329,
+    "reads": 0,
+    "reconnects": 0,
+    "seconds": 24.0018,
+    "tps_by_second": [
+     4765.87,
+     5515.26,
+     3772.83,
+     3997.2,
+     3632.66,
+     3784.72,
+     4020.22,
+     4083.13,
+     4057.08,
+     4054.89,
+     3761.15,
+     3645.5,
+     4279.86,
+     4067.46,
+     3567.57,
+     3410.39,
+     3767.11,
+     3552.03,
+     4126.44,
+     4389.65,
+     3616.54,
+     3586.22,
+     4779.19
+    ],
+    "transactions": 97329,
+    "writes": 97329
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "innodb": [
+     [
+      "innobase_commit(THD*, bool) [clone .lto_priv.0]",
+      5803
+     ],
+     [
+      "ha_innobase::index_read(unsigned char*, unsigned char const*, unsigned int, ha_rkey_function)",
+      867
+     ],
+     [
+      "ha_innobase::update_row(unsigned char const*, unsigned char const*)",
+      652
+     ],
+     [
+      "innobase_commit_ordered_2(trx_t*, THD*)",
+      264
+     ],
+     [
+      "ha_innobase::multi_range_read_info_const(unsigned int, st_range_seq_if*, void*, unsigned int, unsigned int*, unsigned int*, unsigned long long, Cost_estimate*)",
+      123
+     ],
+     [
+      "ha_innobase::build_template(bool)",
+      78
+     ],
+     [
+      "ha_innobase::external_lock(THD*, int)",
+      51
+     ],
+     [
+      "ha_innobase::store_lock(THD*, st_thr_lock_data**, thr_lock_type)",
+      23
+     ],
+     [
+      "ha_innobase::extra(ha_extra_function)",
+      23
+     ],
+     [
+      "ha_innobase::column_bitmaps_signal(bool)",
+      21
+     ],
+     [
+      "ha_innobase::info_low(unsigned int, bool)",
+      20
+     ],
+     [
+      "innobase_trx_init(THD*, trx_t*) [clone .lto_priv.0]",
+      20
+     ],
+     [
+      "ha_innobase::referenced_by_foreign_key() const",
+      18
+     ],
+     [
+      "ha_innobase::change_active_index(unsigned int)",
+      14
+     ],
+     [
+      "ha_innobase::multi_range_read_init(st_range_seq_if*, void*, unsigned int, unsigned int, st_handler_buffer*)",
+      14
+     ],
+     [
+      "ha_innobase::index_flags(unsigned int, unsigned int, bool) const",
+      11
+     ],
+     [
+      "ha_innobase::try_semi_consistent_read(bool)",
+      10
+     ],
+     [
+      "ha_innobase::index_end()",
+      9
+     ],
+     [
+      "ha_innobase::index_init(unsigned int, bool)",
+      8
+     ],
+     [
+      "innodb_prepare_commit_versioned(THD*, unsigned long long*)",
+      6
+     ],
+     [
+      "ha_innobase::reset()",
+      4
+     ],
+     [
+      "ha_innobase::table_flags() const",
+      4
+     ],
+     [
+      "ha_innobase::is_valid_trx(bool) const",
+      3
+     ],
+     [
+      "ha_innobase::multi_range_read_next(void**)",
+      3
+     ],
+     [
+      "ha_innobase::statistics_init(dict_table_t*, bool)",
+      3
+     ]
+    ]
+   },
+   "top_self": {
+    "innodb": [
+     [
+      "finish_task_switch.isra.0",
+      2181
+     ],
+     [
+      "iowrite16",
+      1848
+     ],
+     [
+      "buf_page_get_gen(page_id_t, unsigned long, rw_lock_type_t, buf_block_t*, unsigned long, mtr_t*, dberr_t*)",
+      263
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      255
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      230
+     ],
+     [
+      "btr_cur_t::search_leaf(dtuple_t const*, page_cur_mode_t, btr_latch_mode, mtr_t*)",
+      146
+     ],
+     [
+      "cmp_dtuple_rec_bytes(unsigned char const*, dict_index_t const&, dtuple_t const&, int*, unsigned long) [clone .lto_priv.0]",
+      117
+     ],
+     [
+      "__memcmp_evex_movbe",
+      113
+     ],
+     [
+      "int page_cur_dtuple_cmp<false>(dtuple_t const&, unsigned char const*, dict_index_t const&, unsigned short*, unsigned long) [clone .lto_priv.0]",
+      90
+     ],
+     [
+      "trx_t::commit_persist()",
+      82
+     ],
+     [
+      "blk_mq_submit_bio",
+      72
+     ],
+     [
+      "trx_undo_report_row_operation(que_thr_t*, dict_index_t*, dtuple_t const*, upd_t const*, unsigned long, unsigned char const*, unsigned short const*, unsigned long*)",
+      52
+     ],
+     [
+      "page_cur_search_with_match(dtuple_t const*, page_cur_mode_t, unsigned short*, unsigned short*, page_cur_t*, rtr_info*) [clone .constprop.0]",
+      51
+     ],
+     [
+      "__iomap_dio_rw",
+      44
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      44
+     ],
+     [
+      "trx_undo_header_create(buf_block_t*, unsigned long, mtr_t*)",
+      43
+     ],
+     [
+      "LockGuard::LockGuard(lock_sys_t::hash_table&, page_id_t)",
+      41
+     ],
+     [
+      "cmp_data(unsigned long, unsigned long, bool, unsigned char const*, unsigned long, unsigned char const*, unsigned long)",
+      38
+     ],
+     [
+      "gup_fast_fallback",
+      37
+     ],
+     [
+      "sel_arg_range_seq_next(void*, st_key_multi_range*)",
+      36
+     ],
+     [
+      "trx_undo_reuse_cached(mtr_t*, dberr_t*, trx_rseg_t*, trx_undo_t**) [clone .lto_priv.0]",
+      34
+     ],
+     [
+      "calc_row_difference(upd_t*, unsigned char const*, unsigned char const*, TABLE*, unsigned char*, unsigned long, row_prebuilt_t*, unsigned long&)",
+      32
+     ],
+     [
+      "mtr_t::commit_log_release()",
+      31
+     ],
+     [
+      "ssux_lock_impl<false>::rd_lock_nospin()",
+      28
+     ],
+     [
+      "ha_innobase::external_lock(THD*, int)",
+      28
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      2444
+     ],
+     [
+      "finish_task_switch.isra.0",
+      960
+     ],
+     [
+      "__memcg_slab_free_hook",
+      162
+     ],
+     [
+      "__send",
+      120
+     ],
+     [
+      "my_string_metadata_get",
+      105
+     ],
+     [
+      "SQL_SELECT::test_quick_select(THD*, Bitmap<64u>, unsigned long long, unsigned long long, bool, bool, bool, bool, Item_func::Bitmap)",
+      63
+     ],
+     [
+      "_raw_spin_lock",
+      63
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      57
+     ],
+     [
+      "my_mb_wc_utf8mb4.lto_priv.0",
+      57
+     ],
+     [
+      "Sql_cmd_update::update_single_table(THD*)",
+      55
+     ],
+     [
+      "__memcg_slab_post_alloc_hook",
+      55
+     ],
+     [
+      "do_syscall_64",
+      53
+     ],
+     [
+      "_copy_to_iter",
+      52
+     ],
+     [
+      "my_wc_mb_latin1.lto_priv.0",
+      50
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      49
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      49
+     ],
+     [
+      "Prepared_statement::execute(String*, bool, select_result*, Server_side_cursor**)",
+      49
+     ],
+     [
+      "l_find(LF_SLIST**, charset_info_st const*, unsigned int, unsigned char const*, unsigned long, CURSOR*, LF_PINS*, char (*)(void*, void*))",
+      45
+     ],
+     [
+      "__GI___pthread_disable_asynccancel",
+      43
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      43
+     ],
+     [
+      "my_convert_fix",
+      42
+     ],
+     [
+      "malloc",
+      40
+     ],
+     [
+      "__libc_recv",
+      40
+     ],
+     [
+      "__memset_avx512_unaligned_erms",
+      40
+     ],
+     [
+      "alloc_root",
+      39
+     ]
+    ]
+   },
+   "window_read_ios": 182,
+   "window_read_ms": 16,
+   "window_server_cpu_s": 9.161487023,
+   "window_wall_s": 21.19347566400029,
+   "workload": "oltp_update_non_index"
+  },
+  {
+   "arm": "innodb",
+   "kernel": {
+    "innodb": 5570,
+    "server": 4735
+   },
+   "own_threads": {
+    "innodb": 300
+   },
+   "owners": {
+    "innodb": 7797,
+    "server": 8911
+   },
+   "pass": 0,
+   "rooted": 16708,
+   "samples": 16708,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 0.24,
+    "lat_max_ms": 24.43,
+    "lat_min_ms": 0.13,
+    "lat_p99_ms": 0.6,
+    "other": 0,
+    "qps_by_second": [
+     5019.21,
+     5092.06,
+     4128.88,
+     3913.18,
+     4528.15,
+     4420.35,
+     3407.02,
+     4220.23,
+     4059.28,
+     3315.54,
+     3907.06,
+     4117.55,
+     4172.47,
+     3739.37,
+     4127.82,
+     3614.12,
+     4032.68,
+     3607.0,
+     3581.83,
+     3452.71,
+     3902.01,
+     3859.25,
+     4187.81
+    ],
+    "queries": 97641,
+    "reads": 0,
+    "reconnects": 0,
+    "seconds": 24.0016,
+    "tps_by_second": [
+     5019.21,
+     5092.06,
+     4128.88,
+     3913.18,
+     4528.15,
+     4420.35,
+     3407.02,
+     4220.23,
+     4059.28,
+     3315.54,
+     3907.06,
+     4117.55,
+     4172.47,
+     3739.37,
+     4127.82,
+     3614.12,
+     4032.68,
+     3607.0,
+     3581.83,
+     3452.71,
+     3902.01,
+     3859.25,
+     4187.81
+    ],
+    "transactions": 97641,
+    "writes": 97641
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "innodb": [
+     [
+      "innobase_commit(THD*, bool) [clone .lto_priv.0]",
+      5665
+     ],
+     [
+      "ha_innobase::write_row(unsigned char const*)",
+      1506
+     ],
+     [
+      "innobase_commit_ordered_2(trx_t*, THD*)",
+      184
+     ],
+     [
+      "ha_innobase::external_lock(THD*, int)",
+      53
+     ],
+     [
+      "ha_innobase::extra(ha_extra_function)",
+      17
+     ],
+     [
+      "ha_innobase::store_lock(THD*, st_thr_lock_data**, thr_lock_type)",
+      16
+     ],
+     [
+      "innobase_trx_init(THD*, trx_t*) [clone .lto_priv.0]",
+      13
+     ],
+     [
+      "ha_innobase::column_bitmaps_signal(bool)",
+      9
+     ],
+     [
+      "ha_innobase::reset()",
+      8
+     ],
+     [
+      "ha_innobase::get_auto_increment(unsigned long long, unsigned long long, unsigned long long, unsigned long long*, unsigned long long*)",
+      6
+     ],
+     [
+      "ha_innobase::referenced_by_foreign_key() const",
+      6
+     ],
+     [
+      "ha_innobase::table_flags() const",
+      6
+     ],
+     [
+      "innodb_prepare_commit_versioned(THD*, unsigned long long*)",
+      4
+     ],
+     [
+      "ha_innobase::is_valid_trx(bool) const",
+      2
+     ],
+     [
+      "ha_innobase::innobase_lock_autoinc()",
+      2
+     ]
+    ]
+   },
+   "top_self": {
+    "innodb": [
+     [
+      "finish_task_switch.isra.0",
+      2219
+     ],
+     [
+      "iowrite16",
+      1715
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      258
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      223
+     ],
+     [
+      "buf_page_get_gen(page_id_t, unsigned long, rw_lock_type_t, buf_block_t*, unsigned long, mtr_t*, dberr_t*)",
+      217
+     ],
+     [
+      "btr_cur_t::search_leaf(dtuple_t const*, page_cur_mode_t, btr_latch_mode, mtr_t*)",
+      125
+     ],
+     [
+      "cmp_dtuple_rec_bytes(unsigned char const*, dict_index_t const&, dtuple_t const&, int*, unsigned long) [clone .lto_priv.0]",
+      113
+     ],
+     [
+      "int page_cur_dtuple_cmp<false>(dtuple_t const&, unsigned char const*, dict_index_t const&, unsigned short*, unsigned long) [clone .lto_priv.0]",
+      66
+     ],
+     [
+      "blk_mq_submit_bio",
+      65
+     ],
+     [
+      "trx_undo_header_create(buf_block_t*, unsigned long, mtr_t*)",
+      65
+     ],
+     [
+      "__memcmp_evex_movbe",
+      60
+     ],
+     [
+      "trx_t::commit_persist()",
+      52
+     ],
+     [
+      "mtr_t::commit_log_release()",
+      52
+     ],
+     [
+      "page_cur_insert_rec_low(page_cur_t const*, unsigned char const*, unsigned short*, mtr_t*)",
+      45
+     ],
+     [
+      "rec_get_offsets_func(unsigned char const*, dict_index_t const*, unsigned short*, unsigned long, unsigned long, mem_block_info_t**)",
+      40
+     ],
+     [
+      "bio_associate_blkg_from_css",
+      39
+     ],
+     [
+      "page_cur_search_with_match(dtuple_t const*, page_cur_mode_t, unsigned short*, unsigned short*, page_cur_t*, rtr_info*) [clone .constprop.0]",
+      38
+     ],
+     [
+      "__iomap_dio_rw",
+      37
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      34
+     ],
+     [
+      "cmp_data(unsigned long, unsigned long, bool, unsigned char const*, unsigned long, unsigned char const*, unsigned long)",
+      33
+     ],
+     [
+      "purge_sys_t::iterator::free_history_rseg(trx_rseg_t&) const",
+      33
+     ],
+     [
+      "trx_undo_reuse_cached(mtr_t*, dberr_t*, trx_rseg_t*, trx_undo_t**) [clone .lto_priv.0]",
+      33
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      31
+     ],
+     [
+      "ha_innobase::external_lock(THD*, int)",
+      31
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      29
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      2553
+     ],
+     [
+      "finish_task_switch.isra.0",
+      1058
+     ],
+     [
+      "MYSQLparse(THD*)",
+      598
+     ],
+     [
+      "my_string_repertoire_8bit",
+      174
+     ],
+     [
+      "Lex_input_stream::lex_one_token(YYSTYPE*, THD*)",
+      116
+     ],
+     [
+      "Lex_input_stream::get_text(Lex_string_with_metadata_st*, unsigned int, int, int)",
+      88
+     ],
+     [
+      "mysql_insert(THD*, TABLE_LIST*, List<Item>&, List<List<Item> >&, List<Item>&, List<Item>&, enum_duplicates, bool, select_result*)",
+      84
+     ],
+     [
+      "__memcg_slab_free_hook",
+      84
+     ],
+     [
+      "my_mb_wc_utf8mb4.lto_priv.0",
+      75
+     ],
+     [
+      "__send",
+      73
+     ],
+     [
+      "skb_release_data",
+      73
+     ],
+     [
+      "my_wc_mb_latin1.lto_priv.0",
+      68
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      67
+     ],
+     [
+      "my_charlen_utf8mb4.lto_priv.0",
+      66
+     ],
+     [
+      "my_convert_fix",
+      65
+     ],
+     [
+      "my_numchars_mb",
+      64
+     ],
+     [
+      "_raw_spin_lock",
+      64
+     ],
+     [
+      "dispatch_command(enum_server_command, THD*, char*, unsigned int, bool)",
+      63
+     ],
+     [
+      "do_syscall_64",
+      60
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      59
+     ],
+     [
+      "Lex_input_stream::scan_ident_middle(THD*, Lex_ident_cli_st*, charset_info_st const**, my_lex_states*)",
+      58
+     ],
+     [
+      "my_mb_wc_item_name.lto_priv.0",
+      55
+     ],
+     [
+      "__memcg_slab_post_alloc_hook",
+      53
+     ],
+     [
+      "_copy_to_iter",
+      52
+     ],
+     [
+      "my_convert_using_func",
+      51
+     ]
+    ]
+   },
+   "window_read_ios": 190,
+   "window_read_ms": 14,
+   "window_server_cpu_s": 9.060904328,
+   "window_wall_s": 21.227369164000265,
+   "workload": "oltp_insert"
+  },
+  {
+   "arm": "myrocks",
+   "kernel": {
+    "myrocks": 1,
+    "rocksdb_core": 3469,
+    "server": 7554
+   },
+   "own_threads": {},
+   "owners": {
+    "myrocks": 945,
+    "rocksdb_core": 7129,
+    "rocksdb_txn": 704,
+    "server": 12261
+   },
+   "pass": 0,
+   "rooted": 21039,
+   "samples": 21039,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 0.88,
+    "lat_max_ms": 25.42,
+    "lat_min_ms": 0.54,
+    "lat_p99_ms": 1.58,
+    "other": 54534,
+    "qps_by_second": [
+     7776.09,
+     6957.64,
+     7196.45,
+     6659.99,
+     6375.33,
+     6614.47,
+     6478.1,
+     6584.64,
+     5845.35,
+     6555.93,
+     6959.94,
+     6649.32,
+     6353.15,
+     6960.51,
+     6625.22,
+     6792.13,
+     6680.75,
+     6910.69,
+     7104.75,
+     6409.61,
+     6807.16,
+     7083.34,
+     7605.79
+    ],
+    "queries": 163602,
+    "reads": 0,
+    "reconnects": 0,
+    "seconds": 24.0016,
+    "tps_by_second": [
+     1295.52,
+     1159.27,
+     1199.41,
+     1110.0,
+     1062.89,
+     1102.08,
+     1080.02,
+     1097.11,
+     974.72,
+     1092.15,
+     1159.99,
+     1109.05,
+     1058.03,
+     1160.08,
+     1104.87,
+     1132.02,
+     1113.13,
+     1151.95,
+     1183.96,
+     1067.94,
+     1134.53,
+     1180.56,
+     1267.8
+    ],
+    "transactions": 27267,
+    "writes": 109068
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "myrocks": [
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      53
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      40
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      33
+     ],
+     [
+      "myrocks::get_or_create_tx(THD*) [clone .lto_priv.0]",
+      31
+     ],
+     [
+      "myrocks::Rdb_key_def::get_lookup_bitmap(TABLE const*, st_bitmap*) const",
+      29
+     ],
+     [
+      "myrocks::ha_rocksdb::update_write_pk(myrocks::Rdb_key_def const&, myrocks::ha_rocksdb::update_row_info const&, bool)",
+      29
+     ],
+     [
+      "myrocks::ha_rocksdb::check_keyread_allowed(unsigned int, unsigned int, bool) const",
+      29
+     ],
+     [
+      "myrocks::ha_rocksdb::get_row_by_rowid(unsigned char*, char const*, unsigned int, bool, bool)",
+      28
+     ],
+     [
+      "myrocks::ha_rocksdb::read_range_first(st_key_range const*, st_key_range const*, bool, bool)",
+      27
+     ],
+     [
+      "myrocks::ha_rocksdb::info(unsigned int)",
+      26
+     ],
+     [
+      "myrocks::ha_rocksdb::index_read_map_impl(unsigned char*, unsigned char const*, unsigned int, ha_rkey_function, st_key_range const*)",
+      25
+     ],
+     [
+      "myrocks::ha_rocksdb::index_init(unsigned int, bool)",
+      25
+     ],
+     [
+      "myrocks::Rdb_converter::encode_value_slice(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const&, myrocks::Rdb_string_writer*, bool, bool, char*, bool*, rocksdb::Slice*)",
+      24
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::start_tx()",
+      23
+     ],
+     [
+      "myrocks::ha_rocksdb::extra(ha_extra_function)",
+      16
+     ],
+     [
+      "myrocks::ha_rocksdb::update_row_stats(myrocks::operation_type const&)",
+      16
+     ],
+     [
+      "myrocks::ha_rocksdb::update_auto_incr_val_from_field()",
+      15
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::set_lock_timeout(int)",
+      15
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_with_make_sort_key(myrocks::Rdb_field_packing*, Field*, unsigned char*, unsigned char**, myrocks::Rdb_pack_field_context*)",
+      15
+     ],
+     [
+      "myrocks::Rdb_converter::setup_field_decoders(st_bitmap const*, bool)",
+      15
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::is_tx_started() const",
+      14
+     ],
+     [
+      "myrocks::Rdb_io_perf::start(unsigned int)",
+      13
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_field(Field*, myrocks::Rdb_field_packing*, unsigned char*, unsigned char*, unsigned char*, myrocks::Rdb_string_writer*, unsigned int*) const",
+      13
+     ],
+     [
+      "myrocks::ha_rocksdb::read_thd_vars(THD*)",
+      13
+     ],
+     [
+      "myrocks::Rdb_field_packing::get_field_in_table(TABLE const*) const",
+      13
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "rocksdb::PosixWritableFile::Sync(rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      3166
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      640
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      611
+     ],
+     [
+      "rocksdb::PosixWritableFile::Append(rocksdb::Slice const&, rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      264
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      141
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::KeyIsAfterNode(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Node*) const [clone .isra.0]",
+      128
+     ],
+     [
+      "rocksdb::LRUHandleTable::FindPointer(rocksdb::Slice const&, unsigned int)",
+      101
+     ],
+     [
+      "bool rocksdb::BlockIter<rocksdb::Slice>::BinarySeek<rocksdb::DecodeKey>(rocksdb::Slice const&, unsigned int*, bool*) [clone .constprop.0]",
+      93
+     ],
+     [
+      "rocksdb::DataBlockIter::NextImpl()",
+      70
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      57
+     ],
+     [
+      "rocksdb::MemTableInserter::PutCFImpl(unsigned int, rocksdb::Slice const&, rocksdb::Slice const&, rocksdb::ValueType, rocksdb::ProtectionInfoKVOS<unsigned long> const*)",
+      51
+     ],
+     [
+      "rocksdb::InternalKeyComparator::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const",
+      46
+     ],
+     [
+      "rocksdb::port::Mutex::Unlock()",
+      45
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Insert(rocksdb::LRUHandle*)",
+      45
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      38
+     ],
+     [
+      "rocksdb::DBImpl::WriteImpl(rocksdb::WriteOptions const&, rocksdb::WriteBatch*, rocksdb::WriteCallback*, unsigned long*, unsigned long, bool, unsigned long*, unsigned long, rocksdb::PreReleaseCallback*)",
+      37
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Remove(rocksdb::LRUHandle*)",
+      32
+     ],
+     [
+      "bool rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Insert<false>(char const*, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, bool)",
+      28
+     ],
+     [
+      "std::_Hashtable<unsigned int, std::pair<unsigned int const, std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, rocksdb::TrackedKeyInfo, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, rocksdb::TrackedKeyInfo> > > >, std::allocator<std::pair<unsigned int const, std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, rocksdb::TrackedKeyInfo, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, rocksdb::TrackedKeyInfo> > > > >, std::__detail::_Select1st, std::equal_to<unsigned int>, std::hash<unsigned int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_insert_unique_node(unsigned long, unsigned long, std::__detail::_Hash_node<std::pair<unsigned int const, std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, rocksdb::TrackedKeyInfo, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, rocksdb::TrackedKeyInfo> > > >, false>*, unsigned long) [clone .constprop.0]",
+      27
+     ],
+     [
+      "rocksdb::Status rocksdb::BlockBasedTable::MaybeReadBlockAndLoadToCache<rocksdb::Block>(rocksdb::FilePrefetchBuffer*, rocksdb::ReadOptions const&, rocksdb::BlockHandle const&, rocksdb::UncompressionDict const&, bool, bool, rocksdb::CachableEntry<rocksdb::Block>*, rocksdb::BlockType, rocksdb::GetContext*, rocksdb::BlockCacheLookupContext*, rocksdb::BlockContents*) const",
+      26
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      26
+     ],
+     [
+      "rocksdb::MemTable::Add(unsigned long, rocksdb::ValueType, rocksdb::Slice const&, rocksdb::Slice const&, rocksdb::ProtectionInfoKVOS<unsigned long> const*, bool, rocksdb::MemTablePostProcessInfo*, void**)",
+      24
+     ],
+     [
+      "rocksdb::ConcurrentArena::AllocateAligned(unsigned long, unsigned long, rocksdb::Logger*)",
+      23
+     ],
+     [
+      "std::_Hashtable<unsigned int, std::pair<unsigned int const, std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, rocksdb::TrackedKeyInfo, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, rocksdb::TrackedKeyInfo> > > >, std::allocator<std::pair<unsigned int const, std::unordered_map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, rocksdb::TrackedKeyInfo, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, rocksdb::TrackedKeyInfo> > > > >, std::__detail::_Select1st, std::equal_to<unsigned int>, std::hash<unsigned int>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::clear()",
+      22
+     ],
+     [
+      "rocksdb::CoreLocalArray<rocksdb::StatisticsImpl::StatisticsData>::AccessElementAndIndex() const",
+      22
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      98
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      45
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Clear()",
+      42
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Clear()",
+      34
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      28
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireWithTimeout(rocksdb::PessimisticTransaction*, rocksdb::LockMap*, rocksdb::LockMapStripe*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, long, rocksdb::LockInfo&&)",
+      27
+     ],
+     [
+      "rocksdb::WriteBatchEntryComparator::operator()(rocksdb::WriteBatchIndexEntry const*, rocksdb::WriteBatchIndexEntry const*) const",
+      23
+     ],
+     [
+      "rocksdb::PointLockTracker::GetKeyIterator(unsigned int) const",
+      21
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireLocked(rocksdb::LockMap*, rocksdb::LockMapStripe*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, rocksdb::LockInfo&&, unsigned long*, rocksdb::autovector<unsigned long, 8ul>*)",
+      19
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::TrackKey(unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long, bool, bool)",
+      17
+     ],
+     [
+      "rocksdb::ReadableWriteBatch::GetEntryFromDataOffset(unsigned long, rocksdb::WriteType*, rocksdb::Slice*, rocksdb::Slice*, rocksdb::Slice*, rocksdb::Slice*) const",
+      17
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::GetForUpdate(rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, bool, bool)",
+      16
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::AddNewEntry(unsigned int)",
+      16
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Commit()",
+      15
+     ],
+     [
+      "rocksdb::WriteBatchEntryComparator::CompareKey(unsigned int, rocksdb::Slice const&, rocksdb::Slice const&) const",
+      14
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Reinitialize(rocksdb::DB*, rocksdb::WriteOptions const&)",
+      13
+     ],
+     [
+      "rocksdb::PointLockManager::UnLockKey(rocksdb::PessimisticTransaction*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::LockMapStripe*, rocksdb::LockMap*, rocksdb::Env*)",
+      13
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SavePoint::SavePoint(std::shared_ptr<rocksdb::Snapshot const>, bool, std::shared_ptr<rocksdb::TransactionNotifier>, unsigned long, unsigned long, unsigned long, rocksdb::LockTrackerFactory const&)",
+      12
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SetSavePoint()",
+      12
+     ],
+     [
+      "rocksdb::PointLockTracker::GetPointLockStatus(unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) const",
+      12
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::GetFromBatchAndDB(rocksdb::DB*, rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, rocksdb::ReadCallback*)",
+      11
+     ],
+     [
+      "rocksdb::PointLockTracker::~PointLockTracker()",
+      11
+     ],
+     [
+      "rocksdb::PointLockManager::GetLockMap(unsigned int)",
+      10
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::Clear()",
+      10
+     ],
+     [
+      "rocksdb::WriteBatchWithIndexInternal::GetFromBatch(rocksdb::WriteBatchWithIndex*, rocksdb::Slice const&, rocksdb::MergeContext*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*)",
+      9
+     ]
+    ]
+   },
+   "top_self": {
+    "myrocks": [
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      30
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      25
+     ],
+     [
+      "myrocks::get_or_create_tx(THD*) [clone .lto_priv.0]",
+      21
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      19
+     ],
+     [
+      "mysql_sys_var_char(THD*, int) [clone .lto_priv.0]",
+      19
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::start_tx()",
+      19
+     ],
+     [
+      "myrocks::ha_rocksdb::index_read_map_impl(unsigned char*, unsigned char const*, unsigned int, ha_rkey_function, st_key_range const*)",
+      18
+     ],
+     [
+      "my_bitmap_init",
+      18
+     ],
+     [
+      "myrocks::ha_rocksdb::extra(ha_extra_function)",
+      16
+     ],
+     [
+      "String::append(char const*, unsigned long)",
+      16
+     ],
+     [
+      "myrocks::ha_rocksdb::update_row_stats(myrocks::operation_type const&)",
+      16
+     ],
+     [
+      "myrocks::ha_rocksdb::check_keyread_allowed(unsigned int, unsigned int, bool) const",
+      15
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::set_lock_timeout(int)",
+      15
+     ],
+     [
+      "mysql_sys_var_ulong(THD*, int) [clone .lto_priv.0]",
+      15
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_with_make_sort_key(myrocks::Rdb_field_packing*, Field*, unsigned char*, unsigned char**, myrocks::Rdb_pack_field_context*)",
+      15
+     ],
+     [
+      "myrocks::ha_rocksdb::info(unsigned int)",
+      15
+     ],
+     [
+      "myrocks::Rdb_converter::setup_field_decoders(st_bitmap const*, bool)",
+      15
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      15
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::is_tx_started() const",
+      14
+     ],
+     [
+      "__memset_avx512_unaligned_erms",
+      13
+     ],
+     [
+      "myrocks::Rdb_field_packing::get_field_in_table(TABLE const*) const",
+      13
+     ],
+     [
+      "myrocks::ha_rocksdb::index_init(unsigned int, bool)",
+      12
+     ],
+     [
+      "Field_long::sort_string(unsigned char*, unsigned int)",
+      12
+     ],
+     [
+      "myrocks::ha_rocksdb::read_thd_vars(THD*)",
+      12
+     ],
+     [
+      "__tls_get_addr",
+      11
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "iowrite16",
+      1162
+     ],
+     [
+      "finish_task_switch.isra.0",
+      950
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      600
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      593
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      176
+     ],
+     [
+      "__memcmp_evex_movbe",
+      161
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      141
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      121
+     ],
+     [
+      "rocksdb::LRUHandleTable::FindPointer(rocksdb::Slice const&, unsigned int)",
+      101
+     ],
+     [
+      "bool rocksdb::BlockIter<rocksdb::Slice>::BinarySeek<rocksdb::DecodeKey>(rocksdb::Slice const&, unsigned int*, bool*) [clone .constprop.0]",
+      93
+     ],
+     [
+      "rocksdb::DataBlockIter::NextImpl()",
+      64
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      57
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      47
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Insert(rocksdb::LRUHandle*)",
+      45
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::KeyIsAfterNode(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Node*) const [clone .isra.0]",
+      43
+     ],
+     [
+      "rocksdb::DBImpl::WriteImpl(rocksdb::WriteOptions const&, rocksdb::WriteBatch*, rocksdb::WriteCallback*, unsigned long*, unsigned long, bool, unsigned long*, unsigned long, rocksdb::PreReleaseCallback*)",
+      37
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      37
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Remove(rocksdb::LRUHandle*)",
+      32
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      29
+     ],
+     [
+      "__tls_get_addr",
+      27
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      26
+     ],
+     [
+      "rocksdb::MemTable::Add(unsigned long, rocksdb::ValueType, rocksdb::Slice const&, rocksdb::Slice const&, rocksdb::ProtectionInfoKVOS<unsigned long> const*, bool, rocksdb::MemTablePostProcessInfo*, void**)",
+      24
+     ],
+     [
+      "bool rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Insert<false>(char const*, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, bool)",
+      24
+     ],
+     [
+      "blk_mq_submit_bio",
+      24
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      23
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      51
+     ],
+     [
+      "malloc",
+      40
+     ],
+     [
+      "cfree@GLIBC_2.2.5",
+      35
+     ],
+     [
+      "_int_malloc",
+      29
+     ],
+     [
+      "__memcmp_evex_movbe",
+      23
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      20
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Clear()",
+      18
+     ],
+     [
+      "rocksdb::ReadableWriteBatch::GetEntryFromDataOffset(unsigned long, rocksdb::WriteType*, rocksdb::Slice*, rocksdb::Slice*, rocksdb::Slice*, rocksdb::Slice*) const",
+      17
+     ],
+     [
+      "std::__detail::_Prime_rehash_policy::_M_next_bkt(unsigned long) const",
+      16
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::AddNewEntry(unsigned int)",
+      15
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      15
+     ],
+     [
+      "rocksdb::WriteBatchEntryComparator::CompareKey(unsigned int, rocksdb::Slice const&, rocksdb::Slice const&) const",
+      14
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireWithTimeout(rocksdb::PessimisticTransaction*, rocksdb::LockMap*, rocksdb::LockMapStripe*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, long, rocksdb::LockInfo&&)",
+      13
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::GetForUpdate(rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, bool, bool)",
+      13
+     ],
+     [
+      "operator new(unsigned long)",
+      12
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Commit()",
+      12
+     ],
+     [
+      "_int_free",
+      12
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SetSavePoint()",
+      12
+     ],
+     [
+      "rocksdb::PointLockManager::UnLockKey(rocksdb::PessimisticTransaction*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::LockMapStripe*, rocksdb::LockMap*, rocksdb::Env*)",
+      11
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireLocked(rocksdb::LockMap*, rocksdb::LockMapStripe*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, rocksdb::LockInfo&&, unsigned long*, rocksdb::autovector<unsigned long, 8ul>*)",
+      11
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::GetFromBatchAndDB(rocksdb::DB*, rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, rocksdb::ReadCallback*)",
+      10
+     ],
+     [
+      "rocksdb::PointLockManager::GetLockMap(unsigned int)",
+      10
+     ],
+     [
+      "rocksdb::WriteBatchEntryComparator::operator()(rocksdb::WriteBatchIndexEntry const*, rocksdb::WriteBatchIndexEntry const*) const",
+      10
+     ],
+     [
+      "rocksdb::WriteBatchWithIndexInternal::GetFromBatch(rocksdb::WriteBatchWithIndex*, rocksdb::Slice const&, rocksdb::MergeContext*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*)",
+      8
+     ],
+     [
+      "rocksdb::PointLockManager::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, bool)",
+      8
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      4238
+     ],
+     [
+      "finish_task_switch.isra.0",
+      1685
+     ],
+     [
+      "__memcg_slab_free_hook",
+      175
+     ],
+     [
+      "__send",
+      119
+     ],
+     [
+      "skb_release_data",
+      111
+     ],
+     [
+      "__GI___pthread_disable_asynccancel",
+      88
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      85
+     ],
+     [
+      "_raw_spin_lock",
+      84
+     ],
+     [
+      "do_syscall_64",
+      80
+     ],
+     [
+      "Sql_cmd_update::update_single_table(THD*)",
+      76
+     ],
+     [
+      "_copy_to_iter",
+      75
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      69
+     ],
+     [
+      "JOIN::prepare(TABLE_LIST*, Item*, unsigned int, st_order*, bool, st_order*, Item*, st_order*, st_select_lex*, st_select_lex_unit*)",
+      65
+     ],
+     [
+      "__libc_recv",
+      64
+     ],
+     [
+      "my_string_metadata_get",
+      63
+     ],
+     [
+      "unix_stream_read_generic",
+      61
+     ],
+     [
+      "dispatch_command(enum_server_command, THD*, char*, unsigned int, bool)",
+      59
+     ],
+     [
+      "my_mb_wc_utf8mb4.lto_priv.0",
+      56
+     ],
+     [
+      "fdget",
+      55
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      54
+     ],
+     [
+      "SQL_SELECT::test_quick_select(THD*, Bitmap<64u>, unsigned long long, unsigned long long, bool, bool, bool, bool, Item_func::Bitmap)",
+      49
+     ],
+     [
+      "Prepared_statement::execute(String*, bool, select_result*, Server_side_cursor**)",
+      48
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      46
+     ],
+     [
+      "sock_wfree",
+      46
+     ],
+     [
+      "__memcmp_evex_movbe",
+      46
+     ]
+    ]
+   },
+   "window_read_ios": 203,
+   "window_read_ms": 16,
+   "window_server_cpu_s": 11.291943932,
+   "window_wall_s": 21.18438601300295,
+   "workload": "oltp_write_only"
+  },
+  {
+   "arm": "myrocks",
+   "kernel": {
+    "myrocks": 2,
+    "rocksdb_core": 1492,
+    "server": 8750
+   },
+   "own_threads": {},
+   "owners": {
+    "myrocks": 1879,
+    "rocksdb_core": 6895,
+    "rocksdb_txn": 562,
+    "server": 18516
+   },
+   "pass": 0,
+   "rooted": 27852,
+   "samples": 27852,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 2.62,
+    "lat_max_ms": 23.91,
+    "lat_min_ms": 1.89,
+    "lat_p99_ms": 4.18,
+    "other": 18302,
+    "qps_by_second": [
+     8365.94,
+     8802.54,
+     7283.23,
+     7437.77,
+     7493.82,
+     7760.97,
+     7477.83,
+     7699.47,
+     7787.33,
+     7053.16,
+     7493.82,
+     7565.62,
+     7782.31,
+     7526.7,
+     7620.3,
+     6833.24,
+     7323.83,
+     7627.73,
+     7740.41,
+     7378.44,
+     7357.31,
+     7314.44,
+     7941.64,
+     8332.85
+    ],
+    "queries": 183020,
+    "reads": 128114,
+    "reconnects": 0,
+    "seconds": 24.002,
+    "tps_by_second": [
+     417.35,
+     440.13,
+     364.96,
+     372.04,
+     373.99,
+     388.0,
+     373.99,
+     385.02,
+     389.87,
+     352.06,
+     375.04,
+     377.98,
+     389.02,
+     377.04,
+     380.97,
+     341.01,
+     365.99,
+     381.99,
+     386.97,
+     369.02,
+     368.02,
+     365.02,
+     396.98,
+     416.99
+    ],
+    "transactions": 9151,
+    "writes": 36604
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "myrocks": [
+     [
+      "myrocks::Rdb_convert_to_record_value_decoder::decode(unsigned char*, unsigned int*, TABLE*, Field*, myrocks::Rdb_field_encoder*, myrocks::Rdb_string_reader*, bool, bool)",
+      203
+     ],
+     [
+      "myrocks::Rdb_key_def::unpack_record(TABLE*, unsigned char*, rocksdb::Slice const*, rocksdb::Slice const*, bool) const",
+      94
+     ],
+     [
+      "myrocks::Rdb_converter::convert_record_from_storage_format(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const*, rocksdb::Slice const*, unsigned char*)",
+      79
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      78
+     ],
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      72
+     ],
+     [
+      "myrocks::Rdb_key_def::get_lookup_bitmap(TABLE const*, st_bitmap*) const",
+      70
+     ],
+     [
+      "myrocks::ha_rocksdb::rnd_next_with_direction(unsigned char*, bool)",
+      69
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      67
+     ],
+     [
+      "myrocks::Rdb_field_packing::get_field_in_table(TABLE const*) const",
+      63
+     ],
+     [
+      "myrocks::ha_rocksdb::index_next(unsigned char*)",
+      48
+     ],
+     [
+      "myrocks::Rdb_convert_to_record_key_decoder::decode(unsigned char*, unsigned int*, myrocks::Rdb_field_packing*, TABLE*, Field*, bool, myrocks::Rdb_string_reader*, myrocks::Rdb_string_reader*)",
+      43
+     ],
+     [
+      "myrocks::ha_rocksdb::index_init(unsigned int, bool)",
+      42
+     ],
+     [
+      "myrocks::ha_rocksdb::index_read_map_impl(unsigned char*, unsigned char const*, unsigned int, ha_rkey_function, st_key_range const*)",
+      42
+     ],
+     [
+      "myrocks::Rdb_key_field_iterator::next()",
+      34
+     ],
+     [
+      "myrocks::Rdb_key_def::unpack_integer(myrocks::Rdb_field_packing*, Field*, unsigned char*, myrocks::Rdb_string_reader*, myrocks::Rdb_string_reader*)",
+      32
+     ],
+     [
+      "myrocks::ha_rocksdb::get_row_by_rowid(unsigned char*, char const*, unsigned int, bool, bool)",
+      31
+     ],
+     [
+      "myrocks::Rdb_key_field_iterator::has_next()",
+      31
+     ],
+     [
+      "myrocks::ha_rocksdb::update_row_stats(myrocks::operation_type const&)",
+      29
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::set_lock_timeout(int)",
+      29
+     ],
+     [
+      "myrocks::get_or_create_tx(THD*) [clone .lto_priv.0]",
+      28
+     ],
+     [
+      "myrocks::ha_rocksdb::info(unsigned int)",
+      27
+     ],
+     [
+      "myrocks::Rdb_key_field_iterator::Rdb_key_field_iterator(myrocks::Rdb_key_def const*, myrocks::Rdb_field_packing*, myrocks::Rdb_string_reader*, myrocks::Rdb_string_reader*, TABLE*, bool, st_bitmap const*, unsigned char*)",
+      27
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_index_tuple(TABLE*, unsigned char*, unsigned char*, unsigned char*, unsigned char const*, unsigned int const&) const",
+      25
+     ],
+     [
+      "myrocks::Rdb_converter::setup_field_decoders(st_bitmap const*, bool)",
+      24
+     ],
+     [
+      "myrocks::ha_rocksdb::records_in_range(unsigned int, st_key_range const*, st_key_range const*, st_page_range*)",
+      23
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "rocksdb::PosixWritableFile::Sync(rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      1335
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      690
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      258
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::EstimateCount(char const*) const",
+      258
+     ],
+     [
+      "rocksdb::DataBlockIter::NextImpl()",
+      244
+     ],
+     [
+      "rocksdb::LRUHandleTable::FindPointer(rocksdb::Slice const&, unsigned int)",
+      218
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      184
+     ],
+     [
+      "bool rocksdb::BlockIter<rocksdb::Slice>::BinarySeek<rocksdb::DecodeKey>(rocksdb::Slice const&, unsigned int*, bool*) [clone .constprop.0]",
+      176
+     ],
+     [
+      "rocksdb::PosixWritableFile::Append(rocksdb::Slice const&, rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      134
+     ],
+     [
+      "rocksdb::InternalKeyComparator::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const",
+      133
+     ],
+     [
+      "rocksdb::DBIter::FindNextUserEntryInternal(bool, rocksdb::Slice const*)",
+      109
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Insert(rocksdb::LRUHandle*)",
+      88
+     ],
+     [
+      "rocksdb::BinaryHeap<rocksdb::IteratorWrapperBase<rocksdb::Slice>*, rocksdb::MinIteratorComparator>::downheap(unsigned long) [clone .constprop.0]",
+      84
+     ],
+     [
+      "rocksdb::DBIter::Next()",
+      84
+     ],
+     [
+      "rocksdb::port::Mutex::Unlock()",
+      83
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Remove(rocksdb::LRUHandle*)",
+      67
+     ],
+     [
+      "rocksdb::Status rocksdb::BlockBasedTable::MaybeReadBlockAndLoadToCache<rocksdb::Block>(rocksdb::FilePrefetchBuffer*, rocksdb::ReadOptions const&, rocksdb::BlockHandle const&, rocksdb::UncompressionDict const&, bool, bool, rocksdb::CachableEntry<rocksdb::Block>*, rocksdb::BlockType, rocksdb::GetContext*, rocksdb::BlockCacheLookupContext*, rocksdb::BlockContents*) const",
+      51
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      50
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      48
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      48
+     ],
+     [
+      "rocksdb::(anonymous namespace)::LevelIterator::NextAndGetResult(rocksdb::IterateResult*)",
+      48
+     ],
+     [
+      "rocksdb::LRUCacheShard::Lookup(rocksdb::Slice const&, unsigned int, rocksdb::Cache::CacheItemHelper const*, std::function<rocksdb::Status (void*, unsigned long, void**, unsigned long*)> const&, rocksdb::Cache::Priority, bool, rocksdb::Statistics*)",
+      41
+     ],
+     [
+      "rocksdb::MergingIterator::value() const",
+      39
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::KeyIsAfterNode(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Node*) const [clone .isra.0]",
+      38
+     ],
+     [
+      "rocksdb::CoreLocalArray<rocksdb::StatisticsImpl::StatisticsData>::AccessElementAndIndex() const",
+      37
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      34
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      31
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::Advance()",
+      30
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::UpdateCurrent()",
+      28
+     ],
+     [
+      "rocksdb::WriteBatchEntryComparator::operator()(rocksdb::WriteBatchIndexEntry const*, rocksdb::WriteBatchIndexEntry const*) const",
+      22
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      18
+     ],
+     [
+      "rocksdb::WriteBatchWithIndexInternal::GetFromBatch(rocksdb::WriteBatchWithIndex*, rocksdb::Slice const&, rocksdb::MergeContext*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*)",
+      18
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::BaseValid() const",
+      17
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::DeltaValid() const",
+      17
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::GetFromBatchAndDB(rocksdb::DB*, rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, rocksdb::ReadCallback*)",
+      14
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::value() const",
+      14
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::Next()",
+      13
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::Valid() const",
+      13
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::key() const",
+      13
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::AdvanceBase()",
+      13
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool)",
+      12
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Clear()",
+      12
+     ],
+     [
+      "rocksdb::PointLockManager::UnLockKey(rocksdb::PessimisticTransaction*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::LockMapStripe*, rocksdb::LockMap*, rocksdb::Env*)",
+      12
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireWithTimeout(rocksdb::PessimisticTransaction*, rocksdb::LockMap*, rocksdb::LockMapStripe*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, long, rocksdb::LockInfo&&)",
+      12
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::NewIterator(rocksdb::ColumnFamilyHandle*)",
+      11
+     ],
+     [
+      "rocksdb::PointLockTracker::GetKeyIterator(unsigned int) const",
+      11
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SavePoint::SavePoint(std::shared_ptr<rocksdb::Snapshot const>, bool, std::shared_ptr<rocksdb::TransactionNotifier>, unsigned long, unsigned long, unsigned long, rocksdb::LockTrackerFactory const&)",
+      11
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::~BaseDeltaIterator()",
+      10
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireLocked(rocksdb::LockMap*, rocksdb::LockMapStripe*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, rocksdb::LockInfo&&, unsigned long*, rocksdb::autovector<unsigned long, 8ul>*)",
+      9
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::Seek(rocksdb::Slice const&)",
+      8
+     ]
+    ]
+   },
+   "top_self": {
+    "myrocks": [
+     [
+      "__memmove_avx512_unaligned_erms",
+      189
+     ],
+     [
+      "myrocks::Rdb_key_def::unpack_record(TABLE*, unsigned char*, rocksdb::Slice const*, rocksdb::Slice const*, bool) const",
+      77
+     ],
+     [
+      "myrocks::Rdb_converter::convert_record_from_storage_format(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const*, rocksdb::Slice const*, unsigned char*)",
+      71
+     ],
+     [
+      "myrocks::Rdb_field_packing::get_field_in_table(TABLE const*) const",
+      63
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      48
+     ],
+     [
+      "myrocks::ha_rocksdb::rnd_next_with_direction(unsigned char*, bool)",
+      43
+     ],
+     [
+      "myrocks::Rdb_convert_to_record_key_decoder::decode(unsigned char*, unsigned int*, myrocks::Rdb_field_packing*, TABLE*, Field*, bool, myrocks::Rdb_string_reader*, myrocks::Rdb_string_reader*)",
+      43
+     ],
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      41
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      40
+     ],
+     [
+      "myrocks::Rdb_key_field_iterator::next()",
+      34
+     ],
+     [
+      "myrocks::Rdb_convert_to_record_value_decoder::decode(unsigned char*, unsigned int*, TABLE*, Field*, myrocks::Rdb_field_encoder*, myrocks::Rdb_string_reader*, bool, bool)",
+      32
+     ],
+     [
+      "myrocks::Rdb_key_def::unpack_integer(myrocks::Rdb_field_packing*, Field*, unsigned char*, myrocks::Rdb_string_reader*, myrocks::Rdb_string_reader*)",
+      32
+     ],
+     [
+      "myrocks::ha_rocksdb::index_next(unsigned char*)",
+      31
+     ],
+     [
+      "myrocks::Rdb_key_field_iterator::has_next()",
+      31
+     ],
+     [
+      "mysql_sys_var_char(THD*, int) [clone .lto_priv.0]",
+      30
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::set_lock_timeout(int)",
+      29
+     ],
+     [
+      "myrocks::Rdb_key_field_iterator::Rdb_key_field_iterator(myrocks::Rdb_key_def const*, myrocks::Rdb_field_packing*, myrocks::Rdb_string_reader*, myrocks::Rdb_string_reader*, TABLE*, bool, st_bitmap const*, unsigned char*)",
+      27
+     ],
+     [
+      "myrocks::ha_rocksdb::update_row_stats(myrocks::operation_type const&)",
+      26
+     ],
+     [
+      "void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)",
+      25
+     ],
+     [
+      "myrocks::Rdb_converter::setup_field_decoders(st_bitmap const*, bool)",
+      24
+     ],
+     [
+      "myrocks::get_or_create_tx(THD*) [clone .lto_priv.0]",
+      24
+     ],
+     [
+      "mysql_sys_var_ulong(THD*, int) [clone .lto_priv.0]",
+      23
+     ],
+     [
+      "myrocks::Rdb_key_def::get_lookup_bitmap(TABLE const*, st_bitmap*) const",
+      23
+     ],
+     [
+      "clock_gettime@@GLIBC_2.17",
+      22
+     ],
+     [
+      "thd_get_ha_data",
+      19
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      643
+     ],
+     [
+      "iowrite16",
+      502
+     ],
+     [
+      "finish_task_switch.isra.0",
+      326
+     ],
+     [
+      "__memcmp_evex_movbe",
+      279
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      258
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::EstimateCount(char const*) const",
+      226
+     ],
+     [
+      "rocksdb::LRUHandleTable::FindPointer(rocksdb::Slice const&, unsigned int)",
+      218
+     ],
+     [
+      "rocksdb::DataBlockIter::NextImpl()",
+      206
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      181
+     ],
+     [
+      "bool rocksdb::BlockIter<rocksdb::Slice>::BinarySeek<rocksdb::DecodeKey>(rocksdb::Slice const&, unsigned int*, bool*) [clone .constprop.0]",
+      176
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Insert(rocksdb::LRUHandle*)",
+      88
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      88
+     ],
+     [
+      "rocksdb::DBIter::FindNextUserEntryInternal(bool, rocksdb::Slice const*)",
+      83
+     ],
+     [
+      "__tls_get_addr",
+      73
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Remove(rocksdb::LRUHandle*)",
+      67
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      66
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      66
+     ],
+     [
+      "rocksdb::DBIter::Next()",
+      64
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      56
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      49
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      48
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      48
+     ],
+     [
+      "rocksdb::(anonymous namespace)::LevelIterator::NextAndGetResult(rocksdb::IterateResult*)",
+      48
+     ],
+     [
+      "rocksdb::MergingIterator::value() const",
+      39
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      36
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "rocksdb::BaseDeltaIterator::UpdateCurrent()",
+      28
+     ],
+     [
+      "malloc",
+      28
+     ],
+     [
+      "_int_malloc",
+      22
+     ],
+     [
+      "__memcmp_evex_movbe",
+      20
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::BaseValid() const",
+      17
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::DeltaValid() const",
+      17
+     ],
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      16
+     ],
+     [
+      "__tls_get_addr@plt",
+      14
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::value() const",
+      14
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::Next()",
+      13
+     ],
+     [
+      "cfree@GLIBC_2.2.5",
+      13
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::Valid() const",
+      13
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::key() const",
+      13
+     ],
+     [
+      "__tls_get_addr",
+      13
+     ],
+     [
+      "rocksdb::BaseDeltaIterator::AdvanceBase()",
+      13
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::GetFromBatchAndDB(rocksdb::DB*, rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, rocksdb::ReadCallback*)",
+      12
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool)",
+      12
+     ],
+     [
+      "rocksdb::PointLockManager::UnLockKey(rocksdb::PessimisticTransaction*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::LockMapStripe*, rocksdb::LockMap*, rocksdb::Env*)",
+      11
+     ],
+     [
+      "operator new(unsigned long)",
+      9
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      9
+     ],
+     [
+      "rocksdb::WriteBatchWithIndexInternal::GetFromBatch(rocksdb::WriteBatchWithIndex*, rocksdb::Slice const&, rocksdb::MergeContext*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*)",
+      9
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      8
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::GetForUpdate(rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, bool, bool)",
+      8
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Get(rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*)",
+      8
+     ],
+     [
+      "rocksdb::WriteBatchEntryComparator::operator()(rocksdb::WriteBatchIndexEntry const*, rocksdb::WriteBatchIndexEntry const*) const",
+      7
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      4879
+     ],
+     [
+      "finish_task_switch.isra.0",
+      1841
+     ],
+     [
+      "my_hash_sort_simple_nopad",
+      464
+     ],
+     [
+      "__memcmp_evex_movbe",
+      208
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      187
+     ],
+     [
+      "__memcg_slab_free_hook",
+      161
+     ],
+     [
+      "my_strnxfrm_simple_internal",
+      159
+     ],
+     [
+      "skb_release_data",
+      152
+     ],
+     [
+      "__send",
+      144
+     ],
+     [
+      "my_qsort2",
+      114
+     ],
+     [
+      "do_syscall_64",
+      112
+     ],
+     [
+      "make_join_statistics(JOIN*, List<TABLE_LIST>&, st_dynamic_array*)",
+      103
+     ],
+     [
+      "JOIN::optimize_stage2()",
+      102
+     ],
+     [
+      "_raw_spin_lock",
+      97
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      96
+     ],
+     [
+      "__GI___pthread_disable_asynccancel",
+      82
+     ],
+     [
+      "_copy_to_iter",
+      82
+     ],
+     [
+      "dispatch_command(enum_server_command, THD*, char*, unsigned int, bool)",
+      74
+     ],
+     [
+      "unix_stream_read_generic",
+      73
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      73
+     ],
+     [
+      "JOIN::optimize_inner()",
+      69
+     ],
+     [
+      "__memcg_slab_post_alloc_hook",
+      69
+     ],
+     [
+      "evaluate_join_record(JOIN*, st_join_table*, int) [clone .lto_priv.0]",
+      69
+     ],
+     [
+      "hp_write_key",
+      68
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      68
+     ]
+    ]
+   },
+   "window_read_ios": 224,
+   "window_read_ms": 23,
+   "window_server_cpu_s": 14.858656787,
+   "window_wall_s": 21.203304712998943,
+   "workload": "oltp_read_write"
+  },
+  {
+   "arm": "myrocks",
+   "kernel": {
+    "myrocks": 1,
+    "rocksdb_core": 6296,
+    "server": 3055
+   },
+   "own_threads": {},
+   "owners": {
+    "myrocks": 703,
+    "rocksdb_core": 9297,
+    "rocksdb_txn": 475,
+    "server": 6207
+   },
+   "pass": 0,
+   "rooted": 16682,
+   "samples": 16682,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 0.4,
+    "lat_max_ms": 22.76,
+    "lat_min_ms": 0.18,
+    "lat_p99_ms": 0.87,
+    "other": 0,
+    "qps_by_second": [
+     3167.37,
+     2599.2,
+     2294.99,
+     2374.07,
+     2300.53,
+     2605.81,
+     2453.59,
+     2100.06,
+     2346.79,
+     2567.29,
+     2392.8,
+     2614.67,
+     2641.16,
+     2461.23,
+     2445.95,
+     2382.01,
+     2416.77,
+     2212.99,
+     2519.23,
+     2635.47,
+     2424.47,
+     2502.91,
+     2547.27
+    ],
+    "queries": 59833,
+    "reads": 0,
+    "reconnects": 0,
+    "seconds": 24.0017,
+    "tps_by_second": [
+     3167.37,
+     2599.2,
+     2294.99,
+     2374.07,
+     2300.53,
+     2605.81,
+     2453.59,
+     2100.06,
+     2346.79,
+     2567.29,
+     2392.8,
+     2614.67,
+     2641.16,
+     2461.23,
+     2445.95,
+     2382.01,
+     2416.77,
+     2212.99,
+     2519.23,
+     2635.47,
+     2424.47,
+     2502.91,
+     2547.27
+    ],
+    "transactions": 59833,
+    "writes": 59833
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "myrocks": [
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      42
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      38
+     ],
+     [
+      "myrocks::ha_rocksdb::read_range_first(st_key_range const*, st_key_range const*, bool, bool)",
+      33
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::commit_no_binlog()",
+      26
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      24
+     ],
+     [
+      "myrocks::get_or_create_tx(THD*) [clone .lto_priv.0]",
+      24
+     ],
+     [
+      "myrocks::ha_rocksdb::update_write_pk(myrocks::Rdb_key_def const&, myrocks::ha_rocksdb::update_row_info const&, bool)",
+      22
+     ],
+     [
+      "myrocks::Rdb_key_def::get_lookup_bitmap(TABLE const*, st_bitmap*) const",
+      21
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::start_tx()",
+      20
+     ],
+     [
+      "myrocks::Rdb_field_packing::setup(myrocks::Rdb_key_def const*, Field const*, unsigned int, unsigned int, unsigned short)",
+      19
+     ],
+     [
+      "myrocks::ha_rocksdb::index_read_map_impl(unsigned char*, unsigned char const*, unsigned int, ha_rkey_function, st_key_range const*)",
+      17
+     ],
+     [
+      "myrocks::ha_rocksdb::index_init(unsigned int, bool)",
+      17
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_field(Field*, myrocks::Rdb_field_packing*, unsigned char*, unsigned char*, unsigned char*, myrocks::Rdb_string_writer*, unsigned int*) const",
+      16
+     ],
+     [
+      "myrocks::ha_rocksdb::extra(ha_extra_function)",
+      15
+     ],
+     [
+      "myrocks::ha_rocksdb::check_keyread_allowed(unsigned int, unsigned int, bool) const",
+      15
+     ],
+     [
+      "myrocks::Rdb_converter::encode_value_slice(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const&, myrocks::Rdb_string_writer*, bool, bool, char*, bool*, rocksdb::Slice*)",
+      14
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::set_lock_timeout(int)",
+      13
+     ],
+     [
+      "myrocks::ha_rocksdb::get_row_by_rowid(unsigned char*, char const*, unsigned int, bool, bool)",
+      13
+     ],
+     [
+      "myrocks::ha_rocksdb::table_flags() const",
+      12
+     ],
+     [
+      "myrocks::ha_rocksdb::update_row_stats(myrocks::operation_type const&)",
+      12
+     ],
+     [
+      "myrocks::ha_rocksdb::update_auto_incr_val_from_field()",
+      12
+     ],
+     [
+      "myrocks::Rdb_field_packing::get_field_in_table(TABLE const*) const",
+      11
+     ],
+     [
+      "myrocks::Rdb_convert_to_record_value_decoder::decode(unsigned char*, unsigned int*, TABLE*, Field*, myrocks::Rdb_field_encoder*, myrocks::Rdb_string_reader*, bool, bool)",
+      11
+     ],
+     [
+      "myrocks::ha_rocksdb::update_write_row(unsigned char const*, unsigned char const*, bool)",
+      9
+     ],
+     [
+      "myrocks::Rdb_converter::convert_record_from_storage_format(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const*, rocksdb::Slice const*, unsigned char*)",
+      9
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "rocksdb::PosixWritableFile::Sync(rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      5972
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      446
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      399
+     ],
+     [
+      "rocksdb::PosixWritableFile::Append(rocksdb::Slice const&, rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      304
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      111
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::KeyIsAfterNode(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Node*) const [clone .isra.0]",
+      104
+     ],
+     [
+      "rocksdb::LRUHandleTable::FindPointer(rocksdb::Slice const&, unsigned int)",
+      85
+     ],
+     [
+      "bool rocksdb::BlockIter<rocksdb::Slice>::BinarySeek<rocksdb::DecodeKey>(rocksdb::Slice const&, unsigned int*, bool*) [clone .constprop.0]",
+      64
+     ],
+     [
+      "rocksdb::DataBlockIter::NextImpl()",
+      63
+     ],
+     [
+      "rocksdb::MemTableInserter::PutCFImpl(unsigned int, rocksdb::Slice const&, rocksdb::Slice const&, rocksdb::ValueType, rocksdb::ProtectionInfoKVOS<unsigned long> const*)",
+      45
+     ],
+     [
+      "rocksdb::DBImpl::WriteImpl(rocksdb::WriteOptions const&, rocksdb::WriteBatch*, rocksdb::WriteCallback*, unsigned long*, unsigned long, bool, unsigned long*, unsigned long, rocksdb::PreReleaseCallback*)",
+      45
+     ],
+     [
+      "rocksdb::port::Mutex::Unlock()",
+      42
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Insert(rocksdb::LRUHandle*)",
+      39
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      33
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      31
+     ],
+     [
+      "rocksdb::InternalKeyComparator::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const",
+      30
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      29
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Remove(rocksdb::LRUHandle*)",
+      28
+     ],
+     [
+      "rocksdb::WriteBatch::Clear()",
+      27
+     ],
+     [
+      "rocksdb::CoreLocalArray<rocksdb::StatisticsImpl::StatisticsData>::AccessElementAndIndex() const",
+      25
+     ],
+     [
+      "rocksdb::Status rocksdb::BlockBasedTable::MaybeReadBlockAndLoadToCache<rocksdb::Block>(rocksdb::FilePrefetchBuffer*, rocksdb::ReadOptions const&, rocksdb::BlockHandle const&, rocksdb::UncompressionDict const&, bool, bool, rocksdb::CachableEntry<rocksdb::Block>*, rocksdb::BlockType, rocksdb::GetContext*, rocksdb::BlockCacheLookupContext*, rocksdb::BlockContents*) const",
+      25
+     ],
+     [
+      "rocksdb::DBImpl::SyncWAL()",
+      24
+     ],
+     [
+      "rocksdb::InstrumentedMutex::Lock()",
+      24
+     ],
+     [
+      "rocksdb::DBImpl::GetImpl(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::DBImpl::GetImplOptions&)",
+      23
+     ],
+     [
+      "rocksdb::MemTable::KeyComparator::operator()(char const*, char const*) const",
+      22
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      88
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      25
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::AddNewEntry(unsigned int)",
+      24
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Clear()",
+      22
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SetSavePoint()",
+      21
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Commit()",
+      20
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireLocked(rocksdb::LockMap*, rocksdb::LockMapStripe*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, rocksdb::LockInfo&&, unsigned long*, rocksdb::autovector<unsigned long, 8ul>*)",
+      17
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireWithTimeout(rocksdb::PessimisticTransaction*, rocksdb::LockMap*, rocksdb::LockMapStripe*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, long, rocksdb::LockInfo&&)",
+      17
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      14
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Reinitialize(rocksdb::DB*, rocksdb::WriteOptions const&)",
+      12
+     ],
+     [
+      "rocksdb::PointLockTracker::~PointLockTracker()",
+      12
+     ],
+     [
+      "rocksdb::WriteBatchWithIndexInternal::GetFromBatch(rocksdb::WriteBatchWithIndex*, rocksdb::Slice const&, rocksdb::MergeContext*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*)",
+      11
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Clear()",
+      11
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::TrackKey(unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long, bool, bool)",
+      11
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::Clear()",
+      11
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::GetForUpdate(rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, bool, bool)",
+      11
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&)",
+      10
+     ],
+     [
+      "rocksdb::PointLockManager::UnLockKey(rocksdb::PessimisticTransaction*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::LockMapStripe*, rocksdb::LockMap*, rocksdb::Env*)",
+      9
+     ],
+     [
+      "rocksdb::WriteCommittedTxn::CommitWithoutPrepareInternal()",
+      8
+     ],
+     [
+      "rocksdb::WriteBatchEntryComparator::operator()(rocksdb::WriteBatchIndexEntry const*, rocksdb::WriteBatchIndexEntry const*) const",
+      7
+     ],
+     [
+      "rocksdb::PointLockManager::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, bool)",
+      7
+     ],
+     [
+      "rocksdb::PointLockManager::GetLockMap(unsigned int)",
+      7
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SavePoint::SavePoint(std::shared_ptr<rocksdb::Snapshot const>, bool, std::shared_ptr<rocksdb::TransactionNotifier>, unsigned long, unsigned long, unsigned long, rocksdb::LockTrackerFactory const&)",
+      6
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::NewIterator(rocksdb::ColumnFamilyHandle*)",
+      6
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool)",
+      6
+     ]
+    ]
+   },
+   "top_self": {
+    "myrocks": [
+     [
+      "myrocks::Rdb_transaction_impl::commit_no_binlog()",
+      25
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      22
+     ],
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      20
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::start_tx()",
+      18
+     ],
+     [
+      "myrocks::Rdb_field_packing::setup(myrocks::Rdb_key_def const*, Field const*, unsigned int, unsigned int, unsigned short)",
+      16
+     ],
+     [
+      "Field_long::sort_string(unsigned char*, unsigned int)",
+      16
+     ],
+     [
+      "myrocks::ha_rocksdb::extra(ha_extra_function)",
+      15
+     ],
+     [
+      "clock_gettime@@GLIBC_2.17",
+      14
+     ],
+     [
+      "myrocks::get_or_create_tx(THD*) [clone .lto_priv.0]",
+      14
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::set_lock_timeout(int)",
+      13
+     ],
+     [
+      "myrocks::ha_rocksdb::table_flags() const",
+      12
+     ],
+     [
+      "String::append(char const*, unsigned long)",
+      12
+     ],
+     [
+      "myrocks::ha_rocksdb::update_row_stats(myrocks::operation_type const&)",
+      12
+     ],
+     [
+      "mysql_sys_var_char(THD*, int) [clone .lto_priv.0]",
+      12
+     ],
+     [
+      "Field_long::cmp(unsigned char const*, unsigned char const*) const",
+      11
+     ],
+     [
+      "myrocks::Rdb_field_packing::get_field_in_table(TABLE const*) const",
+      11
+     ],
+     [
+      "mysql_sys_var_ulong(THD*, int) [clone .lto_priv.0]",
+      11
+     ],
+     [
+      "__memset_avx512_unaligned_erms",
+      10
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      10
+     ],
+     [
+      "handler::ha_thd() const",
+      10
+     ],
+     [
+      "myrocks::Rdb_converter::convert_record_from_storage_format(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const*, rocksdb::Slice const*, unsigned char*)",
+      9
+     ],
+     [
+      "myrocks::ha_rocksdb::check_keyread_allowed(unsigned int, unsigned int, bool) const",
+      9
+     ],
+     [
+      "malloc",
+      8
+     ],
+     [
+      "myrocks::Rdb_mutex::UnLock()",
+      8
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::get_for_update(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, bool, bool)",
+      8
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "iowrite16",
+      2254
+     ],
+     [
+      "finish_task_switch.isra.0",
+      2054
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      421
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      395
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      367
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      220
+     ],
+     [
+      "__memcmp_evex_movbe",
+      119
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      111
+     ],
+     [
+      "rocksdb::LRUHandleTable::FindPointer(rocksdb::Slice const&, unsigned int)",
+      85
+     ],
+     [
+      "bool rocksdb::BlockIter<rocksdb::Slice>::BinarySeek<rocksdb::DecodeKey>(rocksdb::Slice const&, unsigned int*, bool*) [clone .constprop.0]",
+      64
+     ],
+     [
+      "blk_mq_submit_bio",
+      64
+     ],
+     [
+      "rocksdb::DataBlockIter::NextImpl()",
+      59
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::KeyIsAfterNode(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Node*) const [clone .isra.0]",
+      47
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      42
+     ],
+     [
+      "__tls_get_addr",
+      42
+     ],
+     [
+      "rocksdb::DBImpl::WriteImpl(rocksdb::WriteOptions const&, rocksdb::WriteBatch*, rocksdb::WriteCallback*, unsigned long*, unsigned long, bool, unsigned long*, unsigned long, rocksdb::PreReleaseCallback*)",
+      41
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Insert(rocksdb::LRUHandle*)",
+      39
+     ],
+     [
+      "ext4_bio_write_folio",
+      38
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      33
+     ],
+     [
+      "__wait_on_bit",
+      31
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      29
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      29
+     ],
+     [
+      "wbt_track",
+      29
+     ],
+     [
+      "rq_qos_wait",
+      28
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Remove(rocksdb::LRUHandle*)",
+      28
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "malloc",
+      47
+     ],
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      36
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::AddNewEntry(unsigned int)",
+      24
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Commit()",
+      19
+     ],
+     [
+      "cfree@GLIBC_2.2.5",
+      19
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SetSavePoint()",
+      18
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      16
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireLocked(rocksdb::LockMap*, rocksdb::LockMapStripe*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, rocksdb::LockInfo&&, unsigned long*, rocksdb::autovector<unsigned long, 8ul>*)",
+      15
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      10
+     ],
+     [
+      "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)",
+      10
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&)",
+      10
+     ],
+     [
+      "rocksdb::WriteBatchWithIndexInternal::GetFromBatch(rocksdb::WriteBatchWithIndex*, rocksdb::Slice const&, rocksdb::MergeContext*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*)",
+      9
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::GetForUpdate(rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, bool, bool)",
+      9
+     ],
+     [
+      "rocksdb::WriteCommittedTxn::CommitWithoutPrepareInternal()",
+      8
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireWithTimeout(rocksdb::PessimisticTransaction*, rocksdb::LockMap*, rocksdb::LockMapStripe*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, long, rocksdb::LockInfo&&)",
+      8
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Clear()",
+      7
+     ],
+     [
+      "operator delete(void*)",
+      7
+     ],
+     [
+      "std::__detail::_Prime_rehash_policy::_M_next_bkt(unsigned long) const",
+      7
+     ],
+     [
+      "rocksdb::PointLockManager::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, bool)",
+      7
+     ],
+     [
+      "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char)",
+      7
+     ],
+     [
+      "rocksdb::PointLockManager::GetLockMap(unsigned int)",
+      7
+     ],
+     [
+      "_int_free",
+      6
+     ],
+     [
+      "__memcmp_evex_movbe",
+      6
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Clear()",
+      6
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool)",
+      6
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      1653
+     ],
+     [
+      "finish_task_switch.isra.0",
+      630
+     ],
+     [
+      "dispatch_command(enum_server_command, THD*, char*, unsigned int, bool)",
+      64
+     ],
+     [
+      "Sql_cmd_update::update_single_table(THD*)",
+      59
+     ],
+     [
+      "JOIN::prepare(TABLE_LIST*, Item*, unsigned int, st_order*, bool, st_order*, Item*, st_order*, st_select_lex*, st_select_lex_unit*)",
+      58
+     ],
+     [
+      "__send",
+      56
+     ],
+     [
+      "__memcg_slab_free_hook",
+      56
+     ],
+     [
+      "SQL_SELECT::test_quick_select(THD*, Bitmap<64u>, unsigned long long, unsigned long long, bool, bool, bool, bool, Item_func::Bitmap)",
+      51
+     ],
+     [
+      "skb_release_data",
+      45
+     ],
+     [
+      "do_syscall_64",
+      45
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      43
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      41
+     ],
+     [
+      "open_tables(THD*, DDL_options_st const&, TABLE_LIST**, unsigned int*, unsigned int, Prelocking_strategy*)",
+      39
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      37
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      33
+     ],
+     [
+      "_copy_to_iter",
+      31
+     ],
+     [
+      "sel_arg_range_seq_next(void*, st_key_multi_range*)",
+      31
+     ],
+     [
+      "ha_commit_trans(THD*, bool)",
+      30
+     ],
+     [
+      "unix_stream_sendmsg",
+      30
+     ],
+     [
+      "get_key_scans_params(PARAM*, SEL_TREE*, bool, bool, double, unsigned long long, bool) [clone .lto_priv.0]",
+      30
+     ],
+     [
+      "malloc",
+      29
+     ],
+     [
+      "__memcg_slab_post_alloc_hook",
+      29
+     ],
+     [
+      "Prepared_statement::execute(String*, bool, select_result*, Server_side_cursor**)",
+      27
+     ],
+     [
+      "alloc_root",
+      27
+     ],
+     [
+      "sock_wfree",
+      26
+     ]
+    ]
+   },
+   "window_read_ios": 204,
+   "window_read_ms": 20,
+   "window_server_cpu_s": 8.951930191,
+   "window_wall_s": 21.197412199999235,
+   "workload": "oltp_update_index"
+  },
+  {
+   "arm": "myrocks",
+   "kernel": {
+    "innodb": 1,
+    "rocksdb_core": 6203,
+    "rocksdb_txn": 1,
+    "server": 3054
+   },
+   "own_threads": {
+    "innodb": 1
+   },
+   "owners": {
+    "innodb": 1,
+    "myrocks": 723,
+    "rocksdb_core": 8881,
+    "rocksdb_txn": 522,
+    "server": 6525
+   },
+   "pass": 0,
+   "rooted": 16652,
+   "samples": 16652,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 0.4,
+    "lat_max_ms": 26.25,
+    "lat_min_ms": 0.17,
+    "lat_p99_ms": 0.86,
+    "other": 0,
+    "qps_by_second": [
+     2710.59,
+     2779.2,
+     1906.05,
+     2625.2,
+     2272.99,
+     2660.13,
+     2391.33,
+     2665.39,
+     2121.22,
+     2510.48,
+     2192.44,
+     2460.24,
+     2129.77,
+     2087.91,
+     2317.94,
+     2614.13,
+     2364.79,
+     2145.63,
+     2101.47,
+     2415.26,
+     2631.62,
+     2811.29,
+     2997.76
+    ],
+    "queries": 59191,
+    "reads": 0,
+    "reconnects": 0,
+    "seconds": 24.0018,
+    "tps_by_second": [
+     2710.59,
+     2779.2,
+     1906.05,
+     2625.2,
+     2272.99,
+     2660.13,
+     2391.33,
+     2665.39,
+     2121.22,
+     2510.48,
+     2192.44,
+     2460.24,
+     2129.77,
+     2087.91,
+     2317.94,
+     2614.13,
+     2364.79,
+     2145.63,
+     2101.47,
+     2415.26,
+     2631.62,
+     2811.29,
+     2997.76
+    ],
+    "transactions": 59191,
+    "writes": 59191
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "myrocks": [
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      52
+     ],
+     [
+      "myrocks::ha_rocksdb::read_range_first(st_key_range const*, st_key_range const*, bool, bool)",
+      33
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::commit_no_binlog()",
+      32
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      32
+     ],
+     [
+      "myrocks::Rdb_converter::encode_value_slice(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const&, myrocks::Rdb_string_writer*, bool, bool, char*, bool*, rocksdb::Slice*)",
+      30
+     ],
+     [
+      "myrocks::get_or_create_tx(THD*) [clone .lto_priv.0]",
+      25
+     ],
+     [
+      "myrocks::Rdb_key_def::get_lookup_bitmap(TABLE const*, st_bitmap*) const",
+      21
+     ],
+     [
+      "myrocks::ha_rocksdb::update_write_pk(myrocks::Rdb_key_def const&, myrocks::ha_rocksdb::update_row_info const&, bool)",
+      20
+     ],
+     [
+      "myrocks::ha_rocksdb::index_read_map_impl(unsigned char*, unsigned char const*, unsigned int, ha_rkey_function, st_key_range const*)",
+      19
+     ],
+     [
+      "myrocks::ha_rocksdb::get_row_by_rowid(unsigned char*, char const*, unsigned int, bool, bool)",
+      19
+     ],
+     [
+      "myrocks::ha_rocksdb::extra(ha_extra_function)",
+      18
+     ],
+     [
+      "myrocks::ha_rocksdb::update_auto_incr_val_from_field()",
+      18
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      18
+     ],
+     [
+      "myrocks::Rdb_field_packing::setup(myrocks::Rdb_key_def const*, Field const*, unsigned int, unsigned int, unsigned short)",
+      18
+     ],
+     [
+      "myrocks::Rdb_tbl_def::get_autoincr_gl_index_id()",
+      17
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::start_tx()",
+      16
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::rollback()",
+      14
+     ],
+     [
+      "myrocks::ha_rocksdb::update_row(unsigned char const*, unsigned char const*)",
+      13
+     ],
+     [
+      "myrocks::ha_rocksdb::index_init(unsigned int, bool)",
+      12
+     ],
+     [
+      "myrocks::ha_rocksdb::table_flags() const",
+      11
+     ],
+     [
+      "myrocks::Rdb_key_def::unpack_record(TABLE*, unsigned char*, rocksdb::Slice const*, rocksdb::Slice const*, bool) const",
+      11
+     ],
+     [
+      "myrocks::ha_rocksdb::index_end()",
+      10
+     ],
+     [
+      "myrocks::ha_rocksdb::check_keyread_allowed(unsigned int, unsigned int, bool) const",
+      10
+     ],
+     [
+      "myrocks::Rdb_converter::setup_field_decoders(st_bitmap const*, bool)",
+      10
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_index_tuple(TABLE*, unsigned char*, unsigned char*, unsigned char*, unsigned char const*, unsigned int const&) const",
+      9
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "rocksdb::PosixWritableFile::Sync(rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      5924
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      440
+     ],
+     [
+      "rocksdb::PosixWritableFile::Append(rocksdb::Slice const&, rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      290
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      134
+     ],
+     [
+      "rocksdb::LRUHandleTable::FindPointer(rocksdb::Slice const&, unsigned int)",
+      87
+     ],
+     [
+      "rocksdb::DBImpl::WriteImpl(rocksdb::WriteOptions const&, rocksdb::WriteBatch*, rocksdb::WriteCallback*, unsigned long*, unsigned long, bool, unsigned long*, unsigned long, rocksdb::PreReleaseCallback*)",
+      83
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      81
+     ],
+     [
+      "rocksdb::DataBlockIter::NextImpl()",
+      70
+     ],
+     [
+      "bool rocksdb::BlockIter<rocksdb::Slice>::BinarySeek<rocksdb::DecodeKey>(rocksdb::Slice const&, unsigned int*, bool*) [clone .constprop.0]",
+      61
+     ],
+     [
+      "rocksdb::InternalKeyComparator::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const",
+      50
+     ],
+     [
+      "rocksdb::port::Mutex::Unlock()",
+      45
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      39
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::KeyIsAfterNode(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Node*) const [clone .isra.0]",
+      35
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      33
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      32
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Insert(rocksdb::LRUHandle*)",
+      30
+     ],
+     [
+      "rocksdb::WritableFileWriter::SyncInternal(bool)",
+      30
+     ],
+     [
+      "rocksdb::ReadRecordFromWriteBatch(rocksdb::Slice*, char*, unsigned int*, rocksdb::Slice*, rocksdb::Slice*, rocksdb::Slice*, rocksdb::Slice*)",
+      25
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Remove(rocksdb::LRUHandle*)",
+      25
+     ],
+     [
+      "rocksdb::WriteBatch::Clear()",
+      25
+     ],
+     [
+      "rocksdb::DBImpl::GetImpl(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::DBImpl::GetImplOptions&)",
+      24
+     ],
+     [
+      "rocksdb::TableCache::Get(rocksdb::ReadOptions const&, rocksdb::InternalKeyComparator const&, rocksdb::FileMetaData const&, rocksdb::Slice const&, rocksdb::GetContext*, std::shared_ptr<rocksdb::SliceTransform const> const&, rocksdb::HistogramImpl*, bool, int, unsigned long)",
+      23
+     ],
+     [
+      "rocksdb::DBImpl::PreprocessWrite(rocksdb::WriteOptions const&, bool*, rocksdb::DBImpl::WriteContext*)",
+      23
+     ],
+     [
+      "bool rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Insert<false>(char const*, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, bool)",
+      23
+     ],
+     [
+      "rocksdb::InstrumentedMutex::Lock()",
+      22
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      75
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      32
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireWithTimeout(rocksdb::PessimisticTransaction*, rocksdb::LockMap*, rocksdb::LockMapStripe*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, long, rocksdb::LockInfo&&)",
+      32
+     ],
+     [
+      "rocksdb::PointLockManager::UnLockKey(rocksdb::PessimisticTransaction*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::LockMapStripe*, rocksdb::LockMap*, rocksdb::Env*)",
+      29
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Clear()",
+      28
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      24
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Clear()",
+      22
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::Clear()",
+      20
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireLocked(rocksdb::LockMap*, rocksdb::LockMapStripe*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, rocksdb::LockInfo&&, unsigned long*, rocksdb::autovector<unsigned long, 8ul>*)",
+      16
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::TrackKey(unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long, bool, bool)",
+      14
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Commit()",
+      13
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::GetFromBatchAndDB(rocksdb::DB*, rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, rocksdb::ReadCallback*)",
+      12
+     ],
+     [
+      "rocksdb::PointLockManager::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, bool)",
+      12
+     ],
+     [
+      "rocksdb::PointLockTracker::~PointLockTracker()",
+      12
+     ],
+     [
+      "rocksdb::WriteBatchWithIndexInternal::GetFromBatch(rocksdb::WriteBatchWithIndex*, rocksdb::Slice const&, rocksdb::MergeContext*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*)",
+      10
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Reinitialize(rocksdb::DB*, rocksdb::WriteOptions const&)",
+      10
+     ],
+     [
+      "rocksdb::PessimisticTransaction::GenTxnID()",
+      10
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::GetForUpdate(rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, bool, bool)",
+      9
+     ],
+     [
+      "rocksdb::PointLockTracker::GetKeyIterator(unsigned int) const",
+      9
+     ],
+     [
+      "rocksdb::WriteCommittedTxn::CommitWithoutPrepareInternal()",
+      9
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SetSnapshotIfNeeded()",
+      8
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::ReinitializeTransaction(rocksdb::Transaction*, rocksdb::WriteOptions const&, rocksdb::TransactionOptions const&)",
+      8
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SetSnapshotInternal(rocksdb::Snapshot const*)",
+      8
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Put(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::Slice const&)",
+      7
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SetSavePoint()",
+      6
+     ]
+    ]
+   },
+   "top_self": {
+    "innodb": [
+     [
+      "finish_task_switch.isra.0",
+      1
+     ]
+    ],
+    "myrocks": [
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      30
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::commit_no_binlog()",
+      23
+     ],
+     [
+      "myrocks::ha_rocksdb::extra(ha_extra_function)",
+      18
+     ],
+     [
+      "mysql_sys_var_char(THD*, int) [clone .lto_priv.0]",
+      18
+     ],
+     [
+      "myrocks::get_or_create_tx(THD*) [clone .lto_priv.0]",
+      17
+     ],
+     [
+      "myrocks::Rdb_tbl_def::get_autoincr_gl_index_id()",
+      17
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::start_tx()",
+      15
+     ],
+     [
+      "myrocks::ha_rocksdb::read_range_first(st_key_range const*, st_key_range const*, bool, bool)",
+      15
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::rollback()",
+      14
+     ],
+     [
+      "myrocks::ha_rocksdb::update_auto_incr_val_from_field()",
+      14
+     ],
+     [
+      "String::append(char const*, unsigned long)",
+      13
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      12
+     ],
+     [
+      "myrocks::Rdb_field_packing::setup(myrocks::Rdb_key_def const*, Field const*, unsigned int, unsigned int, unsigned short)",
+      12
+     ],
+     [
+      "myrocks::Rdb_key_def::unpack_record(TABLE*, unsigned char*, rocksdb::Slice const*, rocksdb::Slice const*, bool) const",
+      11
+     ],
+     [
+      "cfree@GLIBC_2.2.5",
+      10
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      10
+     ],
+     [
+      "myrocks::ha_rocksdb::table_flags() const",
+      10
+     ],
+     [
+      "myrocks::Rdb_converter::setup_field_decoders(st_bitmap const*, bool)",
+      10
+     ],
+     [
+      "clock_gettime@@GLIBC_2.17",
+      10
+     ],
+     [
+      "myrocks::Rdb_converter::encode_value_slice(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const&, myrocks::Rdb_string_writer*, bool, bool, char*, bool*, rocksdb::Slice*)",
+      10
+     ],
+     [
+      "key_restore(unsigned char*, unsigned char const*, st_key*, unsigned int)",
+      9
+     ],
+     [
+      "my_bitmap_init",
+      9
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      9
+     ],
+     [
+      "myrocks::Rdb_key_def::get_lookup_bitmap(TABLE const*, st_bitmap*) const",
+      9
+     ],
+     [
+      "myrocks::ha_rocksdb::skip_unique_check() const",
+      9
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "iowrite16",
+      2281
+     ],
+     [
+      "finish_task_switch.isra.0",
+      2003
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      418
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      315
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      221
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      134
+     ],
+     [
+      "__memcmp_evex_movbe",
+      87
+     ],
+     [
+      "rocksdb::LRUHandleTable::FindPointer(rocksdb::Slice const&, unsigned int)",
+      87
+     ],
+     [
+      "blk_mq_submit_bio",
+      86
+     ],
+     [
+      "rocksdb::DBImpl::WriteImpl(rocksdb::WriteOptions const&, rocksdb::WriteBatch*, rocksdb::WriteCallback*, unsigned long*, unsigned long, bool, unsigned long*, unsigned long, rocksdb::PreReleaseCallback*)",
+      80
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      79
+     ],
+     [
+      "rocksdb::DataBlockIter::NextImpl()",
+      65
+     ],
+     [
+      "bool rocksdb::BlockIter<rocksdb::Slice>::BinarySeek<rocksdb::DecodeKey>(rocksdb::Slice const&, unsigned int*, bool*) [clone .constprop.0]",
+      61
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      47
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      39
+     ],
+     [
+      "ext4_bio_write_folio",
+      35
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      32
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      32
+     ],
+     [
+      "bio_associate_blkg_from_css",
+      32
+     ],
+     [
+      "__tls_get_addr",
+      30
+     ],
+     [
+      "ext4_writepages",
+      30
+     ],
+     [
+      "rocksdb::LRUCacheShard::LRU_Insert(rocksdb::LRUHandle*)",
+      30
+     ],
+     [
+      "kmem_cache_alloc_noprof",
+      27
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      27
+     ],
+     [
+      "rocksdb::ReadRecordFromWriteBatch(rocksdb::Slice*, char*, unsigned int*, rocksdb::Slice*, rocksdb::Slice*, rocksdb::Slice*, rocksdb::Slice*)",
+      25
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "malloc",
+      36
+     ],
+     [
+      "cfree@GLIBC_2.2.5",
+      27
+     ],
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      25
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      21
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      19
+     ],
+     [
+      "rocksdb::PointLockManager::UnLockKey(rocksdb::PessimisticTransaction*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::LockMapStripe*, rocksdb::LockMap*, rocksdb::Env*)",
+      19
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireWithTimeout(rocksdb::PessimisticTransaction*, rocksdb::LockMap*, rocksdb::LockMapStripe*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, long, rocksdb::LockInfo&&)",
+      18
+     ],
+     [
+      "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char)",
+      13
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Clear()",
+      13
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireLocked(rocksdb::LockMap*, rocksdb::LockMapStripe*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, rocksdb::LockInfo&&, unsigned long*, rocksdb::autovector<unsigned long, 8ul>*)",
+      13
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::GetFromBatchAndDB(rocksdb::DB*, rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, rocksdb::ReadCallback*)",
+      12
+     ],
+     [
+      "rocksdb::PointLockManager::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, bool)",
+      12
+     ],
+     [
+      "operator delete(void*)",
+      12
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Commit()",
+      10
+     ],
+     [
+      "rocksdb::WriteBatchWithIndexInternal::GetFromBatch(rocksdb::WriteBatchWithIndex*, rocksdb::Slice const&, rocksdb::MergeContext*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*)",
+      10
+     ],
+     [
+      "std::__detail::_Prime_rehash_policy::_M_next_bkt(unsigned long) const",
+      10
+     ],
+     [
+      "rocksdb::PessimisticTransaction::GenTxnID()",
+      10
+     ],
+     [
+      "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)",
+      9
+     ],
+     [
+      "std::_Hash_bytes(void const*, unsigned long, unsigned long)",
+      9
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::GetForUpdate(rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, bool, bool)",
+      9
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::TrackKey(unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long, bool, bool)",
+      9
+     ],
+     [
+      "operator new(unsigned long)",
+      8
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::ReinitializeTransaction(rocksdb::Transaction*, rocksdb::WriteOptions const&, rocksdb::TransactionOptions const&)",
+      8
+     ],
+     [
+      "operator delete(void*)@plt",
+      8
+     ],
+     [
+      "rocksdb::WriteCommittedTxn::CommitWithoutPrepareInternal()",
+      8
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      1610
+     ],
+     [
+      "finish_task_switch.isra.0",
+      622
+     ],
+     [
+      "__memcg_slab_free_hook",
+      100
+     ],
+     [
+      "Sql_cmd_update::update_single_table(THD*)",
+      90
+     ],
+     [
+      "my_string_metadata_get",
+      63
+     ],
+     [
+      "SQL_SELECT::test_quick_select(THD*, Bitmap<64u>, unsigned long long, unsigned long long, bool, bool, bool, bool, Item_func::Bitmap)",
+      62
+     ],
+     [
+      "JOIN::prepare(TABLE_LIST*, Item*, unsigned int, st_order*, bool, st_order*, Item*, st_order*, st_select_lex*, st_select_lex_unit*)",
+      57
+     ],
+     [
+      "my_mb_wc_utf8mb4.lto_priv.0",
+      49
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      48
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      45
+     ],
+     [
+      "Prepared_statement::execute(String*, bool, select_result*, Server_side_cursor**)",
+      44
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      42
+     ],
+     [
+      "open_table(THD*, TABLE_LIST*, Open_table_context*)",
+      40
+     ],
+     [
+      "Sql_cmd_update::prepare_inner(THD*)",
+      39
+     ],
+     [
+      "__send",
+      38
+     ],
+     [
+      "sel_arg_range_seq_next(void*, st_key_multi_range*)",
+      36
+     ],
+     [
+      "open_tables(THD*, DDL_options_st const&, TABLE_LIST**, unsigned int*, unsigned int, Prelocking_strategy*)",
+      36
+     ],
+     [
+      "__memcg_slab_post_alloc_hook",
+      34
+     ],
+     [
+      "dispatch_command(enum_server_command, THD*, char*, unsigned int, bool)",
+      34
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      34
+     ],
+     [
+      "my_wc_mb_latin1.lto_priv.0",
+      34
+     ],
+     [
+      "_copy_to_iter",
+      34
+     ],
+     [
+      "my_convert_fix",
+      33
+     ],
+     [
+      "malloc",
+      31
+     ],
+     [
+      "__libc_recv",
+      30
+     ]
+    ]
+   },
+   "window_read_ios": 203,
+   "window_read_ms": 16,
+   "window_server_cpu_s": 8.976703505,
+   "window_wall_s": 21.18815560800067,
+   "workload": "oltp_update_non_index"
+  },
+  {
+   "arm": "myrocks",
+   "kernel": {
+    "myrocks": 1,
+    "rocksdb_core": 6497,
+    "server": 3315
+   },
+   "own_threads": {
+    "myrocks": 1
+   },
+   "owners": {
+    "myrocks": 511,
+    "rocksdb_core": 8769,
+    "rocksdb_txn": 474,
+    "server": 6746
+   },
+   "pass": 0,
+   "rooted": 16500,
+   "samples": 16500,
+   "sysbench": {
+    "ignored_errors": 0,
+    "lat_avg_ms": 0.38,
+    "lat_max_ms": 31.55,
+    "lat_min_ms": 0.21,
+    "lat_p99_ms": 0.8,
+    "other": 0,
+    "qps_by_second": [
+     2963.06,
+     3096.85,
+     2867.7,
+     2453.0,
+     2756.02,
+     2250.94,
+     2523.38,
+     2780.08,
+     2502.9,
+     2350.56,
+     2825.93,
+     2608.68,
+     2601.85,
+     2492.81,
+     2600.15,
+     2514.15,
+     2298.93,
+     2598.66,
+     2506.96,
+     2610.92,
+     2520.85,
+     2597.0,
+     2621.95
+    ],
+    "queries": 63251,
+    "reads": 0,
+    "reconnects": 0,
+    "seconds": 24.0017,
+    "tps_by_second": [
+     2963.06,
+     3096.85,
+     2867.7,
+     2453.0,
+     2756.02,
+     2250.94,
+     2523.38,
+     2780.08,
+     2502.9,
+     2350.56,
+     2825.93,
+     2608.68,
+     2601.85,
+     2492.81,
+     2600.15,
+     2514.15,
+     2298.93,
+     2598.66,
+     2506.96,
+     2610.92,
+     2520.85,
+     2597.0,
+     2621.95
+    ],
+    "transactions": 63251,
+    "writes": 63251
+   },
+   "threads": 1,
+   "top_owner_frames": {
+    "myrocks": [
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      47
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      31
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      31
+     ],
+     [
+      "myrocks::Rdb_converter::encode_value_slice(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const&, myrocks::Rdb_string_writer*, bool, bool, char*, bool*, rocksdb::Slice*)",
+      27
+     ],
+     [
+      "myrocks::ha_rocksdb::update_write_pk(myrocks::Rdb_key_def const&, myrocks::ha_rocksdb::update_row_info const&, bool)",
+      24
+     ],
+     [
+      "myrocks::ha_rocksdb::write_row(unsigned char const*)",
+      22
+     ],
+     [
+      "myrocks::get_or_create_tx(THD*) [clone .lto_priv.0]",
+      22
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::commit_no_binlog()",
+      21
+     ],
+     [
+      "myrocks::ha_rocksdb::update_auto_incr_val_from_field()",
+      18
+     ],
+     [
+      "myrocks::ha_rocksdb::table_flags() const",
+      15
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::start_tx()",
+      15
+     ],
+     [
+      "myrocks::Rdb_cond_var::NotifyAll()",
+      11
+     ],
+     [
+      "std::__detail::_Map_base<myrocks::_gl_index_id_s, std::pair<myrocks::_gl_index_id_s const, unsigned long long>, std::allocator<std::pair<myrocks::_gl_index_id_s const, unsigned long long> >, std::__detail::_Select1st, std::equal_to<myrocks::_gl_index_id_s>, std::hash<myrocks::_gl_index_id_s>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[](myrocks::_gl_index_id_s const&)",
+      10
+     ],
+     [
+      "myrocks::ha_rocksdb::get_auto_increment(unsigned long long, unsigned long long, unsigned long long, unsigned long long*, unsigned long long*)",
+      10
+     ],
+     [
+      "myrocks::ha_rocksdb::update_write_sk(TABLE const*, myrocks::Rdb_key_def const&, myrocks::ha_rocksdb::update_row_info const&, bool)",
+      9
+     ],
+     [
+      "myrocks::ha_rocksdb::check_and_lock_unique_pk(unsigned int, myrocks::ha_rocksdb::update_row_info const&, bool*)",
+      9
+     ],
+     [
+      "myrocks::Rdb_mutex::Lock()",
+      9
+     ],
+     [
+      "myrocks::ha_rocksdb::get_pk_for_update(myrocks::ha_rocksdb::update_row_info*)",
+      9
+     ],
+     [
+      "myrocks::rdb_get_int_col_max_value(Field const*) [clone .lto_priv.0]",
+      9
+     ],
+     [
+      "myrocks::ha_rocksdb::update_write_row(unsigned char const*, unsigned char const*, bool)",
+      9
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_field(Field*, myrocks::Rdb_field_packing*, unsigned char*, unsigned char*, unsigned char*, myrocks::Rdb_string_writer*, unsigned int*) const",
+      8
+     ],
+     [
+      "myrocks::ha_rocksdb::read_thd_vars(THD*)",
+      8
+     ],
+     [
+      "myrocks::Rdb_field_packing::get_field_in_table(TABLE const*) const",
+      8
+     ],
+     [
+      "myrocks::ha_rocksdb::extra(ha_extra_function)",
+      8
+     ],
+     [
+      "myrocks::ha_rocksdb::can_assume_tracked(THD*)",
+      8
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "rocksdb::PosixWritableFile::Sync(rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      6187
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      426
+     ],
+     [
+      "rocksdb::PosixWritableFile::Append(rocksdb::Slice const&, rocksdb::IOOptions const&, rocksdb::IODebugContext*)",
+      308
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::KeyIsAfterNode(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Node*) const [clone .isra.0]",
+      98
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      79
+     ],
+     [
+      "rocksdb::DBImpl::WriteImpl(rocksdb::WriteOptions const&, rocksdb::WriteBatch*, rocksdb::WriteCallback*, unsigned long*, unsigned long, bool, unsigned long*, unsigned long, rocksdb::PreReleaseCallback*)",
+      49
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      44
+     ],
+     [
+      "rocksdb::DBImpl::GetImpl(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::DBImpl::GetImplOptions&)",
+      36
+     ],
+     [
+      "rocksdb::InternalKeyComparator::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const",
+      35
+     ],
+     [
+      "rocksdb::MemTableInserter::PutCFImpl(unsigned int, rocksdb::Slice const&, rocksdb::Slice const&, rocksdb::ValueType, rocksdb::ProtectionInfoKVOS<unsigned long> const*)",
+      35
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      32
+     ],
+     [
+      "rocksdb::DBImpl::SyncWAL()",
+      30
+     ],
+     [
+      "bool rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Insert<false>(char const*, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, bool)",
+      29
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      28
+     ],
+     [
+      "rocksdb::WriteBatch::Clear()",
+      27
+     ],
+     [
+      "rocksdb::MemTable::KeyComparator::operator()(char const*, char const*) const",
+      26
+     ],
+     [
+      "rocksdb::Version::Get(rocksdb::ReadOptions const&, rocksdb::LookupKey const&, rocksdb::PinnableSlice*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*, rocksdb::MergeContext*, unsigned long*, rocksdb::PinnedIteratorsManager*, bool*, bool*, unsigned long*, rocksdb::ReadCallback*, bool*, bool)",
+      25
+     ],
+     [
+      "std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, rocksdb::TrackedKeyInfo>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, rocksdb::TrackedKeyInfo> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_insert_unique_node(unsigned long, unsigned long, std::__detail::_Hash_node<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, rocksdb::TrackedKeyInfo>, true>*, unsigned long) [clone .constprop.0]",
+      25
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      25
+     ],
+     [
+      "rocksdb::MemTable::Add(unsigned long, rocksdb::ValueType, rocksdb::Slice const&, rocksdb::Slice const&, rocksdb::ProtectionInfoKVOS<unsigned long> const*, bool, rocksdb::MemTablePostProcessInfo*, void**)",
+      24
+     ],
+     [
+      "rocksdb::WritableFileWriter::SyncInternal(bool)",
+      23
+     ],
+     [
+      "rocksdb::Status rocksdb::BlockBasedTable::MaybeReadBlockAndLoadToCache<rocksdb::Block>(rocksdb::FilePrefetchBuffer*, rocksdb::ReadOptions const&, rocksdb::BlockHandle const&, rocksdb::UncompressionDict const&, bool, bool, rocksdb::CachableEntry<rocksdb::Block>*, rocksdb::BlockType, rocksdb::GetContext*, rocksdb::BlockCacheLookupContext*, rocksdb::BlockContents*) const",
+      22
+     ],
+     [
+      "rocksdb::DataBlockIter::NextImpl()",
+      22
+     ],
+     [
+      "rocksdb::Arena::AllocateAligned(unsigned long, unsigned long, rocksdb::Logger*)",
+      22
+     ],
+     [
+      "rocksdb::InstrumentedMutex::Lock()",
+      20
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      97
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Clear()",
+      32
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireLocked(rocksdb::LockMap*, rocksdb::LockMapStripe*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, rocksdb::LockInfo&&, unsigned long*, rocksdb::autovector<unsigned long, 8ul>*)",
+      25
+     ],
+     [
+      "rocksdb::PointLockManager::UnLockKey(rocksdb::PessimisticTransaction*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::LockMapStripe*, rocksdb::LockMap*, rocksdb::Env*)",
+      19
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Clear()",
+      18
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireWithTimeout(rocksdb::PessimisticTransaction*, rocksdb::LockMap*, rocksdb::LockMapStripe*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, long, rocksdb::LockInfo&&)",
+      17
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Commit()",
+      17
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      17
+     ],
+     [
+      "rocksdb::PointLockTracker::~PointLockTracker()",
+      15
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::GetFromBatchAndDB(rocksdb::DB*, rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, rocksdb::ReadCallback*)",
+      13
+     ],
+     [
+      "rocksdb::PointLockManager::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, bool)",
+      12
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::AddNewEntry(unsigned int)",
+      12
+     ],
+     [
+      "rocksdb::WriteCommittedTxn::CommitWithoutPrepareInternal()",
+      12
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Reinitialize(rocksdb::DB*, rocksdb::WriteOptions const&)",
+      12
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&)",
+      11
+     ],
+     [
+      "rocksdb::WriteBatchWithIndexInternal::GetFromBatch(rocksdb::WriteBatchWithIndex*, rocksdb::Slice const&, rocksdb::MergeContext*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*)",
+      11
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::Clear()",
+      11
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      9
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Put(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::Slice const&, bool)",
+      9
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SetSavePoint()",
+      8
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Put(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::Slice const&)",
+      8
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Initialize(rocksdb::TransactionOptions const&)",
+      6
+     ],
+     [
+      "rocksdb::WriteBatchEntryComparator::operator()(rocksdb::WriteBatchIndexEntry const*, rocksdb::WriteBatchIndexEntry const*) const",
+      6
+     ],
+     [
+      "rocksdb::PointLockTracker::GetPointLockStatus(unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) const",
+      6
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::TrackKey(unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long, bool, bool)",
+      5
+     ]
+    ]
+   },
+   "top_self": {
+    "myrocks": [
+     [
+      "myrocks::rocksdb_commit(THD*, bool) [clone .lto_priv.0]",
+      27
+     ],
+     [
+      "myrocks::Rdb_key_def::pack_record(TABLE const*, unsigned char*, unsigned char const*, unsigned char*, myrocks::Rdb_string_writer*, bool, long long, unsigned int, unsigned int*, char const*) const",
+      20
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::commit_no_binlog()",
+      19
+     ],
+     [
+      "mysql_sys_var_char(THD*, int) [clone .lto_priv.0]",
+      17
+     ],
+     [
+      "myrocks::ha_rocksdb::update_auto_incr_val_from_field()",
+      16
+     ],
+     [
+      "__memset_avx512_unaligned_erms",
+      14
+     ],
+     [
+      "myrocks::ha_rocksdb::table_flags() const",
+      13
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::start_tx()",
+      13
+     ],
+     [
+      "mysql_sys_var_ulong(THD*, int) [clone .lto_priv.0]",
+      12
+     ],
+     [
+      "myrocks::Rdb_cond_var::NotifyAll()",
+      11
+     ],
+     [
+      "myrocks::Rdb_converter::encode_value_slice(std::shared_ptr<myrocks::Rdb_key_def> const&, rocksdb::Slice const&, myrocks::Rdb_string_writer*, bool, bool, char*, bool*, rocksdb::Slice*)",
+      11
+     ],
+     [
+      "myrocks::ha_rocksdb::external_lock(THD*, int)",
+      11
+     ],
+     [
+      "std::__detail::_Map_base<myrocks::_gl_index_id_s, std::pair<myrocks::_gl_index_id_s const, unsigned long long>, std::allocator<std::pair<myrocks::_gl_index_id_s const, unsigned long long> >, std::__detail::_Select1st, std::equal_to<myrocks::_gl_index_id_s>, std::hash<myrocks::_gl_index_id_s>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[](myrocks::_gl_index_id_s const&)",
+      10
+     ],
+     [
+      "myrocks::rdb_get_int_col_max_value(Field const*) [clone .lto_priv.0]",
+      9
+     ],
+     [
+      "myrocks::ha_rocksdb::update_write_sk(TABLE const*, myrocks::Rdb_key_def const&, myrocks::ha_rocksdb::update_row_info const&, bool)",
+      8
+     ],
+     [
+      "myrocks::Rdb_mutex::Lock()",
+      8
+     ],
+     [
+      "myrocks::Rdb_field_packing::get_field_in_table(TABLE const*) const",
+      8
+     ],
+     [
+      "myrocks::ha_rocksdb::extra(ha_extra_function)",
+      8
+     ],
+     [
+      "myrocks::ha_rocksdb::can_assume_tracked(THD*)",
+      8
+     ],
+     [
+      "myrocks::Rdb_transaction_impl::put(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::Slice const&, bool)",
+      8
+     ],
+     [
+      "myrocks::ha_rocksdb::store_lock(THD*, st_thr_lock_data**, thr_lock_type)",
+      7
+     ],
+     [
+      "__vdso_time",
+      7
+     ],
+     [
+      "myrocks::ha_rocksdb::read_thd_vars(THD*)",
+      7
+     ],
+     [
+      "handler::update_auto_increment()",
+      7
+     ],
+     [
+      "myrocks::ha_rocksdb::get_pk_for_update(myrocks::ha_rocksdb::update_row_info*)",
+      7
+     ]
+    ],
+    "rocksdb_core": [
+     [
+      "iowrite16",
+      2362
+     ],
+     [
+      "finish_task_switch.isra.0",
+      2205
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::RecomputeSpliceLevels(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, int)",
+      419
+     ],
+     [
+      "_raw_spin_unlock_irqrestore",
+      279
+     ],
+     [
+      "_raw_spin_unlock_irq",
+      209
+     ],
+     [
+      "__memcmp_evex_movbe",
+      116
+     ],
+     [
+      "blk_mq_submit_bio",
+      58
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::FindGreaterOrEqual(char const*) const",
+      45
+     ],
+     [
+      "rocksdb::IndexBlockIter::SeekImpl(rocksdb::Slice const&)",
+      44
+     ],
+     [
+      "rocksdb::DBImpl::WriteImpl(rocksdb::WriteOptions const&, rocksdb::WriteBatch*, rocksdb::WriteCallback*, unsigned long*, unsigned long, bool, unsigned long*, unsigned long, rocksdb::PreReleaseCallback*)",
+      44
+     ],
+     [
+      "ext4_bio_write_folio",
+      43
+     ],
+     [
+      "__tls_get_addr",
+      41
+     ],
+     [
+      "rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::KeyIsAfterNode(rocksdb::Slice const&, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Node*) const [clone .isra.0]",
+      41
+     ],
+     [
+      "rocksdb::DBImpl::GetImpl(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::DBImpl::GetImplOptions&)",
+      32
+     ],
+     [
+      "rocksdb::BlockBasedTable::Get(rocksdb::ReadOptions const&, rocksdb::Slice const&, rocksdb::GetContext*, rocksdb::SliceTransform const*, bool)",
+      32
+     ],
+     [
+      "rq_qos_wait",
+      28
+     ],
+     [
+      "rocksdb::StatisticsImpl::recordTick(unsigned int, unsigned long)",
+      28
+     ],
+     [
+      "bool rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Insert<false>(char const*, rocksdb::InlineSkipList<rocksdb::MemTableRep::KeyComparator const&>::Splice*, bool)",
+      27
+     ],
+     [
+      "do_writepages",
+      26
+     ],
+     [
+      "do_syscall_64",
+      26
+     ],
+     [
+      "rocksdb::(anonymous namespace)::BytewiseComparatorImpl::Compare(rocksdb::Slice const&, rocksdb::Slice const&) const [clone .lto_priv.0]",
+      25
+     ],
+     [
+      "rocksdb::Version::Get(rocksdb::ReadOptions const&, rocksdb::LookupKey const&, rocksdb::PinnableSlice*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, rocksdb::Status*, rocksdb::MergeContext*, unsigned long*, rocksdb::PinnedIteratorsManager*, bool*, bool*, unsigned long*, rocksdb::ReadCallback*, bool*, bool)",
+      24
+     ],
+     [
+      "ext4_writepages",
+      23
+     ],
+     [
+      "rocksdb::DBImpl::SyncWAL()",
+      22
+     ],
+     [
+      "wbt_track",
+      22
+     ]
+    ],
+    "rocksdb_txn": [
+     [
+      "malloc",
+      42
+     ],
+     [
+      "rocksdb::PointLockManager::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&, rocksdb::Env*)",
+      34
+     ],
+     [
+      "cfree@GLIBC_2.2.5",
+      33
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireLocked(rocksdb::LockMap*, rocksdb::LockMapStripe*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, rocksdb::LockInfo&&, unsigned long*, rocksdb::autovector<unsigned long, 8ul>*)",
+      21
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Commit()",
+      16
+     ],
+     [
+      "rocksdb::PointLockTracker::Track(rocksdb::PointLockRequest const&)",
+      14
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::GetFromBatchAndDB(rocksdb::DB*, rocksdb::ReadOptions const&, rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::PinnableSlice*, rocksdb::ReadCallback*)",
+      13
+     ],
+     [
+      "rocksdb::PointLockManager::UnLockKey(rocksdb::PessimisticTransaction*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::LockMapStripe*, rocksdb::LockMap*, rocksdb::Env*)",
+      12
+     ],
+     [
+      "rocksdb::PointLockManager::TryLock(rocksdb::PessimisticTransaction*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, bool)",
+      12
+     ],
+     [
+      "rocksdb::PessimisticTransactionDB::UnLock(rocksdb::PessimisticTransaction*, rocksdb::LockTracker const&)",
+      11
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Rep::AddNewEntry(unsigned int)",
+      11
+     ],
+     [
+      "rocksdb::WriteCommittedTxn::CommitWithoutPrepareInternal()",
+      11
+     ],
+     [
+      "rocksdb::PessimisticTransaction::Clear()",
+      10
+     ],
+     [
+      "rocksdb::PointLockTracker::~PointLockTracker()",
+      9
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::Put(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::Slice const&, bool)",
+      9
+     ],
+     [
+      "std::__detail::_Prime_rehash_policy::_M_next_bkt(unsigned long) const",
+      8
+     ],
+     [
+      "rocksdb::PointLockManager::AcquireWithTimeout(rocksdb::PessimisticTransaction*, rocksdb::LockMap*, rocksdb::LockMapStripe*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rocksdb::Env*, long, rocksdb::LockInfo&&)",
+      8
+     ],
+     [
+      "_int_free",
+      8
+     ],
+     [
+      "__memset_avx512_unaligned_erms",
+      8
+     ],
+     [
+      "rocksdb::WriteBatchWithIndex::Put(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, rocksdb::Slice const&)",
+      8
+     ],
+     [
+      "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace_aux(unsigned long, unsigned long, unsigned long, char)",
+      8
+     ],
+     [
+      "operator new(unsigned long)",
+      7
+     ],
+     [
+      "rocksdb::TransactionBaseImpl::SetSavePoint()",
+      7
+     ],
+     [
+      "rocksdb::PessimisticTransaction::TryLock(rocksdb::ColumnFamilyHandle*, rocksdb::Slice const&, bool, bool, bool, bool)",
+      7
+     ],
+     [
+      "__memcmp_evex_movbe",
+      7
+     ]
+    ],
+    "server": [
+     [
+      "_raw_spin_unlock_irqrestore",
+      1779
+     ],
+     [
+      "finish_task_switch.isra.0",
+      713
+     ],
+     [
+      "MYSQLparse(THD*)",
+      481
+     ],
+     [
+      "my_string_repertoire_8bit",
+      114
+     ],
+     [
+      "my_mb_wc_utf8mb4.lto_priv.0",
+      78
+     ],
+     [
+      "skb_release_data",
+      78
+     ],
+     [
+      "mysql_insert(THD*, TABLE_LIST*, List<Item>&, List<List<Item> >&, List<Item>&, List<Item>&, enum_duplicates, bool, select_result*)",
+      76
+     ],
+     [
+      "Lex_input_stream::lex_one_token(YYSTYPE*, THD*)",
+      67
+     ],
+     [
+      "Lex_input_stream::get_text(Lex_string_with_metadata_st*, unsigned int, int, int)",
+      64
+     ],
+     [
+      "my_convert_fix",
+      59
+     ],
+     [
+      "__send",
+      56
+     ],
+     [
+      "mysql_execute_command(THD*, bool)",
+      56
+     ],
+     [
+      "__memmove_avx512_unaligned_erms",
+      49
+     ],
+     [
+      "dispatch_command(enum_server_command, THD*, char*, unsigned int, bool)",
+      45
+     ],
+     [
+      "pthread_mutex_unlock@@GLIBC_2.2.5",
+      45
+     ],
+     [
+      "__memcg_slab_free_hook",
+      42
+     ],
+     [
+      "pthread_mutex_lock@@GLIBC_2.2.5",
+      42
+     ],
+     [
+      "my_mb_wc_item_name.lto_priv.0",
+      41
+     ],
+     [
+      "get_hash_symbol(char const*, unsigned int, bool) [clone .lto_priv.0]",
+      40
+     ],
+     [
+      "my_wc_mb_latin1.lto_priv.0",
+      39
+     ],
+     [
+      "Lex_input_stream::scan_ident_middle(THD*, Lex_ident_cli_st*, charset_info_st const**, my_lex_states*)",
+      37
+     ],
+     [
+      "my_numchars_mb",
+      37
+     ],
+     [
+      "_copy_to_iter",
+      36
+     ],
+     [
+      "my_charlen_utf8mb4.lto_priv.0",
+      34
+     ],
+     [
+      "_raw_spin_lock",
+      32
+     ]
+    ]
+   },
+   "window_read_ios": 208,
+   "window_read_ms": 18,
+   "window_server_cpu_s": 8.872816749,
+   "window_wall_s": 21.198894074001146,
+   "workload": "oltp_insert"
+  }
+ ],
+ "reps": 3,
+ "rows": [],
+ "seconds": 20,
+ "server": "/opt/mysup-servers/mariadb-12.3.4/usr/sbin/mariadbd  Ver 12.3.4-MariaDB-ubu2404 for debian-linux-gnu on x86_64 (mariadb.org binary distribution)",
+ "server_tag": "mariadb-12.3.4",
+ "sha": "15313e1",
+ "started": "20261127T012436Z",
+ "sysbench": "sysbench 1.0.20"
+}
