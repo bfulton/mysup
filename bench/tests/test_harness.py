@@ -9,7 +9,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from mysupbench import plan, profile, report, sysbench  # noqa: E402
+from mysupbench import plan, probes, profile, report, sysbench  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -163,6 +163,21 @@ class Sysbench(unittest.TestCase):
     def test_output_without_a_summary_is_an_error(self):
         with self.assertRaises(ValueError):
             sysbench.parse("FATAL: unable to connect to MySQL server\n")
+
+
+class Threads(unittest.TestCase):
+    def test_this_process_has_a_named_thread_with_cpu(self):
+        got = probes.thread_cpu(os.getpid())
+        name, cpu = got[os.getpid()]
+        self.assertTrue(name)
+        self.assertGreaterEqual(cpu, 0.0)
+
+    def test_delta_keeps_only_threads_alive_at_both_ends(self):
+        before = {1: ("page_cleaner", 1.0), 2: ("one_connection", 5.0)}
+        after = {1: ("page_cleaner", 1.5), 3: ("one_connection", 9.0),
+                 4: ("page_cleaner", 0.0)}
+        self.assertEqual(probes.thread_cpu_delta(after, before),
+                         {"page_cleaner": 0.5})
 
 
 class Quartiles(unittest.TestCase):

@@ -31,6 +31,36 @@ def proc_ticks(pid):
     return int(rest[11]) / CLK_TCK, int(rest[12]) / CLK_TCK
 
 
+def thread_cpu(pid):
+    """{tid: (name, CPU seconds)} for the process's threads, tick-sampled.
+    A thread that exits between two calls is in the first only."""
+    out = {}
+    base = f"/proc/{pid}/task"
+    for tid in os.listdir(base):
+        try:
+            with open(f"{base}/{tid}/stat") as f:
+                s = f.read()
+        except OSError:
+            continue
+        name = s[s.index("(") + 1:s.rindex(")")]
+        rest = s[s.rindex(")") + 2:].split()
+        out[int(tid)] = (name, (int(rest[11]) + int(rest[12])) / CLK_TCK)
+    return out
+
+
+def thread_cpu_delta(after, before):
+    """CPU seconds by thread name, over the threads alive at both ends.
+    Query threads come and go with their connections, so what this is
+    for is the threads that stay: the engine's own."""
+    out = {}
+    for tid, (name, cpu) in after.items():
+        if tid in before and before[tid][0] == name:
+            d = cpu - before[tid][1]
+            if d > 0:
+                out[name] = round(out.get(name, 0.0) + d, 2)
+    return out
+
+
 def proc_io(pid):
     """/proc/<pid>/io: read_bytes and write_bytes are bytes that reached
     the block layer on the process's behalf."""

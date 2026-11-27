@@ -210,6 +210,7 @@ class Run:
         if restore and plan.ARMS[arm]["engine"] != "blackhole":
             inst.restore()
         drop_page_cache()
+        self.warm = set()
         inst.start(limit=self.cond["limit"])
         if not inst.preloaded():
             inst.kill()
@@ -274,6 +275,7 @@ class Run:
         inst.cgroup.destroy()
 
     def _cell(self, inst, arm, workload, threads):
+        self.warm.add(workload)
         tag = f"{self.condition} {arm} {workload} x{threads}"
         ident = dict(arm=arm, workload=workload, threads=threads)
         ident["pass"] = self.pass_no
@@ -315,6 +317,15 @@ class Run:
     def _profile(self, inst, arm, workload, seconds=20):
         threads = self.profile_threads
         tag = f"{self.condition} {arm} {workload} x{threads}"
+        if workload not in self.warm:
+            # Nothing has run this workload on this server since it
+            # started: bring its cache to where the workload keeps it.
+            subprocess.run(
+                self._cmd(inst, arm, workload, threads,
+                          self.cond["warmup"], 5),
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            inst.check()
+            self.warm.add(workload)
         data = os.path.join(inst.dir, f"perf-{workload}.data")
         cmd = self._cmd(inst, arm, workload, threads, seconds + 4, 7)
         sb = subprocess.Popen(cmd, stdout=subprocess.PIPE,

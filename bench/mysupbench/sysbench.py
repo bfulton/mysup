@@ -116,6 +116,7 @@ def measured(inst, dev, cmd):
     b0 = probes.block_stat(dev)
     io0 = probes.proc_io(pid)
     t0 = probes.proc_ticks(pid)
+    th0 = probes.thread_cpu(pid)
     ticks = []
     c0 = probes.proc_cpu_ns(pid)
     try:
@@ -126,6 +127,7 @@ def measured(inst, dev, cmd):
         inst.check()
         raise
     c1 = probes.proc_cpu_ns(pid)
+    th1 = probes.thread_cpu(pid)
     t1 = probes.proc_ticks(pid)
     io1 = probes.proc_io(pid)
     b1 = probes.block_stat(dev)
@@ -148,6 +150,9 @@ def measured(inst, dev, cmd):
         "stime_s": t1[1] - t0[1],
         "io": probes.delta(io1, io0),
         "rss": mem.get("VmRSS"),
+        # By thread name, the threads that lived through the run. The
+        # connection threads among them are whichever the server kept.
+        "threads": probes.thread_cpu_delta(th1, th0),
     }
     row["client"] = client
     row["block"] = probes.delta(b1, b0)
